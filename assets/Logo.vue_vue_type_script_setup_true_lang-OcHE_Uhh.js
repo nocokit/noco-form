@@ -1,0 +1,1 @@
+import{a,r,o as t,b as n,e as c,O as p,y as l,P as m}from"./index-elLRXM3_.js";const f=a({__name:"Logo",props:{type:{}},setup(i){const o=m(),s=()=>{o.push("/")};return r("large"),(_,e)=>(t(),n("div",{class:"logo-comp",onClick:s},[c(p,{size:30}),e[0]||(e[0]=l("span",{class:"logo-title"}," Lemon Form",-1))]))}});export{f as _};
