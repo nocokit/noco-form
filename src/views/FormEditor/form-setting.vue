@@ -1,11 +1,8 @@
 <template>
   <div class="setting" >
     <div class="comp-name">
-      <a-typography-title class="title-val" :level="5">
-        <img v-if="currCompIcon" :src="currCompIcon" class="compIcon" alt="">
-        <span v-if="!currCompIcon" class="compIcon">🍋</span>
-        <span class="name">  {{ selectComp?.name || selectComp?.type === 'Button' && '提交按钮' || '表单配置' }} </span>
-      </a-typography-title>
+      <span class="panel-title">Properties</span>
+      <span class="comp-id-badge" v-if="selectComp?.id">ID: {{ selectComp?.id?.substring(0, 8) }}</span>
     </div>
     <div class="setting-base">
       <template v-if="currentCompId">  
@@ -148,79 +145,251 @@ watch([() => props.selectComp, () => props.selectForm],
 
 </script>
 
-<style>
+<style lang="scss">
+/* Right Config Panel */
+.setting {
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border-base);
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .comp-name {
-  .compIcon {
-    width: 18px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-base);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .panel-title {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 14px;
   }
 
-.name {
-  color: rgba(0, 0, 0, 0.65);
-  padding: 0 8px;
+  .comp-id-badge {
+    font-size: 10px;
+    background: #27272a;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 400;
+    color: #888;
+  }
 }
 
-}
-
-.setting {
-  background: #fafafa;
-  max-height: 100%;
-  overflow-y: auto;
-}
-
-.comp-name {
-  padding: 10px 10px 0 15px;
-  border-bottom: 1px solid rgba(0, 0, 0, .06);
-  top:0;
-  position: sticky;
-  z-index: 10;
-  background: #fff;
-}
 .setting-base {
-  padding: 5px 15px;
+  padding: 20px;
   overflow-x: hidden;
+  overflow-y: auto;
+  flex: 1;
+
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-medium) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-medium);
+    border-radius: 999px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--border-strong);
+  }
 }
+
 .category-name {
-  height: 56px;
-  line-height: 56px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, .65);
-  font-size: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: var(--spacing-6) 0 var(--spacing-3) 0;
+  letter-spacing: 1px;
+  padding-left: 0;
+  height: auto;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
   &::before {
     content: '';
-    border-left: 3px solid #1677ff;
-    padding-left: 8px;
-    height: 10px;
-    width: 100px;
+    display: inline-block;
+    width: 3px;
+    height: 12px;
+    background: var(--primary);
+    border-radius: var(--radius-sm);
+    margin-right: var(--spacing-2);
+    flex-shrink: 0;
   }
 }
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+
+  &.m-b-0 {
+    margin-bottom: 0;
+  }
+}
+
 .border-top {
-  margin-top: 20px;
-  border-top: 1px solid rgba(0, 0, 0, .065);
+  margin-top: var(--spacing-5);
+  padding-top: var(--spacing-5);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .block-title {
   display: block;
-  padding-bottom: 8px;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-2);
 }
+
 .setting-item {
   position: relative;
+
   .ant-select {
-    top: 10px;
+    width: 100%;
+  }
+
+  /* Ant Design component overrides for dark theme */
+  :deep(.ant-input),
+  :deep(.ant-input-number),
+  :deep(.ant-select-selector) {
+    background: #09090b !important;
+    border: 1px solid var(--border-base) !important;
+    color: var(--text-primary) !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    transition: all 0.2s !important;
+
+    &:hover {
+      border-color: var(--border-medium) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    &:focus,
+    &.ant-input-focused,
+    &.ant-select-focused {
+      border-color: var(--primary) !important;
+      background: rgba(0, 0, 0, 0.3) !important;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+    }
+  }
+
+  :deep(.ant-input::placeholder) {
+    color: var(--text-tertiary) !important;
+  }
+
+  :deep(.ant-switch) {
+    background: #27272a !important;
+    border: 1px solid transparent !important;
+
+    &.ant-switch-checked {
+      background: var(--primary) !important;
+      border-color: var(--primary) !important;
+    }
+
+    .ant-switch-handle::before {
+      background: #a1a1aa !important;
+    }
+
+    &.ant-switch-checked .ant-switch-handle::before {
+      background: white !important;
+    }
+  }
+
+  :deep(.ant-select-dropdown) {
+    background: var(--bg-panel) !important;
+    border: 1px solid var(--border-subtle) !important;
+    box-shadow: var(--shadow-lg) !important;
+  }
+
+  :deep(.ant-select-item) {
+    color: var(--text-primary) !important;
+
+    &:hover {
+      background: var(--bg-hover) !important;
+    }
+
+    &.ant-select-item-option-selected {
+      background: rgba(99, 102, 241, 0.1) !important;
+      color: var(--primary) !important;
+    }
+  }
+
+  :deep(.ant-radio-group) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  :deep(.ant-radio-wrapper) {
+    color: var(--text-primary) !important;
+    font-size: var(--text-sm) !important;
+
+    .ant-radio {
+      .ant-radio-inner {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border-color: var(--border-medium) !important;
+      }
+
+      &.ant-radio-checked .ant-radio-inner {
+        background: var(--primary) !important;
+        border-color: var(--primary) !important;
+      }
+    }
+  }
+
+  :deep(.ant-input-textarea) {
+    textarea {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid var(--border-subtle) !important;
+      color: var(--text-primary) !important;
+      border-radius: var(--radius-md) !important;
+
+      &:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+      }
+    }
   }
 }
+
+/* Utility classes */
 .h-80 {
-  height: 80px;
-  line-height: 80px;
+  height: auto;
+  min-height: 80px;
+  line-height: 1.5;
 }
+
 .h-50 {
-  height: 50px;
-  line-height: 50px;
+  height: auto;
+  min-height: 50px;
+  line-height: 1.5;
 }
 
 .h-42 {
   height: 42px;
   line-height: 42px;
 }
+
 .p-t-10 {
   padding-top: 6px;
 }
@@ -233,14 +402,4 @@ watch([() => props.selectComp, () => props.selectForm],
 .switch-r {
   top: -5px;
 }
-
-.content {
-  display: block;
-  margin-bottom: 18px;
-
-  &.m-b-0 {
-    margin-bottom: 0;
-  }
-}
-
 </style>

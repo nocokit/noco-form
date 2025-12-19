@@ -233,14 +233,14 @@ export const getCompConfig = (type: CompType) => {
   if(isFormTitle.includes(type)) {
     compConfig = {
       type,
-      titleValue: '标题名称',
+      titleValue: '表单标题',
       titleSize: 'middle',
-      titleDescription: '柠檬轻表单，Github仓库已免费开源，感谢你的使用！',
+      titleDescription: 'noco-form 表单编辑器，Github仓库已免费开源，感谢你的使用！',
       titleImageUrl: 'bg.png',
       titleDescriptionShow: true,
       titleImageShow: true,
       titleDescriptionPosition: 'center'
-    } 
+    }
 
     return compConfig
   }

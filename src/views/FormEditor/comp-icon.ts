@@ -1,83 +1,56 @@
-import Checkout from '/src/assets/form/checkout.svg'
-import Email from '/src/assets/form/email.svg'
-import Switch from '/src/assets/form/switch.svg'
-import Date from '/src/assets/form/date.svg'
-import DateRange from '/src/assets/form/dateRange.svg'
-import Input from '/src/assets/form/input.svg'
-import Radio from '/src/assets/form/radio.svg'
-import Select from '/src/assets/form/select.svg'
-import Text from '/src/assets/form/text.svg'
-import TextArea from '/src/assets/form/textarea.svg'
-import Url from '/src/assets/form/url.svg'
-import Time from '/src/assets/form/time.svg'
-import TimeRange from '/src/assets/form/timeRange.svg'
-import Upload from '/src/assets/form/upload.svg'
-import Number from '/src/assets/form/number.svg'
-import Rate from '/src/assets/form/score.svg'
-import Divider from '/src/assets/form/divider.svg'
-import Paging from '/src/assets/form/paging.svg'
-import WX from '/src/assets/form/wx.svg'
-import Name from '/src/assets/form/name.svg'
-import Gender from '/src/assets/form/gender.svg'
-import Phone from '/src/assets/form/phone.svg'
-import Address from '/src/assets/form/address.svg'
-import ID from '/src/assets/form/id.svg'
-import TelePhone from '/src/assets/form/telePhone.svg'
-import Preview from '/src/assets/form/preview.svg'
-import NPS from '/src/assets/form/nps.svg'
-import Button from '/src/assets/form/button.svg'
-import Sign from '/src/assets/form/sign.svg'
-
-// 编辑器Icon
-import Logic from '/src/assets/form-editor/logic.svg'
-import Theme from '/src/assets/form-editor/theme.svg'
-import Question from '/src/assets/form-editor/question.svg'
-import Outline from '/src/assets/form-editor/Outline.svg'
-
-// 显示组件
-import Title from '/src/assets/form-editor/title.svg'
-import ImgText from '/src/assets/form-editor/img.svg'
-import Video from '/src/assets/form-editor/video.svg'
-import Img from '/src/assets/form-editor/img.svg'
+/**
+ * Remix Icon 图标映射
+ * 使用 Remix Icon 图标库保持设计系统一致性
+ * 参考: https://remixicon.com/
+ */
 
 export default {
-  Checkout,
-  Email,
-  Select,
-  Switch,
-  Date,
-  DateRange,
-  Input,  
-  Radio,
-  Text,
-  TextArea,
-  Url,
-  Time,
-  TimeRange,
-  Upload,
-  Number,
-  Rate,
-  Divider,
-  Paging,
-  WX,
-  Name,
-  Gender,
-  Phone,
-  Address,
-  ID,
-  TelePhone,
-  Preview,
-  NPS,
-  Button,
-  Logic,
-  Theme,
-  Question,
-  Outline,
-  Sign,
-  // 显示
-  ImgText,
-  Video,
-  Img,
-  Title
+  // 基础输入组件
+  Checkout: 'ri-checkbox-multiple-line',      // 多选框
+  Email: 'ri-mail-line',                       // 邮箱
+  Select: 'ri-list-check',                     // 下拉选择
+  Switch: 'ri-toggle-line',                    // 开关
+  Date: 'ri-calendar-line',                    // 日期
+  DateRange: 'ri-calendar-2-line',             // 日期范围
+  Input: 'ri-input-cursor-move',               // 单行输入
+  Radio: 'ri-radio-button-line',               // 单选
+  Text: 'ri-text',                             // 文本
+  TextArea: 'ri-file-text-line',               // 多行输入
+  Url: 'ri-link',                              // 网址
+  Time: 'ri-time-line',                        // 时间
+  TimeRange: 'ri-time-line',                   // 时间范围
+  Upload: 'ri-upload-cloud-line',              // 上传
+  Number: 'ri-hashtag',                        // 数字
+  Rate: 'ri-star-line',                        // 评分
 
+  // 布局组件
+  Divider: 'ri-separator',                     // 分割线
+  Paging: 'ri-file-list-line',                 // 分页
+
+  // 个人信息组件
+  WX: 'ri-wechat-line',                        // 微信
+  Name: 'ri-user-line',                        // 姓名
+  Gender: 'ri-user-2-line',                    // 性别
+  Phone: 'ri-smartphone-line',                 // 手机
+  Address: 'ri-map-pin-line',                  // 地址
+  ID: 'ri-bank-card-line',                     // 身份证
+  TelePhone: 'ri-phone-line',                  // 固定电话
+
+  // 高级组件
+  Preview: 'ri-eye-line',                      // 预览
+  NPS: 'ri-pie-chart-line',                    // NPS
+  Button: 'ri-play-circle-line',               // 按钮
+  Sign: 'ri-edit-box-line',                    // 电子签名
+
+  // 编辑器功能图标
+  Logic: 'ri-flow-chart',                      // 逻辑
+  Theme: 'ri-palette-line',                    // 主题
+  Question: 'ri-question-line',                // 问题
+  Outline: 'ri-list-unordered',                // 大纲
+
+  // 显示组件
+  ImgText: 'ri-image-add-line',                // 图文
+  Video: 'ri-video-line',                      // 视频
+  Img: 'ri-image-2-line',                      // 图片
+  Title: 'ri-heading',                         // 标题
 }

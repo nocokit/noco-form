@@ -3,7 +3,7 @@
     <div class="item" v-for="item in classifyList" @click="selectSideItemType(item.type)" :key="item.label" :class="{
       active: item.type === props.currentSideItemType
     }">
-      <img class="icon" :src="item.icon" alt="">
+      <i class="icon" :class="item.icon"></i>
       <div class="label">{{ item.label }}</div>
     </div>
   </div>
@@ -59,23 +59,35 @@ const selectSideItemType = (type: string) => {
   height: 70px;
   padding: 10px;
   display: block;
-  filter: grayscale(100%);
   cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--bg-hover);
+  }
+
   &.active {
-    filter: grayscale(0%);
+    .icon {
+      color: var(--primary);
+    }
     .label {
-      color: #1677ff;
+      color: var(--primary);
     }
   }
+
   .icon {
-    width: 20px;
+    font-size: 20px;
     display: inline-block;
+    color: var(--text-secondary);
+    transition: color 0.2s;
   }
 
   .label {
     margin-top: 5px;
     height: 20px;
     line-height: 20px;
+    color: var(--text-secondary);
+    transition: color 0.2s;
   }
 }
 </style>

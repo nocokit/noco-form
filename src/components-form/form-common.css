@@ -1,0 +1,345 @@
+/* Common styles for form components in editor */
+/* Dark Cyber Theme - Consistent with design tokens */
+
+/* ===== Input Fields ===== */
+:deep(.ant-input),
+:deep(.ant-input-number),
+:deep(.ant-input-number-input),
+:deep(.ant-select-selector),
+:deep(.ant-picker) {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-md) !important;
+  transition: all var(--transition-base) !important;
+  font-size: var(--text-sm) !important;
+}
+
+:deep(.ant-input:hover),
+:deep(.ant-input-number:hover),
+:deep(.ant-select-selector:hover),
+:deep(.ant-picker:hover) {
+  border-color: var(--border-medium) !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+:deep(.ant-input:focus),
+:deep(.ant-input-focused),
+:deep(.ant-input-number:focus),
+:deep(.ant-input-number-focused),
+:deep(.ant-select-focused .ant-select-selector),
+:deep(.ant-picker-focused) {
+  border-color: var(--primary) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+}
+
+:deep(.ant-input::placeholder),
+:deep(.ant-input-number-input::placeholder),
+:deep(.ant-picker-input input::placeholder) {
+  color: var(--text-tertiary) !important;
+}
+
+/* Disabled state - slightly lighter for editor mode */
+:deep(input[disabled]),
+:deep(textarea[disabled]),
+:deep(.ant-picker-disabled),
+:deep(.ant-input-affix-wrapper-disabled) {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-tertiary) !important;
+  cursor: not-allowed !important;
+}
+
+/* ===== Textarea ===== */
+:deep(.ant-input-textarea textarea) {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+:deep(.ant-input-textarea textarea:focus) {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* ===== Radio & Checkbox ===== */
+:deep(.ant-radio-wrapper),
+:deep(.ant-checkbox-wrapper) {
+  color: var(--text-primary) !important;
+  font-size: var(--text-sm) !important;
+}
+
+:deep(.ant-radio-inner) {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border-color: var(--border-medium) !important;
+}
+
+:deep(.ant-radio-checked .ant-radio-inner) {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+:deep(.ant-radio-checked::after) {
+  border-color: var(--primary) !important;
+}
+
+:deep(.ant-checkbox-inner) {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border-color: var(--border-medium) !important;
+}
+
+:deep(.ant-checkbox-checked .ant-checkbox-inner) {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+/* ===== Switch ===== */
+:deep(.ant-switch) {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-medium) !important;
+}
+
+:deep(.ant-switch-checked) {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+:deep(.ant-switch-handle::before) {
+  background: var(--text-tertiary) !important;
+}
+
+:deep(.ant-switch-checked .ant-switch-handle::before) {
+  background: white !important;
+}
+
+/* ===== Select Dropdown ===== */
+:deep(.ant-select-dropdown) {
+  background: var(--bg-panel) !important;
+  border: 1px solid var(--border-subtle) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+:deep(.ant-select-item) {
+  color: var(--text-primary) !important;
+}
+
+:deep(.ant-select-item:hover) {
+  background: var(--bg-hover) !important;
+}
+
+:deep(.ant-select-item-option-selected) {
+  background: rgba(99, 102, 241, 0.1) !important;
+  color: var(--primary) !important;
+}
+
+/* ===== Date Picker ===== */
+:deep(.ant-picker-panel-container) {
+  background: var(--bg-panel) !important;
+  border: 1px solid var(--border-subtle) !important;
+  box-shadow: var(--shadow-xl) !important;
+}
+
+:deep(.ant-picker-header),
+:deep(.ant-picker-panel) {
+  background: transparent !important;
+  border-color: var(--border-subtle) !important;
+}
+
+:deep(.ant-picker-cell) {
+  color: var(--text-secondary) !important;
+}
+
+:deep(.ant-picker-cell:hover .ant-picker-cell-inner) {
+  background: var(--bg-hover) !important;
+}
+
+:deep(.ant-picker-cell-selected .ant-picker-cell-inner),
+:deep(.ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before) {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+/* ===== Slider ===== */
+:deep(.ant-slider-rail) {
+  background: var(--bg-card) !important;
+}
+
+:deep(.ant-slider-track) {
+  background: var(--primary) !important;
+}
+
+:deep(.ant-slider-handle) {
+  border-color: var(--primary) !important;
+  background: white !important;
+}
+
+:deep(.ant-slider-handle:hover),
+:deep(.ant-slider-handle:focus) {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* ===== Rate (Star Rating) ===== */
+:deep(.ant-rate-star) {
+  color: var(--text-dim) !important;
+}
+
+:deep(.ant-rate-star.ant-rate-star-full) {
+  color: var(--primary) !important;
+}
+
+/* ===== Upload ===== */
+:deep(.ant-upload) {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px dashed var(--border-medium) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-base) !important;
+}
+
+:deep(.ant-upload:hover) {
+  border-color: var(--primary) !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+:deep(.ant-upload-list-item) {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+/* ===== Typography ===== */
+:deep(.ant-typography) {
+  color: var(--text-primary) !important;
+}
+
+/* Label text */
+.item-label,
+.comp-item-title {
+  color: var(--text-primary) !important;
+  font-weight: var(--font-medium) !important;
+}
+
+.comp-item-description {
+  color: var(--text-secondary) !important;
+}
+
+/* ===== Disabled Select Override ===== */
+:deep(.ant-select-disabled .ant-select-selector) {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-tertiary) !important;
+}
+
+/* ===== Number Input Handlers ===== */
+:deep(.ant-input-number-handler-wrap) {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-left-color: var(--border-subtle) !important;
+}
+
+:deep(.ant-input-number-handler) {
+  border-color: var(--border-subtle) !important;
+  color: var(--text-secondary) !important;
+}
+
+:deep(.ant-input-number-handler:hover) {
+  color: var(--primary) !important;
+}
+
+/* ===== Time Picker ===== */
+:deep(.ant-picker-time-panel-column) {
+  background: transparent !important;
+}
+
+:deep(.ant-picker-time-panel-cell-inner) {
+  color: var(--text-secondary) !important;
+}
+
+:deep(.ant-picker-time-panel-cell-inner:hover) {
+  background: var(--bg-hover) !important;
+}
+
+:deep(.ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner) {
+  background: var(--primary) !important;
+  color: white !important;
+}
+
+/* ===== Focus visible outline (accessibility) ===== */
+:deep(*:focus-visible) {
+  outline: 2px solid var(--primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* ===== Floating Action Toolbar ===== */
+.floating-action-toolbar {
+  position: absolute;
+  right: 8px;
+  top: -14px;
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 4px;
+  padding: 2px;
+  display: flex;
+  gap: 2px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.toolbar-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-sub);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.toolbar-btn:hover {
+  background: #3f3f46;
+  color: white;
+}
+
+.toolbar-btn-danger:hover {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+.toolbar-btn.handle {
+  cursor: grab;
+}
+
+.toolbar-btn.handle:active {
+  cursor: grabbing;
+}
+
+/* ===== Form Preview Item Styles ===== */
+.item-label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-bottom: 8px;
+}
+
+.item-label span.required {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.fake-input {
+  width: 100%;
+  height: 36px;
+  background: #09090b;
+  border: 1px solid var(--border-base);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  color: #52525b;
+  font-size: 13px;
+}

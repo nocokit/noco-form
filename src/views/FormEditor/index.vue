@@ -1,57 +1,47 @@
 <template>
   <div class="form-editor">
-    <div class="nav-data">
-      <div class="header">
-        <div class="callback" @click="callback()">
+    <!-- Ambient Glow Background -->
+    <div class="ambient-glow"></div>
 
-          <img src="@/assets/form-editor/callback.svg" alt="">
+    <header class="navbar">
+      <div class="logo-area">
+        <div class="logo-icon-box">
+          <i class="ri-flashlight-fill"></i>
         </div>
-        <div class="title-data">
-          <span class="name">Vue动态表单</span>
-          <a-typography-text type="secondary" class='time'>编辑于2024-11-03 09:12</a-typography-text>
-        </div>
-        <div class="control">
-          <div class="cont-item">
-            <a-button type="default" @click="toGithub">
-              <img class="btn-icon" src="@/assets/form-editor/github.svg" alt="">
-              <span class="name">
-                GitHub
-              </span>
-            </a-button>
-          </div>
-          <div class="cont-item">
-            <a-button type="default">
-              <img class="btn-icon" src="@/assets/form-editor/save.svg" alt="">
-              <span class="name">
-                保存
-              </span>
-            </a-button>
-          </div>
-          <div class="cont-item">
-            <a-button type="primary">
-              <img class="btn-icon" src="@/assets/form-editor/publish.svg" alt="">
-              <span class="name">
-                发布
-              </span>
-            </a-button>
-          </div>
-
-        </div>
+        <span class="brand-logo">NOCO</span>
+        <span class="brand-text">FORM</span>
       </div>
-    </div>
+
+      <div class="toolbar-center">
+        <button class="view-btn active">Editor</button>
+        <button class="view-btn">Logic</button>
+        <button class="view-btn">Data</button>
+      </div>
+
+      <div class="actions-right">
+        <a-button type="primary" class="btn-publish" @click="preview">
+          <i class="ri-rocket-2-line"></i>
+          <span>Publish</span>
+        </a-button>
+      </div>
+    </header>
     <div class="content editor-content">
-      <SidebarComp @selectSideItemType="selectSideItemType" :currentSideItemType="currentSideItemType" />
       <div class="comps">
-        <div class="comp-category-item" v-for="compCategory in compList">
-          <div class="category-title">
-            {{ compCategory.name }}
-            <a-tooltip placement="top" v-if="compCategory.tooltip">
-              <template #title>
-                <span>{{ compCategory.tooltip }}</span>
-              </template>
-              <QuestionCircleOutlined />
-            </a-tooltip>
-          </div>
+        <div class="panel-header">
+          <span>Components</span>
+          <i class="ri-search-line search-icon"></i>
+        </div>
+        <div class="component-list">
+          <div class="comp-category-item" v-for="compCategory in compList">
+            <div class="category-title">
+              {{ compCategory.name }}
+              <a-tooltip placement="top" v-if="compCategory.tooltip">
+                <template #title>
+                  <span>{{ compCategory.tooltip }}</span>
+                </template>
+                <QuestionCircleOutlined />
+              </a-tooltip>
+            </div>
           <VueDraggable v-model="compCategory.children" :animation="0"
             :group="{ name: 'sevenBotForm', pull: 'clone', put: false }" :sort="false" :clone="onClone"
             class="flex flex-col gap-2 p-4 w-300px bg-gray-500/5 rounded compList">
@@ -60,20 +50,14 @@
               'advanced': compCategory.type === 'Advanced Component',
               'layout': compCategory.type === 'Layout Component'
             }" @click="createCompByClick(item)">
-              <img class="icon" :src="item.icon" alt="" v-if="item.icon">
+              <i class="icon" :class="item.icon" v-if="item.icon"></i>
               {{ item.label }}
             </div>
           </VueDraggable>
+          </div>
         </div>
       </div>
       <div class="editor">
-        <div class="preview-control" title="预览" @click="preview">
-          <img :src="Icon.Preview" alt="">
-          <div class="label">
-            预览
-          </div>
-
-        </div>
         <div class="form" v-bind:class="{
           'no-data': !pageCompList?.length
         }">
@@ -81,6 +65,12 @@
             <a-watermark :content="selectForm?.displayWaterMark ? selectForm?.waterMarkText : ''">
               <div class="form-body form-body-content">
                 <div class="comp-list-content">
+                  <!-- Form Header Preview -->
+                  <div class="form-header-preview">
+                    <h2 class="form-title">Product Feedback</h2>
+                    <p class="form-description">We value your feedback.</p>
+                  </div>
+
                   <VueDraggable v-model="pageCompList" :animation="150" group="sevenBotForm" ghostClass="ghost"
                     handle=".handle"
                     class="flex flex-col gap-2 p-4 w-300px max-h-350px m-auto bg-gray-500/5 rounded overflow-auto form-body">
@@ -144,16 +134,16 @@
 </template>
 <script setup lang="ts">
 import { VueDraggable } from 'vue-draggable-plus'
-import { computed, h, onMounted, reactive, ref, watch, } from 'vue'
+import { computed, h, onMounted, ref, watch, } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import { CompListData, CompType, IgnoreLineNumberTypeList } from './comp-data'
-import SidebarComp from '@/views/FormEditor/form-sidebar.vue'
+// import SidebarComp from '@/views/FormEditor/form-sidebar.vue' // Removed - No longer using sidebar
 import SettingComp from '@/views/FormEditor/form-setting.vue'
 import PreviewPage from '@/views/Preview/index.vue'
 import FormComponent from '@/components-form/index.vue'
 import { getDefaultConfig } from '@/views/FormEditor/comp-config-data';
 import { useSelectCompStore } from '@/stores/selectCompStore'
-import { useRoute, createRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { toGithub } from '@/utils/toGithub'
 import { CheckOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
@@ -190,15 +180,9 @@ interface FooterType {
   buttonIconShowBool: boolean
 }
 
-const currentSideItemType = ref('questionBank') // 当前侧边栏选中类型
-
 const openDraw = ref(false)
 const compList = ref([...CompListData]) // 来源组件列表
 const globalData = ref()
-
-const selectSideItemType = (item: string) => {
-  currentSideItemType.value = item
-}
 
 /**
  * 编辑器编辑内容
@@ -220,9 +204,9 @@ const getLineHeight = () => {
 const pageCompList = ref<any[]>([]) // 页面组件内容
 const pageHeader = ref<HeaderType>({
   id: '',
-  titleValue: '标题名称',
+  titleValue: '表单标题',
   titleSize: 'middle',
-  titleDescription: '柠檬轻表单，Github仓库已免费开源，感谢你的使用！',
+  titleDescription: 'noco-form 表单编辑器，Github仓库已免费开源，感谢你的使用！',
   titleImageUrl: 'bg.png',
   defUrl: 'bg.png',
   type: '',
@@ -255,7 +239,7 @@ const defaultFormConfig = {
   displayTitle: true,
   displayBtn: true,
   displayWaterMark: false,
-  waterMarkText: '柠檬轻表单🍋',
+  waterMarkText: 'noco-form 📝',
 }
 
 onMounted(() => {
@@ -441,8 +425,8 @@ const getActiveCompIndex = () => {
 }
 
 const callback = () => {
-  // router.go(-1)
-  router.push('/workspace/product')
+  // 返回到表单编辑器首页
+  router.push('/')
 }
 
 const getImageUrl = (imgUrl: string) => {
@@ -484,169 +468,315 @@ const onClose = () => {
   min-width: 1260px;
 }
 
-.nav-data {
-  height: 56px;
-  line-height: 1;
-  box-shadow: inset 0 -1px 0 #e7e7e7;
-  padding: 0 50px;
+/* Header Navbar - New Design */
+.navbar {
+  height: var(--header-h);
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-base);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: var(--z-sticky);
+  position: relative;
 
-  .title-data {
+  .logo-area {
     display: flex;
-    flex-direction: column;
-    padding: 10px;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
     font-size: 16px;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+
+    .logo-icon-box {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      i {
+        color: white;
+        font-size: 14px;
+      }
+    }
+
+    .brand-logo {
+      font-weight: 700;
+    }
+
+    .brand-text {
+      font-weight: 400;
+      color: #666;
+    }
+  }
+
+  /* Center Toolbar */
+  .toolbar-center {
+    background: #27272A;
+    padding: 3px;
+    border-radius: 8px;
+    display: flex;
+    gap: 2px;
+
+    .view-btn {
+      background: transparent;
+      color: var(--text-sub);
+      border: none;
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 12px;
+      font-weight: 500;
+
+      &.active {
+        background: #3F3F46;
+        color: white;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      }
+
+      &:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+  }
+
+  .actions-right {
+    .btn-publish {
+      background: var(--primary);
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      height: auto;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 15px var(--primary-glow);
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      &:hover {
+        background: var(--primary-hover);
+      }
+    }
   }
 }
 
+/* Editor Layout - Three Column */
 .editor-content {
   display: grid;
-  grid-template-columns: 56px 270px 1fr 260px;
-  padding: 0 0 0 0px;
-  height: calc(100% - 86px);
+  grid-template-columns: var(--sidebar-w) 1fr var(--config-w);
+  padding: 0;
+  gap: 0;
+  height: calc(100vh - var(--header-h));
+  background: transparent;
+  overflow: hidden;
 
-  @media(max-width: 1400px) {
-    grid-template-columns: 56px 220px 1fr 220px;
-    overflow-x: auto;
-
-    .form {
-      width: auto;
-    }
-
-
+  @media(max-width: 1200px) {
+    grid-template-columns: 260px 1fr 280px;
   }
 
-  @media(max-width: 1400px) {
-    grid-template-columns: 56px 260px 1fr 250px;
-    overflow-x: auto;
+  @media(max-width: 768px) {
+    grid-template-columns: 1fr;
 
-    .form {
-      width: auto;
+    .comps, .setting {
+      display: none;
     }
   }
-
-      ::v-deep(.content .compList .item) {
-      font-size: 14px;
-    }
 }
 
 .content {
-
-  /* background-image: url(/src/assets/form-editor/bg-body.png); */
-
-  .category-title {
-    font-weight: 600;
-    color: rgba(0, 0, 0, .65);
-    padding: 15px 0px 15px;
-    font-size: 14px;
-    user-select: none;
+  /* Left Component Library */
+  .comps {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border-base);
+    overflow: hidden;
   }
 
-  .comps {
-    padding: 0 20px 0 20px;
-    background: #fafafa;
-    max-height: 100%;
+  .panel-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-base);
+    font-weight: 600;
+    color: var(--text-main);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .search-icon {
+      font-weight: 400;
+      color: #666;
+      cursor: pointer;
+    }
+  }
+
+  .component-list {
+    padding: 16px;
     overflow-y: auto;
+  }
+
+  .comp-category-item {
+    margin-bottom: 24px;
+  }
+
+  .category-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    margin-top: 8px;
+    letter-spacing: 1px;
+    user-select: none;
   }
 
   .compList {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 10px;
-    margin-bottom: 15px;
+    gap: 8px;
+    margin-bottom: 0;
     user-select: none;
+    background: transparent !important;
+    padding: 0 !important;
+    width: 100% !important;
 
     .item {
-      /* border: 1px solid #D7D9DC; */
-      /* background: rgba(0, 102, 255, .08); */
-      cursor: pointer;
-      height: 38px;
-      line-height: 38px;
-      text-align: left;
-      padding: 0px 2px 0 10px;
-      border-radius: 5px;
-      /* color: #141E31; */
-      color: rgba(0, 0, 0, 0.45);
-      font-size: 15px;
-      font-weight: 400;
-      border: 1px solid #dcdcdcc4;
-      background: #fff;
-      // box-shadow: 0 0px 2px #4096ff6e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      background: var(--bg-card) !important;
+      border: 1px solid var(--border-base) !important;
+      border-radius: var(--radius-md);
+      cursor: grab;
+      transition: all 0.2s;
+      color: var(--text-sub);
+      font-size: 12px;
+      height: auto !important;
+      min-height: auto;
+
+      .icon {
+        font-size: 20px;
+        color: var(--text-sub);
+        transition: all 0.2s;
+      }
+
       &:hover {
-        border-color: royalblue;
-      }
+        background: #27272a !important;
+        border-color: var(--text-dim) !important;
 
-        @media(max-width: 1400px) {
-          font-size: 14px;
+        .icon {
+          color: var(--text-primary);
         }
-    }
+      }
 
-    &.hover {
-      .item {
-        color: #151b26 !important;
+      &:active {
+        cursor: grabbing;
       }
     }
-
   }
 
+  /* Center Canvas */
   .editor {
     position: relative;
-    /* background: lavender; */
     height: 100%;
     margin: 0;
-    padding: 0;
+    padding: 40px;
     overflow-y: auto;
-    background-image: url(./bg.png);
-    background-repeat: round;
+    background-color: var(--bg-canvas);
+    /* Dot pattern background */
+    background-image: radial-gradient(#27272a 1px, transparent 1px);
+    background-size: 20px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
   }
 
+  /* Form Paper */
   .body {
-    /* background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
-    background-image: linear-gradient(rgba(200,205,208,.2) 1px,transparent 0),linear-gradient(90deg,rgba(200,205,208,.1),1px,transparent 0),linear-gradient(rgba(200,205,208,.1) 1px,transparent 0),linear-gradient(90deg,rgba(200,205,208,.1) 1px,transparent 0); */
-    height: 100%;
-    border-radius: 6px;
-    padding: 20px;
-    background: #ffffff;
-
-
+    width: 100%;
+    max-width: 400px;
+    min-height: 700px;
+    background: #000000;
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+    border: 1px solid var(--border-base);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 0.3s;
 
     .form-header {
       padding: 0;
-      margin-bottom: 10px;
+      margin-bottom: var(--spacing-3);
+
       img {
         width: 100%;
-        height: 220px;
-        border-top-left-radius: 6px;
-        border-top-right-radius: 6px;
+        height: 180px;
+        border-radius: var(--radius-sm);
+        object-fit: cover;
       }
 
       .title {
         text-align: center;
-        font-size: 18px;
-        color: rgba(0, 0, 0, 0.8);
-        font-weight: 600;
-        margin-bottom: 10px;
+        font-size: var(--text-xl);
+        color: var(--text-primary);
+        font-weight: var(--font-semibold);
+        margin-bottom: var(--spacing-2);
+        margin-top: var(--spacing-4);
       }
 
       .description {
-        font-size: 14px;
+        font-size: var(--text-sm);
         text-align: center;
-        color: rgba(0, 0, 0, 0.8);
-        margin: 10px;
+        color: var(--text-secondary);
+        margin: var(--spacing-2) 0;
+        line-height: 1.6;
+      }
+    }
+
+    /* Form Header Preview */
+    .form-header-preview {
+      text-align: center;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #27272a;
+      margin-bottom: 12px;
+
+      .form-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: var(--text-main);
+      }
+
+      .form-description {
+        color: #52525b;
+        font-size: 12px;
+        margin: 0;
       }
     }
   }
 
+  /* Form Container */
   .form {
-    margin: 10px 30px;
-    /* background: #fff; */
-    min-height: calc(100% - 10px);
-    border-radius: 0px;
-    width: 686px;
-    position: absolute;
-    transform: translateX(-50%);
-    margin-left: 50%;
-    display: grid;
-    padding-bottom: 10px;
+    width: 100%;
+    max-width: var(--canvas-width);
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 
     .sortable-chosen:not(.active-comp) {
       background: aliceblue;
@@ -669,61 +799,60 @@ const onClose = () => {
 
   }
 
+  /* Form Item Styles */
   .form-item {
     position: relative;
-    background: #fff;
-  }
+    background: var(--bg-card);
+    padding: 16px;
+    border: 1px solid var(--border-base);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
 
-
-
-  .active-comp {
-    /* background: mintcream; */
-    /* border-left: 6px solid red;
-    border-color: teal; */
-    /* background: aliceblue; */
-    /* border-bottom: 1px dashed #ccc;
-    border-top: 1px dashed #ccc; */
-    /* border: 1px dashed #1677ff; */
-    /* background: lightyellow; */
-    background: aliceblue;
-    /* darkseagreen; */
-    border-radius: 5px;
-    position: relative;
-    box-shadow: 0px 4px 16px 4px rgba(31, 35, 41, 0.03), 0px 4px 8px 0px rgba(31, 35, 41, 0.02), 0px 2px 4px -4px rgba(31, 35, 41, 0.02);
-    border: 1px dashed #94b4ff;
-
-    &::before {
-      content: '';
-      /* border: 4px solid teal; */
-      height: 100%;
-      display: block;
-      width: 4px;
-      /* background: teal; */
-      /* background: cornflowerblue; */
-      /* background: #1677ff; */
-      height: 100%;
-      position: absolute;
+    &:hover {
+      background: rgba(255, 255, 255, 0.02);
     }
   }
 
-  .no-data-content {
-    border: 1px dashed #cdcdcd;
-    text-align: center;
-    border-radius: 4px;
-    color: #666;
-    padding: 50px 100px;
-    position: absolute;
-    top: -2px;
-    width: calc(100% - 0px);
+  /* Active Component State with Glow */
+  .active-comp {
+    background: rgba(99, 102, 241, 0.05) !important;
+    border: 1px solid var(--primary) !important;
+    border-radius: var(--radius-md);
+    position: relative;
+    box-shadow: 0 0 0 1px var(--primary), 0 0 20px var(--primary-glow) !important;
 
+    &::before {
+      display: none;
+    }
+  }
+
+  /* Empty State - Ghost Placeholder */
+  .no-data-content {
+    border: 2px dashed var(--primary);
+    border-radius: var(--radius-md);
+    background: var(--primary-glow);
+    text-align: center;
+    color: var(--primary);
+    padding: 60px 40px;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 12px;
+
+    .text {
+      font-size: 12px;
+      font-weight: 500;
+    }
 
     &:hover,
     &.dragenter {
-      border-color: #1677ff;
-      color: #1677ff;
-      z-index: 1000;
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(99, 102, 241, 0.2);
     }
-
   }
 
   .form-body-content {
@@ -731,92 +860,42 @@ const onClose = () => {
   }
 
   .form-footer {
-    height: 90px;
-    line-height: 90px;
-    padding: 0 60px;
+    padding: 0;
     width: 100%;
-    margin-top: 20px;
+    margin-top: auto;
 
-  }
-
-  ::v-deep(.form-footer) {
-    .submit {
-
+    :deep(.submit) {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      height: 40px;
+      border-radius: 6px;
+      font-weight: 600;
       max-width: 100%;
       white-space: nowrap;
-      /* 不换行 */
       overflow: hidden;
-      /* 隐藏超出部分 */
       text-overflow: ellipsis;
-      /* 显示省略号 */
     }
   }
 }
 
-.preview-control {
-  position: fixed;
-  box-shadow: 0 0 6px rgba(0, 0, 0, .08);
-  color: #666;
-  width: 50px;
-  height: 55px;
-  top: 0;
-  text-align: center;
-  font-size: 14px;
-  padding: 5px 4px;
-  background: #fff;
-  border-radius: 5px;
-  cursor: pointer;
-  border: 1px solid #fff;
-  transform: translateX(388px);
-  left: 50%;
-  top: 66px;
-
-  img {
-    width: 24px;
-    height: 24px;
-  }
-
-  .label {
-    font-size: 12px;
-    padding-top: 5px;
-  }
-
-  &:hover {
-    color: #1677ff;
-    background: #fafafa;
-  }
-}
+/* Preview Button - Removed (Now in Header) */
 
 ::v-deep(.ant-drawer-bottom>.ant-drawer-content-wrapper) {
   height: calc(100% - 50px) !important;
 
 }
 
-.callback {
-  position: absolute;
-  left: 12px;
-  padding-top: 16px;
-  cursor: pointer !important;
-
-
-  img {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-  }
-}
 
 .control {
-  position: absolute;
-  right: 6px;
-  top: 12px;
+  margin-left: auto;
   display: flex;
-  flex-grow: 2;
+  gap: 10px;
+  align-items: center;
 
   .cont-item {
     cursor: pointer;
-    margin-right: 10px;
-
   }
 
   .btn-icon {

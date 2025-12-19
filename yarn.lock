@@ -3852,6 +3852,11 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
+smooth-signature@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmmirror.com/smooth-signature/-/smooth-signature-1.1.0.tgz#b866f7d9e9dd00871decd0792eed5d8795db0f53"
+  integrity sha512-wXBsbWmGxtNPftE7RoCWl5VrFkTT2hxT6/rJHQLOMviVeHB3B38+rh7F41Vd1Zwy9P+568ZDyutN/GWk1VfD+w==
+
 source-map-js@^1.2.0, source-map-js@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.1.tgz"

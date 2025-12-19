@@ -80,27 +80,24 @@
 
       </div>
     </div>
-    <div class="active-drag handle" v-if="compConfig.id === selectedComp?.id">
-      <img src="/src/assets/form/drag.svg" alt="">
-    </div>
-    <div class="active-comp-setting-side-bar" v-if="compConfig.id === selectedComp?.id">
-      <a-tooltip placement="left" @click="compControl($event, 'copy')">
-        <template #title>
-          <span>复制</span>
-        </template>
-        <CopyOutlined class="control" />
+    <div class="floating-action-toolbar" v-if="compConfig.id === selectedComp?.id">
+      <a-tooltip placement="top">
+        <template #title>拖拽</template>
+        <div class="toolbar-btn handle">
+          <i class="ri-drag-move-fill"></i>
+        </div>
       </a-tooltip>
-      <a-tooltip placement="left" @click="compControl($event, 'logic')">
-        <template #title>
-          <span>逻辑</span>
-        </template>
-        <BranchesOutlined class="control" />
+      <a-tooltip placement="top">
+        <template #title>复制</template>
+        <div class="toolbar-btn" @click="compControl($event, 'copy')">
+          <i class="ri-file-copy-line"></i>
+        </div>
       </a-tooltip>
-      <a-tooltip placement="left" :color="'#f50'" @click="compControl($event, 'delete')">
-        <template #title>
-          <span>删除</span>
-        </template>
-        <DeleteOutlined class="control" />
+      <a-tooltip placement="top">
+        <template #title>删除</template>
+        <div class="toolbar-btn toolbar-btn-danger" @click="compControl($event, 'delete')">
+          <i class="ri-delete-bin-line"></i>
+        </div>
       </a-tooltip>
     </div>
     <BatchOperationData 
@@ -298,16 +295,17 @@ const checkAddOtherClass = () => {
 
 </script>
 <style lang="scss" scoped>
-::v-deep {
+@import './form-common.css';
 
+::v-deep {
   textarea.input-comp,
   .description.input-comp {
     background: transparent;
     border: none !important;
     padding: 6px 12px !important;
     margin-left: -10px !important;
-    color: rgb(73, 96, 141) !important;
-    font-size: 16px !important;
+    color: var(--text-secondary) !important;
+    font-size: var(--text-base) !important;
 
     &:focus {
       outline: none;
@@ -317,7 +315,8 @@ const checkAddOtherClass = () => {
 
   textarea.input-comp,
   span.input-comp {
-    background: aliceblue;
+    background: rgba(99, 102, 241, 0.05);
+    border-radius: var(--radius-sm);
   }
 }
 
@@ -327,19 +326,13 @@ const checkAddOtherClass = () => {
   padding: 6px 12px;
   outline: none;
   margin-left: -10px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   overflow-wrap: break-word;
   white-space: normal;
-  font-weight: 400;
-
-
-  /* 不换行 */
+  font-weight: var(--font-normal);
+  color: var(--text-secondary);
   overflow: hidden;
-  /* 隐藏超出部分 */
   text-overflow: ellipsis;
-  /* 超出部分显示省略号 */
-  width: 100%;
-  /* 设置宽度 */
 }
 
 .data-list-setting {
@@ -370,9 +363,14 @@ const checkAddOtherClass = () => {
 }
 
 ::v-deep(.ant-typography.ant-typography-warning) {
-  color: #646a73;
+  color: var(--text-secondary);
   padding: 2px 0px;
-  font-size: 14px;
+  font-size: var(--text-sm);
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--primary);
+  }
 }
 
 .line {
@@ -381,29 +379,7 @@ const checkAddOtherClass = () => {
   margin: 0 12px;
 }
 
-::v-deep(input[disabled]) {
-  background: #ffffff !important;
-}
-
-::v-deep(textarea[disabled]) {
-  background: #ffffff !important;
-}
-
-::v-deep(.ant-picker-disabled) {
-  background: #ffffff !important;
-}
-
-::v-deep(.ant-time-disabled) {
-  background: #ffffff !important;
-}
-
-::v-deep(.ant-input-affix-wrapper-disabled) {
-  background: #ffffff !important;
-}
-
-::v-deep(.ant-select-disabled:where(.css-dev-only-do-not-override-17yhhjv).ant-select:not(.ant-select-customize-input) .ant-select-selector) {
-  background: #fff;
-}
+/* Disabled states are now handled in form-common.css */
 
 ::v-deep(.ant-divider-horizontal.ant-divider-with-text::before) {
   transform: translateY(100%) !important;
@@ -436,18 +412,17 @@ const checkAddOtherClass = () => {
 
 .comp-item {
   position: relative;
-  // padding: 20px 30px;
 
   .title-value {
     position: relative;
-    color: rgb(73, 96, 141);
-    font-weight: 400;
+    color: var(--text-primary);
+    font-weight: var(--font-medium);
 
     .description {
       &:empty:before {
         content: '请输入标题';
-        color: #b3b3b3;
-        font-weight: 200;
+        color: var(--text-tertiary);
+        font-weight: var(--font-normal);
       }
     }
   }
@@ -456,10 +431,12 @@ const checkAddOtherClass = () => {
     position: absolute;
     left: -40px;
     top: 6px;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
   }
 
   .title-value-isRequired::before {
-    color: #ff4d4f;
+    color: var(--error);
     font-size: 12px;
     position: absolute;
     top: 8px;
@@ -471,17 +448,16 @@ const checkAddOtherClass = () => {
     content: "*";
   }
 
-
   .comp-item-title {
     min-height: 36px;
     line-height: 36px;
-
   }
 
   .comp-item-description {
-    padding-bottom: 10px;
-    color: rgba(0, 0, 0, 0.45);
-    font-size: 14px;
+    padding-bottom: var(--spacing-3);
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.6;
   }
 }
 
@@ -514,15 +490,24 @@ const checkAddOtherClass = () => {
   width: 32px;
   top: 50%;
   transform: translateY(-50%);
-  background: #ffffff;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-medium);
   font-size: 14px;
   padding: 5px 3px;
-  border-bottom-right-radius: 6px;
-  border-top-right-radius: 6px;
-  box-shadow: 1px 1px 3px silver;
+  border-bottom-right-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
 
   .control {
     padding: 10px 5px;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+    border-radius: var(--radius-sm);
+
+    &:hover {
+      color: var(--text-primary);
+      background: var(--bg-hover);
+    }
   }
 }
 
@@ -531,12 +516,14 @@ const checkAddOtherClass = () => {
   position: relative;
   height: 64px;
   line-height: 64px;
-  padding-top: 16px;
+  padding-top: var(--spacing-4);
+  margin-top: var(--spacing-3);
+  border-top: 1px solid var(--border-subtle);
 
   .bottom-setting {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 100px;
+    grid-template-columns: 1fr 120px;
   }
 }
 
@@ -548,13 +535,20 @@ const checkAddOtherClass = () => {
   position: absolute;
   right: 0px;
   top: 16px;
-  font-size: 14px;
-  color: #646a73;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+
+  label {
+    color: var(--text-primary);
+    font-weight: var(--font-medium);
+  }
 
   .switch {
     position: relative;
     margin-top: -2px;
-    margin-right: 5px;
   }
 }
 

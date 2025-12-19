@@ -1,0 +1,310 @@
+/* Noco-Form Design System - Dark Cyber Edition */
+/* Inspired by: Vercel, Linear Dark Mode, Framer, Resend */
+
+:root {
+  /* ===== Dark Background System ===== */
+  --bg-deep: #09090B;           /* Deep black base */
+  --bg-body: #09090B;           /* Body background (same as deep) */
+  --bg-app: #0A0A0C;            /* Slightly lighter app background */
+  --bg-panel: #18181B;          /* Panel background */
+  --bg-card: #121214;           /* Card/form background */
+  --bg-canvas: #09090B;         /* Canvas background */
+  --bg-secondary: rgba(39, 39, 42, 0.3);
+  --bg-glass: rgba(24, 24, 27, 0.6); /* Glassmorphism */
+  --bg-hover: rgba(255, 255, 255, 0.03);
+  --bg-active: rgba(255, 255, 255, 0.05);
+
+  /* ===== Border System (Subtle in Dark Mode) ===== */
+  --border-base: #27272a;       /* Base border (zinc-800) */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-medium: #3f3f46;     /* Medium border (zinc-700) */
+  --border-hover: #3f3f46;      /* Hover border */
+  --border-strong: rgba(255, 255, 255, 0.2);
+
+  /* ===== Accent: Electric Indigo (Cyber Purple-Blue) ===== */
+  --primary: #6366F1;           /* Indigo 500 */
+  --primary-hover: #8B5CF6;     /* Violet 500 */
+  --primary-light: rgba(99, 102, 241, 0.1);
+  --primary-glow: rgba(99, 102, 241, 0.4);
+  --primary-gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+
+  /* ===== Text Colors (Dark Mode) ===== */
+  --text-primary: #FAFAFA;      /* Almost white */
+  --text-main: #f4f4f5;         /* Main text (zinc-100) */
+  --text-secondary: #A1A1AA;    /* Zinc 400 */
+  --text-sub: #a1a1aa;          /* Sub text (same as secondary) */
+  --text-tertiary: #71717A;     /* Zinc 500 */
+  --text-dim: #52525B;          /* Zinc 600 - Very subtle */
+  --text-inverse: #09090B;      /* For light buttons */
+
+  /* ===== Status Colors ===== */
+  --success: #10B981;
+  --success-light: #D1FAE5;
+  --warning: #F59E0B;
+  --warning-light: #FEF3C7;
+  --error: #EF4444;
+  --error-light: #FEE2E2;
+  --info: #3B82F6;
+  --info-light: #DBEAFE;
+
+  /* ===== Shadow System (Dark Mode - Stronger) ===== */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px var(--primary-glow), 0 0 40px rgba(99, 102, 241, 0.2);
+
+  /* ===== Spacing System (8px grid) ===== */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+
+  /* ===== Border Radius ===== */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* ===== Layout Dimensions ===== */
+  --header-h: 56px;           /* Header height */
+  --header-height: 64px;
+  --sidebar-w: 260px;         /* Sidebar width */
+  --sidebar-width: 280px;
+  --config-w: 300px;          /* Config panel width */
+  --config-panel-width: 320px;
+  --canvas-width: 500px;      /* Form paper width */
+  --workspace-gap: 12px;      /* Gap between panels */
+  --radius-md: 8px;
+  --radius-sm: 6px;
+
+  /* ===== Typography ===== */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace;
+
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 24px;
+
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* ===== Z-Index System ===== */
+  --z-base: 1;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-tooltip: 70;
+
+  /* ===== Transitions ===== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ===== Form Components ===== */
+  --input-height: 36px;
+  --input-padding-x: 12px;
+  --input-padding-y: 8px;
+  --input-border: var(--border-medium);
+  --input-focus-border: var(--primary);
+  --input-focus-shadow: 0 0 0 3px var(--primary-light);
+
+  /* ===== Dot Grid Background (Canvas) ===== */
+  --dot-color: #D1D5DB;
+  --dot-size: 1px;
+  --dot-spacing: 20px;
+}
+
+/* Backdrop Blur Support (for glassmorphism) */
+@supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {
+  .glass-panel {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+}
+
+/* Ambient Glow Effect (Background decoration) */
+.ambient-glow {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--primary-glow) 0%, rgba(0,0,0,0) 70%);
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+  animation: pulse-glow 8s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
+}
+
+/* Floating Action Toolbar (for selected form items) */
+.floating-toolbar {
+  position: absolute;
+  right: 10px;
+  top: -15px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 4px;
+  display: flex;
+  gap: 4px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: translateY(5px);
+  transition: all var(--transition-base);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.form-item.is-active .floating-toolbar {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.toolbar-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  font-size: 16px;
+}
+
+.toolbar-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.toolbar-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+}
+
+/* Tool Card Hover Effect (Left Sidebar) */
+.tool-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.tool-card:hover::before {
+  left: 100%;
+}
+
+/* Toggle Switch Animation */
+.toggle-switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: var(--text-tertiary);
+  border-radius: 50%;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.toggle-switch.active {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.toggle-switch.active::after {
+  left: calc(100% - 18px);
+  background: white;
+}
+
+/* Form Item Focus State */
+.form-item {
+  position: relative;
+  padding: var(--spacing-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-xl);
+  transition: all var(--transition-base);
+  background: transparent;
+}
+
+.form-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-subtle);
+}
+
+.form-item.is-active {
+  background: rgba(99, 102, 241, 0.05);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary), 0 0 20px var(--primary-glow);
+}
+
+/* Smooth Scroll for Config Panel */
+.config-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-medium) transparent;
+}
+
+.config-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.config-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.config-body::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: var(--radius-full);
+}
+
+.config-body::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
