@@ -1,35 +1,28 @@
 
 <template>
-  <div class="toggle-field">
-    <div>
-      <div class="toggle-field-label">必填</div>
-      <div class="toggle-field-description">标记此字段为必填项</div>
-    </div>
-    <a-switch v-model:checked="comp.isRequired" @change="handleChangeInput"/>
+  <div class="setting-row inline">
+    <label>Required</label>
+    <TwSwitch v-model="comp.isRequired" @change="handleChange" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useSelectCompStore  } from '@/stores/selectCompStore'
+import { ref } from 'vue'
+import { TwSwitch } from '@/components/ui'
+import { useSelectCompStore } from '@/stores/selectCompStore'
 
-interface Props{
+interface Props {
   comp: any
 }
 
 const props = defineProps<Props>()
 const comp = ref(props.comp)
-
 const compStore = useSelectCompStore()
 
-const handleChangeInput = (event: any) => {
-  const data = event
+const handleChange = (value: boolean) => {
   compStore.updateCurrentComp({
-    isRequired: data
+    isRequired: value
   })
 }
 </script>
 
-<style lang="scss" scoped>
-@import '@/components-form-setting/setting-common.css';
-</style>

@@ -1,65 +1,75 @@
 
 <template>
   <div class="setting-item h-42">
-    <a-typography-text type="secondary" class="secondary">显示标题图片
-    </a-typography-text>
-    <a-space direction="vertical" class="abs-r switch-r ">
-      <a-switch  v-model:checked="comp.titleImageShow" @change="changeValue($event, 'titleImageShow')" />
-    </a-space> 
+    <span class="text-gray-500 secondary">显示标题图片</span>
+    <div class="abs-r switch-r">
+      <TwSwitch v-model="comp.titleImageShow" @change="(value) => changeValue(value, 'titleImageShow')" />
+    </div>
   </div>
-    <a-typography-text type="secondary" class="block-title">标题图片</a-typography-text>
-  <a-input 
-    class="mb-10"
-    placeholder="请输入图片URL" 
-    v-model:value="comp.titleImageUrl"
-    @Input="handleChangeInput($event, 'titleImageUrl')"
-    :maxlength="400"
-  ></a-input>
+  <span class="text-gray-500 block-title">标题图片</span>
+  <input
+    type="text"
+    class="mb-10 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    placeholder="请输入图片URL"
+    v-model="comp.titleImageUrl"
+    @input="handleChangeInput($event, 'titleImageUrl')"
+    maxlength="400"
+  />
 
-  <a-typography-text type="secondary" class="block-title">表单标题</a-typography-text>
-  <a-input 
-    class="mb-10"
-    placeholder="请输入标题文字（最多30个字）" 
-    v-model:value="comp.titleValue"
-    @Input="handleChangeInput"
-    :maxlength="30"
-  ></a-input>
+  <span class="text-gray-500 block-title">表单标题</span>
+  <input
+    type="text"
+    class="mb-10 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    placeholder="请输入标题文字（最多30个字）"
+    v-model="comp.titleValue"
+    @input="handleChangeInput"
+    maxlength="30"
+  />
 
-    <div class="setting-item h-50">
-    <a-typography-text type="secondary" class="block-title2">标题大小</a-typography-text>
-    <a-select v-model:value="comp.titleSize" style="width: 120px" class="abs-r" @change="changeSelect">
-      <a-select-option :value="item.value" v-for="item in orientationList">{{ item.name }}</a-select-option>
-    </a-select>
-  </div>
-
-    <div class="setting-item h-42 ">
-    <a-typography-text type="secondary" class="secondary">显示标题描述
-    </a-typography-text>
-    <a-space direction="vertical" class="abs-r switch-r">
-      <a-switch  v-model:checked="comp.titleDescriptionShow" @change="changeValue($event, 'titleDescriptionShow')" />
-    </a-space> 
-  </div>
-  <a-typography-text type="secondary" class="block-title">标题描述</a-typography-text>
-    <a-textarea 
-    class="mb-10 m-b-10"
-    placeholder="请输入描述" 
-    allow-clear 
-    show-count
-    v-model:value="comp.titleDescription"
-    @Input="handleChangeInput($event, 'titleDescription')"
-    :auto-size="{ minRows: 2, maxRows: 5 }"
-    :maxlength="200"
-  ></a-textarea>
   <div class="setting-item h-50">
-    <a-typography-text type="secondary" class="block-title2">位置</a-typography-text>
-    <a-select v-model:value="comp.titleDescriptionPosition" style="width: 120px" class="abs-r" @change="changeSelect($event, 'titleDescriptionPosition')">
-      <a-select-option :value="item.value" v-for="item in positionList">{{ item.name }}</a-select-option>
-    </a-select>
+    <span class="text-gray-500 block-title2">标题大小</span>
+    <select
+      v-model="comp.titleSize"
+      @change="changeSelect(($event.target as HTMLSelectElement).value)"
+      class="abs-r w-30 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    >
+      <option :value="item.value" v-for="item in orientationList" :key="item.value">{{ item.name }}</option>
+    </select>
+  </div>
+
+  <div class="setting-item h-42">
+    <span class="text-gray-500 secondary">显示标题描述</span>
+    <div class="abs-r switch-r">
+      <TwSwitch v-model="comp.titleDescriptionShow" @change="(value) => changeValue(value, 'titleDescriptionShow')" />
+    </div>
+  </div>
+  <span class="text-gray-500 block-title">标题描述</span>
+  <div class="relative mb-10 m-b-10">
+    <textarea
+      class="w-full px-4 py-2.5 text-xs text-white rounded-xl border outline-none transition-all resize-y min-h-[80px] leading-relaxed bg-[#18181b] border-[#27272a] placeholder:text-[#52525b] hover:border-[#3f3f46] hover:bg-[#09090b] focus:border-indigo-500/50 focus:bg-[#09090b]"
+      placeholder="请输入描述"
+      v-model="comp.titleDescription"
+      @input="handleChangeInput($event, 'titleDescription')"
+      rows="3"
+      maxlength="200"
+    ></textarea>
+    <div class="text-right text-[10px] text-[#71717a] mt-1" v-if="comp.titleDescription">{{ comp.titleDescription.length }} / 200</div>
+  </div>
+  <div class="setting-item h-50">
+    <span class="text-gray-500 block-title2">位置</span>
+    <select
+      v-model="comp.titleDescriptionPosition"
+      @change="changeSelect(($event.target as HTMLSelectElement).value, 'titleDescriptionPosition')"
+      class="abs-r w-30 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    >
+      <option :value="item.value" v-for="item in positionList" :key="item.value">{{ item.name }}</option>
+    </select>
   </div>
 
 </template>
 <script lang="ts" setup>
 import { defineProps,watch, computed, defineEmits, ref, onMounted }  from 'vue'
+import { TwSwitch } from '@/components/ui'
 import { useSelectCompStore  } from '@/stores/selectCompStore'
 import Description from '@/components-form-setting/base/Description.vue';
 import { optionData, textOrButtonSizeData } from '../setting-config-data';
@@ -98,25 +108,3 @@ interface Props{
 const props = defineProps<Props>()
 
 </script>
-<style lang="scss" scoped>
-
-.comp {
-  padding: 10px;
-  color: yellowgreen;
-}
-
-.mb-10 {
-  margin-top: 4px;
-  margin-bottom: 5px;
-}
-
-.h-42 {
-  height: 42px;
-  line-height: 42px;
-}
-
-.m-b-10 {
-  margin-bottom: 20px;
-}
-
-</style>

@@ -2,16 +2,16 @@
 <template>
   <div class="setting-item">
     <label class="setting-label">标题</label>
-    <a-textarea
+    <textarea
       v-if="compStore.currentCompConfig"
       placeholder="请输入标题"
-      allow-clear
-      show-count
-      v-model:value="comp.title"
-      @Input="handleChangeInput"
-      :auto-size="{ minRows: 2, maxRows: 5 }"
-      :maxlength="50"
-    ></a-textarea>
+      v-model="comp.title"
+      @input="handleChangeInput"
+      maxlength="50"
+      rows="2"
+      class="w-full px-4 py-2.5 text-xs text-white rounded-xl border outline-none transition-all resize-y min-h-[80px] leading-relaxed bg-[#18181b] border-[#27272a] placeholder:text-[#52525b] hover:border-[#3f3f46] hover:bg-[#09090b] focus:border-indigo-500/50 focus:bg-[#09090b]"
+    ></textarea>
+    <div class="char-count" v-if="comp.title">{{ comp.title.length }} / 50</div>
   </div>
 </template>
 
@@ -35,6 +35,3 @@ interface Props{
 const props = defineProps<Props>()
 </script>
 
-<style lang="scss" scoped>
-@import '@/components-form-setting/setting-common.css';
-</style>

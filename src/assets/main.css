@@ -1,3 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === Backward Compatibility Aliases === */
+/* These are kept for old code, but use design-tokens.css variables */
+
+@layer components {
+  /* === Unified Input Styles === */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="url"],
+  input[type="tel"],
+  textarea,
+  select {
+    @apply w-full rounded-lg border px-3 py-2 text-xs transition-all box-border;
+    background: var(--bg-card);
+    border-color: var(--border-base);
+    color: var(--text-primary);
+    font-family: inherit;
+  }
+
+  input[type="text"]:hover,
+  input[type="email"]:hover,
+  input[type="password"]:hover,
+  input[type="number"]:hover,
+  input[type="url"]:hover,
+  input[type="tel"]:hover,
+  textarea:hover,
+  select:hover {
+    border-color: var(--border-medium);
+    background: var(--bg-deep);
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="number"]:focus,
+  input[type="url"]:focus,
+  input[type="tel"]:focus,
+  textarea:focus,
+  select:focus {
+    @apply outline-none;
+    border-color: var(--primary);
+    background: var(--bg-deep);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--text-dim);
+  }
+
+  /* === Button Styles === */
+  button,
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium text-xs transition-all cursor-pointer border;
+    background: var(--bg-card);
+    border-color: var(--border-base);
+    color: var(--text-primary);
+    font-family: inherit;
+  }
+
+  button:hover,
+  .btn:hover {
+    border-color: var(--border-medium);
+    background: var(--bg-deep);
+  }
+
+  button.btn-primary,
+  .btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+  }
+
+  button.btn-primary:hover,
+  .btn-primary:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+  }
+
+  /* === Select Specific === */
+  select {
+    @apply cursor-pointer;
+  }
+
+  select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding: 0.5rem 0;
+  }
+
+  /* === Textarea Specific === */
+  textarea {
+    @apply resize-y min-h-[80px] leading-relaxed;
+  }
+
+  /* === Number Input === */
+  input[type="number"].number-input {
+    @apply w-16 text-center;
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -17,147 +122,6 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Global Ant Design Dark Theme Overrides */
-.ant-input,
-.ant-input-number,
-.ant-input-number-input,
-.ant-select-selector,
-.ant-picker {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid var(--border-subtle) !important;
-  color: var(--text-primary) !important;
-  border-radius: var(--radius-md) !important;
-  transition: all var(--transition-base) !important;
-}
-
-.ant-input:hover,
-.ant-input-number:hover,
-.ant-select-selector:hover,
-.ant-picker:hover {
-  border-color: var(--border-medium) !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-}
-
-.ant-input:focus,
-.ant-input-focused,
-.ant-input-number:focus,
-.ant-input-number-focused,
-.ant-select-focused .ant-select-selector,
-.ant-picker-focused {
-  border-color: var(--primary) !important;
-  background: rgba(0, 0, 0, 0.3) !important;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
-}
-
-.ant-input::placeholder,
-.ant-input-number-input::placeholder {
-  color: var(--text-tertiary) !important;
-}
-
-/* Switch */
-.ant-switch {
-  background: var(--bg-card) !important;
-  border: 1px solid var(--border-medium) !important;
-}
-
-.ant-switch-checked {
-  background: var(--primary) !important;
-  border-color: var(--primary) !important;
-}
-
-.ant-switch-handle::before {
-  background: var(--text-tertiary) !important;
-}
-
-.ant-switch-checked .ant-switch-handle::before {
-  background: white !important;
-}
-
-/* Dropdown / Select */
-.ant-select-dropdown {
-  background: var(--bg-panel) !important;
-  border: 1px solid var(--border-subtle) !important;
-  box-shadow: var(--shadow-lg) !important;
-  border-radius: var(--radius-lg) !important;
-}
-
-.ant-select-item {
-  color: var(--text-primary) !important;
-}
-
-.ant-select-item:hover {
-  background: var(--bg-hover) !important;
-}
-
-.ant-select-item-option-selected {
-  background: rgba(99, 102, 241, 0.1) !important;
-  color: var(--primary) !important;
-}
-
-/* Radio */
-.ant-radio-wrapper {
-  color: var(--text-primary) !important;
-}
-
-.ant-radio-inner {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-color: var(--border-medium) !important;
-}
-
-.ant-radio-checked .ant-radio-inner {
-  background: var(--primary) !important;
-  border-color: var(--primary) !important;
-}
-
-/* Checkbox */
-.ant-checkbox-inner {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-color: var(--border-medium) !important;
-}
-
-.ant-checkbox-checked .ant-checkbox-inner {
-  background: var(--primary) !important;
-  border-color: var(--primary) !important;
-}
-
-/* Textarea */
-.ant-input-textarea textarea {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid var(--border-subtle) !important;
-  color: var(--text-primary) !important;
-  border-radius: var(--radius-md) !important;
-}
-
-.ant-input-textarea textarea:focus {
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
-}
-
-/* Slider */
-.ant-slider-rail {
-  background: var(--bg-card) !important;
-}
-
-.ant-slider-track {
-  background: var(--primary) !important;
-}
-
-.ant-slider-handle {
-  border-color: var(--primary) !important;
-  background: white !important;
-}
-
-.ant-slider-handle:hover,
-.ant-slider-handle:focus {
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2) !important;
-}
-
-/* Typography */
-.ant-typography {
-  color: var(--text-primary) !important;
 }
 
 .nav {

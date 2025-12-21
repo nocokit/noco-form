@@ -3,57 +3,91 @@
     <!-- Ambient Glow Background -->
     <div class="ambient-glow"></div>
 
-    <header class="navbar">
+    <header class="navbar glass">
       <div class="logo-area">
         <div class="logo-icon-box">
-          <i class="ri-flashlight-fill"></i>
+          <i class="ri-layers-line"></i>
         </div>
-        <span class="brand-logo">NOCO</span>
-        <span class="brand-text">FORM</span>
-      </div>
-
-      <div class="toolbar-center">
-        <button class="view-btn active">Editor</button>
-        <button class="view-btn">Logic</button>
-        <button class="view-btn">Data</button>
+        <span class="workspace-name">NOCO FORM <span class="separator">/</span> Product Feedback</span>
       </div>
 
       <div class="actions-right">
-        <a-button type="primary" class="btn-publish" @click="preview">
-          <i class="ri-rocket-2-line"></i>
+        <div class="lang-selector">
+          <i class="ri-global-line lang-icon"></i>
+          <select class="lang-select" v-model="currentShortLocale" @change="handleEditorLocaleChange">
+            <option
+              v-for="locale in availableLocales"
+              :key="locale.code"
+              :value="locale.code"
+            >
+              {{ locale.label }}
+            </option>
+          </select>
+        </div>
+        <div class="divider-vertical"></div>
+        <button class="github-btn" @click="toGithub" title="GitHub Repository">
+          <i class="ri-github-fill"></i>
+        </button>
+        <div class="divider-vertical"></div>
+        <button class="theme-toggle-btn" @click="toggleTheme" :title="theme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'">
+          <i :class="theme === 'dark' ? 'ri-sun-line' : 'ri-moon-line'"></i>
+        </button>
+        <div class="divider-vertical"></div>
+        <button class="btn-publish px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 flex items-center gap-2" @click="preview">
+          <i class="ri-send-plane-line"></i>
           <span>Publish</span>
-        </a-button>
+        </button>
       </div>
     </header>
     <div class="content editor-content">
-      <div class="comps">
+      <div class="comps glass">
         <div class="panel-header">
           <span>Components</span>
-          <i class="ri-search-line search-icon"></i>
         </div>
-        <div class="component-list">
-          <div class="comp-category-item" v-for="compCategory in compList">
-            <div class="category-title">
-              {{ compCategory.name }}
-              <a-tooltip placement="top" v-if="compCategory.tooltip">
-                <template #title>
-                  <span>{{ compCategory.tooltip }}</span>
-                </template>
-                <QuestionCircleOutlined />
-              </a-tooltip>
+
+        <!-- Quick Search with shortcut hint -->
+        <div class="search-wrapper-enhanced">
+          <div class="search-box-enhanced">
+            <i class="ri-search-line search-icon-enhanced"></i>
+            <input
+              type="text"
+              placeholder="Quick Search"
+              class="search-input-enhanced"
+              v-model="searchQuery"
+              @input="handleSearch"
+            />
+            <span class="search-shortcut">⌘F</span>
+          </div>
+        </div>
+
+        <div class="component-list-enhanced">
+          <div class="comp-category-section" v-for="compCategory in filteredCompList" :key="compCategory.name" v-show="compCategory.children.length > 0">
+            <!-- Category Title with minimal design -->
+            <div class="category-title-enhanced">
+              <span>{{ compCategory.name.toUpperCase() }}</span>
+              <i class="ri-information-line category-info-icon" v-if="compCategory.tooltip" :title="compCategory.tooltip"></i>
             </div>
-          <VueDraggable v-model="compCategory.children" :animation="0"
-            :group="{ name: 'sevenBotForm', pull: 'clone', put: false }" :sort="false" :clone="onClone"
-            class="flex flex-col gap-2 p-4 w-300px bg-gray-500/5 rounded compList">
-            <div v-for="item in compCategory.children" class="cursor-move h-50px bg-gray-500/5 item" v-bind:class="{
-              'person': compCategory.type === 'Personal Component',
-              'advanced': compCategory.type === 'Advanced Component',
-              'layout': compCategory.type === 'Layout Component'
-            }" @click="createCompByClick(item)">
-              <i class="icon" :class="item.icon" v-if="item.icon"></i>
-              {{ item.label }}
-            </div>
-          </VueDraggable>
+
+            <!-- 2-Column Grid Layout -->
+            <VueDraggable
+              v-model="compCategory.children"
+              :animation="0"
+              :group="{ name: 'sevenBotForm', pull: 'clone', put: false }"
+              :sort="false"
+              :clone="onClone"
+              class="comp-grid-2col"
+            >
+              <div
+                v-for="item in compCategory.children"
+                :key="item.type"
+                class="comp-item-card"
+                :class="{ 'highlight': compCategory.name === 'Advanced' && item.label === 'Payment' }"
+                @click="createCompByClick(item)"
+              >
+                <i class="comp-icon" :class="item.icon" v-if="item.icon"></i>
+                <span class="comp-label">{{ item.label }}</span>
+              </div>
+            </VueDraggable>
           </div>
         </div>
       </div>
@@ -62,7 +96,7 @@
           'no-data': !pageCompList?.length
         }">
           <div class="body">
-            <a-watermark :content="selectForm?.displayWaterMark ? selectForm?.waterMarkText : ''">
+            <div class="watermark-wrapper" :data-watermark="selectForm?.displayWaterMark ? selectForm?.waterMarkText : ''">
               <div class="form-body form-body-content">
                 <div class="comp-list-content">
                   <!-- Form Header Preview -->
@@ -110,15 +144,14 @@
                :class="{
                 'form-item': true,
                 'active-comp': activeComp.id === pageFooter.id
-              }" :style="{
-                'text-align': pageFooter.position || 'left'
-              }">
-                <a-button class="submit" type="primary" :icon="pageFooter.buttonIconShowBool ? h(CheckOutlined) : null"
-                  :size="pageFooter.size" :style="{ 'padding': getSize(), 'lineHeight': getLineHeight() }">
-                  {{ pageFooter.buttonText || '提交' }}
-                </a-button>
+              }" style="display: flex; justify-content: center;">
+                <TwButton
+                  :text="pageFooter.buttonText || '提交'"
+                  :size="(pageFooter.size as 'small' | 'default' | 'large') || 'default'"
+                  :show-icon="pageFooter.buttonIconShowBool"
+                />
               </div>
-            </a-watermark>
+            </div>
           </div>
 
         </div>
@@ -145,9 +178,7 @@ import { getDefaultConfig } from '@/views/FormEditor/comp-config-data';
 import { useSelectCompStore } from '@/stores/selectCompStore'
 import { useRoute } from 'vue-router';
 import { toGithub } from '@/utils/toGithub'
-import { CheckOutlined } from '@ant-design/icons-vue';
-import { message } from 'ant-design-vue';
-
+import { TwButton } from '@/components/ui'
 
 import * as _ from 'lodash'
 import Icon from './comp-icon'
@@ -181,8 +212,99 @@ interface FooterType {
 }
 
 const openDraw = ref(false)
+
+// Use locale composable for route-based i18n
+import { useLocale } from '@/composables/useLocale'
+const { currentLocale, currentShortLocale, availableLocales, setLocale } = useLocale()
+
+// Use theme composable for theme switching
+import { useTheme } from '@/composables/useTheme'
+const { theme, toggleTheme } = useTheme()
+
+const handleEditorLocaleChange = (event: Event) => {
+  const target = event.target as HTMLSelectElement
+  const newLocale = target.value
+
+  // Use composable to change locale (will update route)
+  setLocale(newLocale)
+
+  // Show notification
+  showLocaleNotification(`Editor language changed to ${newLocale}`)
+
+  console.log('Editor locale changed to:', newLocale, 'Route:', currentLocale.value)
+}
+
+const showLocaleNotification = (message: string) => {
+  const notification = document.createElement('div')
+  notification.textContent = message
+  notification.style.cssText = `
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    background: var(--primary);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    z-index: 9999;
+    box-shadow: 0 4px 12px var(--primary-glow);
+    animation: slideInNotif 0.3s ease;
+  `
+
+  // Add animation styles if not exists
+  if (!document.getElementById('locale-notification-styles')) {
+    const style = document.createElement('style')
+    style.id = 'locale-notification-styles'
+    style.textContent = `
+      @keyframes slideInNotif {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOutNotif {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+      }
+    `
+    document.head.appendChild(style)
+  }
+
+  document.body.appendChild(notification)
+
+  setTimeout(() => {
+    notification.style.animation = 'slideOutNotif 0.3s ease'
+    setTimeout(() => notification.remove(), 300)
+  }, 2500)
+}
 const compList = ref([...CompListData]) // 来源组件列表
 const globalData = ref()
+const searchQuery = ref('') // 搜索关键词
+const filteredCompList = ref([...CompListData]) // 过滤后的组件列表
+
+// 搜索处理函数
+const handleSearch = () => {
+  const query = searchQuery.value.toLowerCase().trim()
+
+  if (!query) {
+    // 如果搜索框为空,显示所有组件
+    filteredCompList.value = [...CompListData]
+    return
+  }
+
+  // 过滤组件
+  filteredCompList.value = CompListData.map(category => {
+    const filteredChildren = category.children.filter(comp => {
+      return comp.label.toLowerCase().includes(query) ||
+             comp.name.toLowerCase().includes(query) ||
+             comp.type.toLowerCase().includes(query)
+    })
+
+    return {
+      ...category,
+      children: filteredChildren
+    }
+  }).filter(category => category.children.length > 0)
+}
 
 /**
  * 编辑器编辑内容
@@ -190,16 +312,6 @@ const globalData = ref()
  * 2. pageCompList // 页面组件
  * 3. pageFooter // 底部提交按钮配置
  */
-
-const getSize = () => {
-  const data = pageFooter?.value
-  return data?.size == 'large' ? "0 26px" : (data?.size == "small" ? "0 10px" : "0 16px")
-}
-
-const getLineHeight = () => {
-  const data = pageFooter.value
-  return data.size == 'large' ? "40px" : (data.size == "small" ? "24px" : "32px")
-}
 
 const pageCompList = ref<any[]>([]) // 页面组件内容
 const pageHeader = ref<HeaderType>({
@@ -380,7 +492,7 @@ const addItem = (type: 'new' | 'other', item: any, index: number) => {
 
 
 const deleteSuccess = (compName = '') => {
-  message.success(`【${compName}】删除成功！`, 1);
+  console.log(`【${compName}】删除成功！`);
 };
 
 const compControl = (controlType: string, value: any) => {
@@ -468,7 +580,14 @@ const onClose = () => {
   min-width: 1260px;
 }
 
-/* Header Navbar - New Design */
+/* Glass effect */
+.glass {
+  background: var(--bg-panel-alpha);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Header Navbar - Premium SaaS Design */
 .navbar {
   height: var(--header-h);
   background: var(--bg-panel);
@@ -476,94 +595,193 @@ const onClose = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 24px;
   z-index: var(--z-sticky);
   position: relative;
 
   .logo-area {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: -0.5px;
-    color: var(--text-primary);
+    gap: 16px;
 
     .logo-icon-box {
-      width: 24px;
-      height: 24px;
-      background: linear-gradient(135deg, #6366f1, #a855f7);
-      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 4px 20px var(--primary-glow);
 
       i {
         color: white;
-        font-size: 14px;
+        font-size: 20px;
       }
     }
 
-    .brand-logo {
-      font-weight: 700;
-    }
+    .workspace-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
 
-    .brand-text {
-      font-weight: 400;
-      color: #666;
+      .separator {
+        color: var(--text-tertiary);
+        margin: 0 8px;
+      }
     }
   }
 
-  /* Center Toolbar */
-  .toolbar-center {
-    background: #27272A;
-    padding: 3px;
-    border-radius: 8px;
+  /* Language Selector */
+  .lang-selector {
     display: flex;
-    gap: 2px;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-panel-alpha);
+    border: 1px solid var(--border-base);
+    border-radius: 8px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
 
-    .view-btn {
-      background: transparent;
-      color: var(--text-sub);
-      border: none;
-      padding: 6px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-size: 12px;
-      font-weight: 500;
+    &:hover {
+      border-color: var(--border-medium);
 
-      &.active {
-        background: #3F3F46;
-        color: white;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      .lang-icon {
+        color: var(--primary);
       }
+    }
 
-      &:hover:not(.active) {
-        background: rgba(255, 255, 255, 0.05);
+    .lang-icon {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      transition: all 0.2s;
+    }
+
+    .lang-select {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      padding-right: 16px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 4.5 3 3 3-3'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right center;
+
+      option {
+        background: var(--bg-panel);
+        color: var(--text-primary);
       }
     }
   }
 
   .actions-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .github-btn {
+      background: transparent;
+      border: 1px solid var(--border-base);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      i {
+        font-size: 16px;
+      }
+
+      &:hover {
+        background: var(--bg-hover);
+        color: var(--primary);
+        border-color: var(--border-medium);
+      }
+    }
+
+    .theme-toggle-btn {
+      background: transparent;
+      border: 1px solid var(--border-base);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      i {
+        font-size: 16px;
+      }
+
+      &:hover {
+        background: var(--bg-hover);
+        color: var(--primary);
+        border-color: var(--border-medium);
+      }
+    }
+
+    .btn-settings {
+      background: transparent;
+      border: none;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      i {
+        font-size: 16px;
+      }
+
+      &:hover {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+      }
+    }
+
+    .divider-vertical {
+      width: 1px;
+      height: 16px;
+      background: var(--border-base);
+    }
+
     .btn-publish {
       background: var(--primary);
       border: none;
       color: white;
-      padding: 8px 16px;
+      padding: 6px 20px;
       height: auto;
-      border-radius: 6px;
+      border-radius: 8px;
       font-weight: 600;
-      font-size: 12px;
+      font-size: 14px;
       cursor: pointer;
-      box-shadow: 0 0 15px var(--primary-glow);
+      box-shadow: 0 0 20px var(--primary-glow);
       transition: all 0.3s;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+
+      i {
+        font-size: 16px;
+      }
 
       &:hover {
         background: var(--primary-hover);
+        box-shadow: 0 0 30px var(--primary-glow-strong);
       }
     }
   }
@@ -603,24 +821,76 @@ const onClose = () => {
   }
 
   .panel-header {
-    padding: 16px;
-    border-bottom: 1px solid var(--border-base);
+    padding: 24px 24px 16px;
     font-weight: 600;
+    font-size: 14px;
     color: var(--text-main);
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .search-wrapper {
+    padding: 0 24px 16px;
+  }
+
+  .search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
 
     .search-icon {
-      font-weight: 400;
-      color: #666;
-      cursor: pointer;
+      position: absolute;
+      left: 12px;
+      font-size: 16px;
+      color: var(--text-tertiary);
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-base);
+      border-radius: 12px;
+      padding: 10px 12px 10px 38px;
+      font-size: 12px;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.2s;
+
+      &::placeholder {
+        color: var(--text-tertiary);
+      }
+
+      &:focus {
+        border-color: var(--primary);
+        background: var(--bg-deep);
+
+        ~ .search-icon {
+          color: var(--primary);
+        }
+      }
     }
   }
 
   .component-list {
-    padding: 16px;
+    padding: 0 24px 24px;
     overflow-y: auto;
+
+    /* Slim scrollbar */
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-base);
+      border-radius: 10px;
+    }
   }
 
   .comp-category-item {
@@ -631,17 +901,25 @@ const onClose = () => {
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 12px;
-    margin-top: 8px;
-    letter-spacing: 1px;
+    color: var(--text-tertiary);
+    margin-bottom: 16px;
+    margin-top: 0;
+    letter-spacing: 0.15em;
     user-select: none;
+  }
+
+  .comp-category-item {
+    margin-bottom: 32px;
+
+    &:first-child {
+      margin-top: 0;
+    }
   }
 
   .compList {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 12px;
     margin-bottom: 0;
     user-select: none;
     background: transparent !important;
@@ -654,34 +932,37 @@ const onClose = () => {
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 12px;
-      background: var(--bg-card) !important;
+      padding: 20px 12px;
+      background: var(--bg-hover-alpha) !important;
       border: 1px solid var(--border-base) !important;
-      border-radius: var(--radius-md);
+      border-radius: 16px;
       cursor: grab;
       transition: all 0.2s;
-      color: var(--text-sub);
-      font-size: 12px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 500;
       height: auto !important;
-      min-height: auto;
+      min-height: 80px;
 
       .icon {
         font-size: 20px;
-        color: var(--text-sub);
+        color: var(--text-secondary);
         transition: all 0.2s;
       }
 
       &:hover {
-        background: #27272a !important;
-        border-color: var(--text-dim) !important;
+        background: var(--bg-active-alpha) !important;
+        border-color: var(--border-medium) !important;
+        transform: translateY(-2px);
 
         .icon {
-          color: var(--text-primary);
+          color: var(--primary);
         }
       }
 
       &:active {
         cursor: grabbing;
+        transform: translateY(0);
       }
     }
   }
@@ -691,31 +972,45 @@ const onClose = () => {
     position: relative;
     height: 100%;
     margin: 0;
-    padding: 40px;
+    padding: 64px 40px;
     overflow-y: auto;
-    background-color: var(--bg-canvas);
-    /* Dot pattern background */
-    background-image: radial-gradient(#27272a 1px, transparent 1px);
-    background-size: 20px 20px;
+    background-color: var(--bg-deep);
+    /* Premium dot pattern background */
+    background-image: radial-gradient(var(--border-base) 1px, transparent 1px);
+    background-size: 24px 24px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     width: 100%;
+
+    /* Slim scrollbar */
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-base);
+      border-radius: 10px;
+    }
   }
 
   /* Form Paper */
   .body {
     width: 100%;
-    max-width: 400px;
-    min-height: 700px;
-    background: #000000;
-    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
-    border-radius: 16px;
+    max-width: 640px;
+    min-height: 800px;
+    background: var(--bg-panel);
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4);
+    border-radius: 32px;
     border: 1px solid var(--border-base);
-    padding: 24px;
+    padding: 36px 28px 48px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 40px;
     transition: all 0.3s;
 
     .form-header {
@@ -750,21 +1045,41 @@ const onClose = () => {
     /* Form Header Preview */
     .form-header-preview {
       text-align: center;
-      padding-bottom: 10px;
-      border-bottom: 1px dashed #27272a;
-      margin-bottom: 12px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+
+      &::before {
+        content: '';
+        width: 80px;
+        height: 80px;
+        background: var(--bg-deep);
+        border: 1px solid var(--border-base);
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+      }
 
       .form-title {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 4px;
-        color: var(--text-main);
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 0;
+        color: var(--text-primary);
+        letter-spacing: -0.02em;
       }
 
       .form-description {
-        color: #52525b;
-        font-size: 12px;
+        color: var(--text-tertiary);
+        font-size: 14px;
         margin: 0;
+        max-width: 480px;
+        line-height: 1.6;
       }
     }
   }
@@ -779,15 +1094,17 @@ const onClose = () => {
     flex-direction: column;
 
     .sortable-chosen:not(.active-comp) {
-      background: aliceblue;
-      border-radius: 4px;
-      border: 1px dashed #94b4ff;
+      background: var(--primary-bg-alpha);
+      border-radius: 16px;
+      border: 2px dashed var(--primary);
       width: calc(100% - 0px);
-      padding: 48px 50px;
+      // padding: 48px 50px;
       height: 116px;
       text-align: center;
       margin: 2px 0;
       z-index: 0;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px var(--primary-shadow);
     }
 
     &.no-data {
@@ -802,24 +1119,26 @@ const onClose = () => {
   /* Form Item Styles */
   .form-item {
     position: relative;
-    background: var(--bg-card);
-    padding: 16px;
-    border: 1px solid var(--border-base);
-    border-radius: var(--radius-md);
+    background: transparent;
+    padding: 24px;
+    border: 2px solid transparent;
+    border-radius: 16px;
     transition: all 0.2s;
+    cursor: pointer;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--bg-hover-alpha);
+      border-color: transparent;
     }
   }
 
   /* Active Component State with Glow */
   .active-comp {
-    background: rgba(99, 102, 241, 0.05) !important;
-    border: 1px solid var(--primary) !important;
-    border-radius: var(--radius-md);
+    background: var(--bg-active-alpha) !important;
+    border: 2px solid transparent !important;
+    border-radius: 16px;
     position: relative;
-    box-shadow: 0 0 0 1px var(--primary), 0 0 20px var(--primary-glow) !important;
+    box-shadow: 0 0 0 2px var(--primary), 0 0 20px var(--primary-glow) !important;
 
     &::before {
       display: none;
@@ -828,22 +1147,23 @@ const onClose = () => {
 
   /* Empty State - Ghost Placeholder */
   .no-data-content {
-    border: 2px dashed var(--primary);
-    border-radius: var(--radius-md);
-    background: var(--primary-glow);
+    border: 2px dashed var(--border-base);
+    border-radius: 24px;
+    background: var(--bg-hover-alpha);
     text-align: center;
-    color: var(--primary);
-    padding: 60px 40px;
-    min-height: 60px;
+    color: var(--text-tertiary);
+    padding: 80px 40px;
+    min-height: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    font-size: 12px;
+    font-size: 13px;
+    font-style: italic;
 
     .text {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 500;
     }
 
@@ -851,41 +1171,29 @@ const onClose = () => {
     &.dragenter {
       border-color: var(--primary);
       color: var(--primary);
-      background: rgba(99, 102, 241, 0.2);
+      background: var(--primary-bg-alpha);
     }
+  }
+
+  /* Drag Ghost Style */
+  :deep(.ghost) {
+    opacity: 0.6;
+    background: var(--primary-bg-light);
+    border: 2px dashed var(--primary) !important;
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 24px var(--primary-shadow);
+    max-width: 600px;
+    width: 100%;
   }
 
   .form-body-content {
     min-height: 120px;
   }
 
-  .form-footer {
-    padding: 0;
-    width: 100%;
-    margin-top: auto;
-
-    :deep(.submit) {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      height: 40px;
-      border-radius: 6px;
-      font-weight: 600;
-      max-width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
 }
 
 /* Preview Button - Removed (Now in Header) */
-
-::v-deep(.ant-drawer-bottom>.ant-drawer-content-wrapper) {
-  height: calc(100% - 50px) !important;
-
-}
 
 
 .control {
@@ -937,5 +1245,212 @@ const onClose = () => {
 .comp-list-content {
   position: relative;
   min-height: 130px;
+}
+
+/* ============================================
+   ENHANCED COMPONENT LIST - 2 COLUMN GRID
+   Atomic Design - 99+ SaaS Quality
+   ============================================ */
+
+/* Enhanced Search Box */
+.search-wrapper-enhanced {
+  padding: 8px 16px 12px;
+  border-bottom: 1px solid var(--border-base);
+}
+
+.search-box-enhanced {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--bg-panel-alpha);
+  border: 1px solid var(--border-base);
+  border-radius: 8px;
+  padding: 6px 10px;
+  transition: all 0.2s;
+
+  &:focus-within {
+    border-color: var(--primary);
+    background: var(--bg-deep-alpha);
+    box-shadow: 0 0 0 3px var(--primary-bg-alpha);
+  }
+}
+
+.search-icon-enhanced {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  margin-right: 8px;
+}
+
+.search-input-enhanced {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 11px;
+  color: var(--text-primary);
+  font-weight: 500;
+
+  &::placeholder {
+    color: var(--text-tertiary);
+  }
+}
+
+.search-shortcut {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-base);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+}
+
+/* Component List Container */
+.component-list-enhanced {
+  padding: 20px 12px 40px;
+  overflow-y: auto;
+  height: calc(100vh - var(--header-h) - 80px);
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-base);
+    border-radius: 10px;
+  }
+}
+
+/* Category Section */
+.comp-category-section {
+  margin-bottom: 32px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Category Title - Minimal & Uppercase */
+.category-title-enhanced {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 12px;
+  margin-bottom: 8px;
+
+  span {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--text-tertiary);
+  }
+
+  .category-info-icon {
+    font-size: 12px;
+    color: var(--border-medium);
+    cursor: help;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--primary);
+    }
+  }
+}
+
+/* 2-Column Grid Layout */
+.comp-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+/* Component Item Card - Clean & Functional Design */
+.comp-item-card {
+  height: 80px;
+  border: 1px solid var(--border-base);
+  border-radius: 8px;
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: grab;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &:active {
+    cursor: grabbing;
+    transform: scale(0.98);
+  }
+
+  &:hover {
+    border-color: var(--primary);
+    background: var(--primary-bg-alpha);
+    transform: translateY(-1px);
+
+    .comp-icon {
+      color: var(--primary);
+      transform: scale(1.1);
+    }
+
+    .comp-label {
+      color: var(--text-primary);
+    }
+  }
+
+  /* Highlight for Premium Components (e.g., Payment) */
+  &.highlight {
+    border-color: var(--primary-border-alpha);
+    background: var(--primary-bg-alpha);
+
+    .comp-icon {
+      color: var(--primary-light);
+    }
+
+    .comp-label {
+      color: var(--primary-lighter);
+    }
+
+    &:hover {
+      border-color: var(--primary);
+      background: var(--primary-bg-light);
+    }
+  }
+}
+
+.comp-icon {
+  font-size: 18px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.comp-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Watermark Wrapper - CSS-only watermark */
+.watermark-wrapper {
+  position: relative;
+
+  &[data-watermark]:not([data-watermark=""]):before {
+    content: attr(data-watermark);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 48px;
+    color: rgba(0, 0, 0, 0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+  }
 }
 </style>

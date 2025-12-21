@@ -1,42 +1,28 @@
 
 <template>
-  <div class="setting-item h-42">
-    <a-typography-text type="secondary" class="secondary">
-      表单按钮
-      <a-tooltip placement="top">
-        <template #title>
-          <span>是否启动表单按钮</span>
-        </template>
-        <QuestionCircleOutlined />
-    </a-tooltip>
-    </a-typography-text>
-    <a-space direction="vertical" class="abs-r switch-r " >
-      <a-switch  v-model:checked="form.displayBtn"  @change="changeValue($event)" />
-    </a-space> 
-  </div>
-
+  <TwSwitch v-model="form.displayBtn" @change="handleChange" />
 </template>
+
 <script lang="ts" setup>
-import type { SizeType } from 'ant-design-vue/es/config-provider';
-import { ref, watch, defineProps } from 'vue';
-import { useSelectCompStore  } from '@/stores/selectCompStore'
+import { ref } from 'vue'
+import { TwSwitch } from '@/components/ui'
+import { useSelectCompStore } from '@/stores/selectCompStore'
 
 interface Props {
   form: any
+  compact?: boolean
 }
 
-const props = defineProps<Props>()
-const form = ref(props.form)
+const props = withDefaults(defineProps<Props>(), {
+  compact: false
+})
 
+const form = ref(props.form)
 const compStore = useSelectCompStore()
 
-const changeValue = (value: boolean) => {
+const handleChange = (value: boolean) => {
   compStore.updateGlobalFormConfig({
     displayBtn: value
   })
 }
-
 </script>
-<style lang="scss" scoped>
-
-</style>

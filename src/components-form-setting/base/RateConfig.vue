@@ -1,33 +1,50 @@
 <template>
   <div class="setting-item h-50">
-    <a-typography-text type="secondary" class="block-title2">图标</a-typography-text>
+    <span class="text-gray-500 block-title2">图标</span>
   </div>
-  <div>
-    <a-radio-group class="rate-character-icon" v-model:value="comp.rateCharacter">
-      <a-radio-button v-for="item in imgList" :key="item" :value="item"
-        @click="changeRateCharacter(item)">{{ item }}</a-radio-button>
-    </a-radio-group>
+  <div class="grid grid-cols-5 gap-1.5 mb-4">
+    <label
+      v-for="item in imgList"
+      :key="item"
+      class="flex items-center justify-center p-2.5 text-xl border rounded-lg cursor-pointer transition-all"
+      :class="comp.rateCharacter === item
+        ? 'bg-blue-500/10 border-blue-500/50 shadow-sm shadow-blue-500/20'
+        : 'bg-zinc-800/30 border-zinc-700/50 hover:bg-zinc-800/50 hover:border-zinc-600'"
+    >
+      <input
+        type="radio"
+        :value="item"
+        v-model="comp.rateCharacter"
+        @change="changeRateCharacter(item)"
+        class="sr-only"
+      />
+      <span>{{ item }}</span>
+    </label>
   </div>
 
   <div class="setting-item h-50">
-    <a-typography-text type="secondary" class="block-title2">数量</a-typography-text>
-    <a-select v-model:value="comp.rateCount" style="width: 120px" class="abs-r" @change="changeRateCount">
-      <a-select-option :value="item.value" v-for="item in dataList">{{ item.name }}</a-select-option>
-    </a-select>
+    <span class="text-gray-500 block-title2">数量</span>
+    <TwSelect
+      v-model="comp.rateCount"
+      :options="dataList"
+      @change="changeRateCount"
+      custom-class="abs-r w-30"
+    />
   </div>
 
 
   <div class="setting-item h-50">
-    <a-typography-text type="secondary" class="block-title2">允许半选</a-typography-text>
-    <a-space direction="vertical" class="abs-r switch-r ">
-      <a-switch  v-model:checked="comp.rateAllowHalf" @change="changeHalf($event)" />
-    </a-space> 
+    <span class="text-gray-500 block-title2">允许半选</span>
+    <div class="abs-r switch-r">
+      <TwSwitch v-model="comp.rateAllowHalf" @change="changeHalf" />
+    </div>
   </div>
 </template>
 
 
 <script lang="ts" setup>
 import { defineProps, onMounted, ref } from 'vue'
+import { TwSelect, TwSwitch } from '@/components/ui'
 import { useSelectCompStore } from '@/stores/selectCompStore'
 
 const compStore = useSelectCompStore()
@@ -52,36 +69,22 @@ onMounted(() => {
   }
 })
 
-const changeRateCount = (event: any) => {
+const changeRateCount = (value: any) => {
   compStore.updateCurrentComp({
-    rateCount: event
+    rateCount: value
   })
 }
 
-const changeRateCharacter = (event: any) => {
+const changeRateCharacter = (value: any) => {
   compStore.updateCurrentComp({
-    rateCharacter: event
+    rateCharacter: value
   })
 }
 
-const changeHalf = (event: any) => {
+const changeHalf = (value: boolean) => {
   compStore.updateCurrentComp({
-    rateAllowHalf: event
+    rateAllowHalf: value
   })
 }
 
 </script>
-<style lang="scss" scoped>
-.comp {
-  padding: 10px;
-  color: yellowgreen;
-}
-
-.comp {
-  margin-bottom: 10px;
-}
-.rate-character-icon {
-  display: flex;
-  flex: 0 0 auto;
-}
-</style>

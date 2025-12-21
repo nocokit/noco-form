@@ -1,12 +1,18 @@
 <template>
- <a-input v-model:value="value" :placeholder="placeholder" >
-  <template #prefix>
+  <div class="relative">
+    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
       <img class="icon" :src="TelePhone" alt="">
-    </template>
- </a-input>
+    </div>
+    <input
+      type="tel"
+      v-model="value"
+      :placeholder="placeholder"
+      class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    />
+  </div>
 </template>
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import TelePhone from '/src/assets/form/telePhone.svg'
 
 interface Props {
@@ -19,8 +25,3 @@ interface Props {
 const props = defineProps<Props>()
 const value = ref(props.value || null)
 </script>
-<style lang="scss" scoped>
-.icon {
-  height: 18px;
-}
-</style>

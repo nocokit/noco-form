@@ -1,42 +1,42 @@
-/* Noco-Form Design System - Dark Cyber Edition */
-/* Inspired by: Vercel, Linear Dark Mode, Framer, Resend */
+/* Noco-Form Design System - Multi-Theme Support */
+/* Inspired by: Vercel, Linear, Framer, Resend */
 
 :root {
-  /* ===== Dark Background System ===== */
+  /* ===== Dark Theme (Default) ===== */
   --bg-deep: #09090B;           /* Deep black base */
-  --bg-body: #09090B;           /* Body background (same as deep) */
-  --bg-app: #0A0A0C;            /* Slightly lighter app background */
+  --bg-body: #09090B;           /* Body background */
+  --bg-app: #0A0A0C;            /* App background */
   --bg-panel: #18181B;          /* Panel background */
   --bg-card: #121214;           /* Card/form background */
   --bg-canvas: #09090B;         /* Canvas background */
   --bg-secondary: rgba(39, 39, 42, 0.3);
-  --bg-glass: rgba(24, 24, 27, 0.6); /* Glassmorphism */
+  --bg-glass: rgba(24, 24, 27, 0.6);
   --bg-hover: rgba(255, 255, 255, 0.03);
   --bg-active: rgba(255, 255, 255, 0.05);
 
-  /* ===== Border System (Subtle in Dark Mode) ===== */
-  --border-base: #27272a;       /* Base border (zinc-800) */
+  /* ===== Border System ===== */
+  --border-base: #27272a;       /* Base border */
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border: rgba(255, 255, 255, 0.1);
-  --border-medium: #3f3f46;     /* Medium border (zinc-700) */
+  --border-medium: #3f3f46;     /* Medium border */
   --border-hover: #3f3f46;      /* Hover border */
   --border-strong: rgba(255, 255, 255, 0.2);
 
-  /* ===== Accent: Electric Indigo (Cyber Purple-Blue) ===== */
+  /* ===== Accent Colors (Theme Independent) ===== */
   --primary: #6366F1;           /* Indigo 500 */
   --primary-hover: #8B5CF6;     /* Violet 500 */
   --primary-light: rgba(99, 102, 241, 0.1);
   --primary-glow: rgba(99, 102, 241, 0.4);
   --primary-gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
 
-  /* ===== Text Colors (Dark Mode) ===== */
-  --text-primary: #FAFAFA;      /* Almost white */
-  --text-main: #f4f4f5;         /* Main text (zinc-100) */
-  --text-secondary: #A1A1AA;    /* Zinc 400 */
-  --text-sub: #a1a1aa;          /* Sub text (same as secondary) */
-  --text-tertiary: #71717A;     /* Zinc 500 */
-  --text-dim: #52525B;          /* Zinc 600 - Very subtle */
-  --text-inverse: #09090B;      /* For light buttons */
+  /* ===== Text Colors ===== */
+  --text-primary: #FAFAFA;      /* Primary text */
+  --text-main: #f4f4f5;         /* Main text */
+  --text-secondary: #A1A1AA;    /* Secondary text */
+  --text-sub: #a1a1aa;          /* Sub text */
+  --text-tertiary: #71717A;     /* Tertiary text */
+  --text-dim: #52525B;          /* Dim text */
+  --text-inverse: #09090B;      /* Inverse text */
 
   /* ===== Status Colors ===== */
   --success: #10B981;
@@ -130,6 +130,39 @@
   --dot-color: #D1D5DB;
   --dot-size: 1px;
   --dot-spacing: 20px;
+
+  /* ===== Extended Variables (for components) ===== */
+  --bg-panel-alpha: rgba(24, 24, 27, 0.85);
+  --bg-panel-dark-alpha: rgba(0, 0, 0, 0.4);
+  --bg-hover-alpha: rgba(39, 39, 42, 0.3);
+  --bg-active-alpha: rgba(39, 39, 42, 0.5);
+  --bg-deep-alpha: rgba(24, 24, 27, 0.8);
+  --bg-hover-light-alpha: rgba(255, 255, 255, 0.05);
+  --border-subtle-alpha: rgba(255, 255, 255, 0.08);
+  --primary-bg-alpha: rgba(59, 130, 246, 0.1);
+  --primary-border-alpha: rgba(59, 130, 246, 0.2);
+  --primary-shadow: rgba(59, 130, 246, 0.15);
+  --primary-bg-light: rgba(59, 130, 246, 0.12);
+  --primary-lighter: #A5B4FC;
+  --primary-glow-strong: rgba(99, 102, 241, 0.5);
+  --device-shell-bg: #000;
+  --device-shell-border: #1c1c1e;
+  --screen-bg-light: #ffffff;
+  --screen-bg-dark: #0f0f11;
+  --screen-text-light: #000;
+  --screen-text-dark: white;
+  --border-light-alpha: rgba(0, 0, 0, 0.08);
+  --border-dark-alpha: rgba(255, 255, 255, 0.08);
+  --inspector-bg: #111113;
+  --code-text: #9cdcfe;
+  --code-value: #ce9178;
+  --scrollbar-thumb-alpha: rgba(255, 255, 255, 0.1);
+  --data-item-bg-alpha: rgba(255, 255, 255, 0.02);
+  --data-item-border-alpha: rgba(255, 255, 255, 0.05);
+  --watermark-light: rgba(0, 0, 0, 0.04);
+  --watermark-dark: rgba(255, 255, 255, 0.04);
+  --error-bg: rgba(127, 29, 29, 1);
+  --border-subtle-light-alpha: rgba(255, 255, 255, 0.03);
 }
 
 /* Backdrop Blur Support (for glassmorphism) */
@@ -307,4 +340,82 @@
 
 .config-body::-webkit-scrollbar-thumb:hover {
   background: var(--border-strong);
+}
+
+/* ============================================
+   LIGHT THEME
+   ============================================ */
+[data-theme="light"] {
+  /* ===== Light Background System ===== */
+  --bg-deep: #FFFFFF;           /* Pure white */
+  --bg-body: #FFFFFF;           /* Body background */
+  --bg-app: #FAFAFA;            /* App background */
+  --bg-panel: #F9FAFB;          /* Panel background (gray-50) */
+  --bg-card: #F3F4F6;           /* Card background (gray-100) */
+  --bg-canvas: #FFFFFF;         /* Canvas background */
+  --bg-secondary: rgba(229, 231, 235, 0.5);
+  --bg-glass: rgba(249, 250, 251, 0.8);
+  --bg-hover: rgba(0, 0, 0, 0.03);
+  --bg-active: rgba(0, 0, 0, 0.05);
+
+  /* ===== Border System (Light Mode) ===== */
+  --border-base: #E5E7EB;       /* Base border (gray-200) */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border: rgba(0, 0, 0, 0.1);
+  --border-medium: #D1D5DB;     /* Medium border (gray-300) */
+  --border-hover: #D1D5DB;      /* Hover border */
+  --border-strong: rgba(0, 0, 0, 0.2);
+
+  /* ===== Text Colors (Light Mode) ===== */
+  --text-primary: #111827;      /* Almost black (gray-900) */
+  --text-main: #1F2937;         /* Main text (gray-800) */
+  --text-secondary: #6B7280;    /* Secondary text (gray-500) */
+  --text-sub: #6B7280;          /* Sub text */
+  --text-tertiary: #9CA3AF;     /* Tertiary text (gray-400) */
+  --text-dim: #D1D5DB;          /* Dim text (gray-300) */
+  --text-inverse: #FFFFFF;      /* Inverse text */
+
+  /* ===== Shadows (Light Mode - Softer) ===== */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 20px var(--primary-glow), 0 0 40px rgba(99, 102, 241, 0.15);
+
+  /* ===== Dot Grid Background (Light Canvas) ===== */
+  --dot-color: #9CA3AF;
+
+  /* ===== Extended Variables (Light Mode) ===== */
+  --bg-panel-alpha: rgba(249, 250, 251, 0.9);
+  --bg-panel-dark-alpha: rgba(0, 0, 0, 0.05);
+  --bg-hover-alpha: rgba(229, 231, 235, 0.5);
+  --bg-active-alpha: rgba(229, 231, 235, 0.7);
+  --bg-deep-alpha: rgba(255, 255, 255, 0.9);
+  --bg-hover-light-alpha: rgba(0, 0, 0, 0.02);
+  --border-subtle-alpha: rgba(0, 0, 0, 0.06);
+  --primary-bg-alpha: rgba(99, 102, 241, 0.08);
+  --primary-border-alpha: rgba(99, 102, 241, 0.15);
+  --primary-shadow: rgba(99, 102, 241, 0.12);
+  --primary-bg-light: rgba(99, 102, 241, 0.1);
+  --primary-lighter: #C7D2FE;
+  --primary-glow-strong: rgba(99, 102, 241, 0.3);
+  --device-shell-bg: #E5E7EB;
+  --device-shell-border: #D1D5DB;
+  --screen-bg-light: #ffffff;
+  --screen-bg-dark: #0f0f11;
+  --screen-text-light: #000;
+  --screen-text-dark: white;
+  --border-light-alpha: rgba(0, 0, 0, 0.08);
+  --border-dark-alpha: rgba(255, 255, 255, 0.08);
+  --inspector-bg: #F3F4F6;
+  --code-text: #1F2937;
+  --code-value: #9333EA;
+  --scrollbar-thumb-alpha: rgba(0, 0, 0, 0.15);
+  --data-item-bg-alpha: rgba(0, 0, 0, 0.02);
+  --data-item-border-alpha: rgba(0, 0, 0, 0.06);
+  --watermark-light: rgba(0, 0, 0, 0.04);
+  --watermark-dark: rgba(255, 255, 255, 0.04);
+  --error-bg: rgba(254, 202, 202, 1);
+  --border-subtle-light-alpha: rgba(0, 0, 0, 0.03);
 }

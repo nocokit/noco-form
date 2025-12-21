@@ -1,24 +1,24 @@
 
 <template>
   <div class="setting-item h-42">
-    <a-typography-text type="secondary" class="secondary">
+    <span class="text-gray-500 secondary">
       表单标题
-      <a-tooltip placement="top">
-        <template #title>
-          <span>批量操作：针对有值的描述字段显示隐藏操作，没有赋值预览页面会自动隐藏</span>
-        </template>
-        <QuestionCircleOutlined />
-    </a-tooltip>
-    </a-typography-text>
-    <a-space direction="vertical" class="abs-r switch-r " >
-      <a-switch  v-model:checked="form.displayTitle"  @change="changeValue($event)" />
-    </a-space> 
+      <span class="relative inline-block group ml-1">
+        <QuestionCircleOutlined class="cursor-help" />
+        <span class="invisible group-hover:visible absolute z-10 px-2 py-1 text-sm text-white bg-gray-900 rounded shadow-lg -top-8 left-0 whitespace-nowrap">
+          批量操作：针对有值的描述字段显示隐藏操作，没有赋值预览页面会自动隐藏
+        </span>
+      </span>
+    </span>
+    <div class="abs-r switch-r">
+      <TwSwitch v-model="form.displayTitle" @change="changeValue" />
+    </div>
   </div>
 
 </template>
 <script lang="ts" setup>
-import type { SizeType } from 'ant-design-vue/es/config-provider';
 import { ref, watch, defineProps } from 'vue';
+import { TwSwitch } from '@/components/ui'
 import { useSelectCompStore  } from '@/stores/selectCompStore'
 
 interface Props {
@@ -37,6 +37,3 @@ const changeValue = (value: boolean) => {
 }
 
 </script>
-<style lang="scss" scoped>
-
-</style>

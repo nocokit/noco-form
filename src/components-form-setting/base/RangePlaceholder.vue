@@ -1,21 +1,24 @@
 
 <template>
-  <a-typography-text type="secondary" class="block-title">输入框提示（区间）</a-typography-text>
-  <a-input 
-    v-if="compStore.currentCompConfig && comp.placeholderRange"
-    placeholder="开始提示" 
-    allow-clear 
-    v-model:value="comp.placeholderRange[0]"
-    @Input="handleChangeInput($event, 'start')"
-  ></a-input>
-  <a-input 
-    class="mt-10"
-    v-if="compStore.currentCompConfig && comp.placeholderRange"
-    placeholder="结束提示" 
-    allow-clear 
-    v-model:value="comp.placeholderRange[1]"
-    @Input="handleChangeInput($event, 'end')"
-  ></a-input>
+  <div class="setting-item">
+    <label class="setting-label">输入框提示（区间）</label>
+    <input
+      v-if="compStore.currentCompConfig && comp.placeholderRange"
+      type="text"
+      placeholder="开始提示"
+      v-model="comp.placeholderRange[0]"
+      @input="handleChangeInput($event, 'start')"
+      class="custom-input"
+    />
+    <input
+      v-if="compStore.currentCompConfig && comp.placeholderRange"
+      type="text"
+      placeholder="结束提示"
+      v-model="comp.placeholderRange[1]"
+      @input="handleChangeInput($event, 'end')"
+      class="custom-input mt-8"
+    />
+  </div>
 </template>
 <script lang="ts" setup>
 import { defineProps, defineEmits, ref }  from 'vue'
@@ -45,17 +48,3 @@ const props = defineProps<Props>()
 const comp = ref(props.comp)
 
 </script>
-<style lang="scss" scoped>
-.block-title {
-  margin-top: 10px;
-}
-.comp {
-  padding: 10px;
-  color: yellowgreen;
-}
-
-.mt-10 {
-  margin-top: 8px;
-}
-
-</style>

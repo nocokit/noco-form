@@ -1,35 +1,32 @@
 
 <template>
   <div class="setting-item h-42 mb-10">
-    <a-typography-text 
-      type="secondary" 
-      class="secondary">显示其他数据
-    </a-typography-text>
-    <a-space direction="vertical" class="abs-r switch-r ">
-      <a-switch  v-model:checked="comp.useOtherDataList" @change="handleChangeInput" />
-    </a-space> 
+    <span class="text-gray-500 secondary">显示其他数据</span>
+    <div class="abs-r switch-r">
+      <TwSwitch v-model="comp.useOtherDataList" @change="handleChangeInput" />
+    </div>
   </div>
   <div class="setting-item">
-    <!-- <a-typography-text type="secondary" class="block-title">请输入其他选项文本</a-typography-text> -->
-  <a-input 
-    class="mb-10"
-    placeholder="请输入其他文本(最长15个字符)" 
-    v-model:value="comp.dataOtherList[0].label"
-    @Input="changeOther"
-    :maxlength="15"
-  ></a-input>
+    <input
+      type="text"
+      class="mb-10 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      placeholder="请输入其他文本(最长15个字符)"
+      v-model="comp.dataOtherList[0].label"
+      @input="changeOther"
+      maxlength="15"
+    />
   </div>
 </template>
 <script lang="ts" setup>
 import { defineProps, defineEmits, ref }  from 'vue'
+import { TwSwitch } from '@/components/ui'
 import { useSelectCompStore  } from '@/stores/selectCompStore'
 
 const compStore = useSelectCompStore()
 
-const handleChangeInput = (event: boolean) => {
-  const data = event
+const handleChangeInput = (value: boolean) => {
   compStore.updateCurrentComp({
-    useOtherDataList: data
+    useOtherDataList: value
   })
 }
 
@@ -51,19 +48,4 @@ const props = defineProps<Props>()
 const comp = ref(props.comp)
 
 </script>
-<style lang="scss" scoped>
-.block-title {
-  margin-top: 10px;
-}
-.comp {
-  padding: 10px;
-  color: yellowgreen;
-}
-.mb-10 {
-  margin-bottom: 10px;
-}
-</style>
 
-<style lang="scss" scoped>
-
-</style>

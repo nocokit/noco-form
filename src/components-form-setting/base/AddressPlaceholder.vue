@@ -1,25 +1,28 @@
 
 <template>
-  <a-typography-text type="secondary" class="block-title">选择框省/市/区提示</a-typography-text>
-  <a-input 
-    v-if="compStore.currentCompConfig"
-    placeholder="输入框提示" 
-    allow-clear 
-    v-model:value="comp.address_placeholder"
-    @Input="handleChangeInput($event,'address_placeholder')"
-  ></a-input>
+  <div class="setting-item">
+    <label class="setting-label">选择框省/市/区提示</label>
+    <input
+      v-if="compStore.currentCompConfig"
+      type="text"
+      placeholder="输入框提示"
+      v-model="comp.address_placeholder"
+      @input="handleChangeInput($event,'address_placeholder')"
+      class="custom-input"
+    />
+  </div>
 
-  <a-typography-text type="secondary" class="block-title">详细地址输入框提示</a-typography-text>
-  <a-input 
-    v-if="compStore.currentCompConfig"
-    placeholder="输入框提示" 
-    allow-clear 
-    v-model:value="comp.address_detail_placeholder"
-    @Input="handleChangeInput($event, 'address_detail_placeholder')"
-  ></a-input>
-
-
-
+  <div class="setting-item">
+    <label class="setting-label">详细地址输入框提示</label>
+    <input
+      v-if="compStore.currentCompConfig"
+      type="text"
+      placeholder="输入框提示"
+      v-model="comp.address_detail_placeholder"
+      @input="handleChangeInput($event, 'address_detail_placeholder')"
+      class="custom-input"
+    />
+  </div>
 </template>
 <script lang="ts" setup>
 import { defineProps, defineEmits, ref }  from 'vue'
@@ -43,13 +46,3 @@ const props = defineProps<Props>()
 const comp = ref(props.comp)
 
 </script>
-<style lang="scss" scoped>
-.block-title {
-  margin-top: 10px;
-}
-.comp {
-  padding: 10px;
-  color: yellowgreen;
-}
-
-</style>

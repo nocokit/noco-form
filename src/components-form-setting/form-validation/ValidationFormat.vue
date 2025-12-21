@@ -1,20 +1,24 @@
 
 <template>
   <div class="setting-item h-50">
-    <a-typography-text type="secondary" class="secondary">格式</a-typography-text>
-    <a-select v-model:value="comp.formValidationFormat" style="width: 120px" class="abs-r" @change="handleChangeInput">
-      <a-select-option :value="item.value" v-for="item in systemFormatList">{{ item.name }}</a-select-option>
-    </a-select>
+    <span class="text-gray-500 secondary">格式</span>
+    <select
+      v-model="comp.formValidationFormat"
+      @change="handleChangeInput(($event.target as HTMLSelectElement).value)"
+      class="abs-r w-30 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    >
+      <option :value="item.value" v-for="item in systemFormatList" :key="item.value">{{ item.name }}</option>
+    </select>
   </div>
   <div class="setting-item h-42" v-if="comp.formValidationFormat === 'regular'">
-    <a-input
-      v-model:value="comp.formValidationFormatRegex"
+    <input
+      type="text"
+      v-model="comp.formValidationFormatRegex"
       placeholder="请输入自定义正则表达式"
-      auto-size
-      allow-clear 
       maxlength="40"
-      :autosize="autosize"
-      @Input="changeValidationFormatRegexInput"/>
+      @input="changeValidationFormatRegexInput"
+      class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    />
   </div>
 </template>
 <script lang="ts" setup>
@@ -40,10 +44,7 @@ const formList = [{
   name: '自定义正则',
   value: 'regular'
 }]
-const autosize = ref({
-  minRows:2,
-  maxRows:3,
-})
+
 const systemFormatList = ref(formList)
 interface Props{
   comp: any
@@ -69,6 +70,3 @@ const changeValidationFormatRegexInput = (event: any) => {
 }
 
 </script>
-<style lang="scss" scoped>
-
-</style>

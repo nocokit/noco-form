@@ -1,36 +1,48 @@
 <template>
   <div>
-    <a-divider background="#e0e0e0" class="divider" :orientation="position" :dashed="dividerBorderType">{{ dividerValue }}</a-divider>
+    <div
+      class="divider flex items-center my-4"
+      :class="{
+        'justify-start': position === 'left',
+        'justify-center': position === 'center',
+        'justify-end': position === 'right'
+      }"
+    >
+      <div
+        v-if="position === 'left'"
+        class="flex-grow-0 border-t"
+        :class="dividerBorderType ? 'border-dashed' : 'border-solid'"
+        style="border-color: #e0e0e0; width: 0;"
+      ></div>
+      <div
+        v-if="position !== 'left'"
+        class="flex-1 border-t"
+        :class="dividerBorderType ? 'border-dashed' : 'border-solid'"
+        style="border-color: #e0e0e0;"
+      ></div>
+      <span v-if="dividerValue" class="px-4 text-gray-600">{{ dividerValue }}</span>
+      <div
+        class="flex-1 border-t"
+        :class="dividerBorderType ? 'border-dashed' : 'border-solid'"
+        style="border-color: #e0e0e0;"
+      ></div>
+      <div
+        v-if="position === 'right'"
+        class="flex-grow-0 border-t"
+        :class="dividerBorderType ? 'border-dashed' : 'border-solid'"
+        style="border-color: #e0e0e0; width: 0;"
+      ></div>
+    </div>
   </div>
  </template>
  <script setup lang="ts">
- import { ref, reactive } from 'vue'
-
- const radioStyle = reactive({
- 
- });
-
  interface Props {
   type: string
   dividerValue: string
-  dividerBorderType: boolean // 虚线类型 
+  dividerBorderType: boolean // 虚线类型
   position: string
   isDev: boolean
  }
- 
+
  const props = defineProps<Props>()
-
-
  </script>
- <style lang="scss" scoped>
- .divider {
-
-}
-::v-deep { 
-    .ant-divider-with-text {
-        color: #666 !important;
-        font-weight: 400 !important;
-        font-size: 14px !important;
-    }
-  }
- </style>

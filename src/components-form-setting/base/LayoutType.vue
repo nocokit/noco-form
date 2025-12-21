@@ -1,24 +1,34 @@
 
 <template>
-  <div class="setting-item h-80 p-t-10">
-    <a-typography-text type="secondary" class="secondary">布局方式</a-typography-text>
-    <a-space direction="vertical" class="abs-r ">
-      <a-radio-group v-model:value="comp.layoutType" @change="handleChangeInput">
-        <a-radio-button v-for="item in layoutTypeList" :value="item.value" >{{ item.label }}</a-radio-button>
-      </a-radio-group>
-    </a-space> 
+  <div class="setting-item">
+    <label class="setting-label">布局方式</label>
+    <div class="radio-group">
+      <label
+        v-for="item in layoutTypeList"
+        :key="item.value"
+        class="radio-option"
+        :class="{ 'active': comp.layoutType === item.value }"
+      >
+        <input
+          type="radio"
+          :value="item.value"
+          v-model="comp.layoutType"
+          @change="handleChangeInput"
+          class="radio-input"
+        />
+        <span class="radio-label">{{ item.label }}</span>
+      </label>
+    </div>
   </div>
-
 </template>
 <script lang="ts" setup>
-import type { SizeType } from 'ant-design-vue/es/config-provider';
 import { defineProps, defineEmits, ref }  from 'vue'
 import { useSelectCompStore  } from '@/stores/selectCompStore'
 
 const compStore = useSelectCompStore()
 
 const handleChangeInput = (event: any) => {
-  const data = event.target.value 
+  const data = event.target.value
   compStore.updateCurrentComp({
     layoutType: data
   })
@@ -40,8 +50,3 @@ const layoutTypeList = [{
 }]
 
 </script>
-<style lang="scss" scoped>
-.secondary {
-  margin: 10px 0;
-}
-</style>

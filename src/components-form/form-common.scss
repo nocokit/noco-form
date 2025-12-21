@@ -1,0 +1,158 @@
+/* Common styles for form components - Theme-Aware */
+/* Now uses global CSS variables from design-tokens.css */
+
+/* Accessibility - Focus visible outline */
+:deep(*:focus-visible) {
+  @apply outline-2 outline-offset-2;
+  outline-color: var(--primary);
+}
+
+/* === Floating Action Toolbar === */
+.floating-action-toolbar {
+  @apply absolute -bottom-14 right-0 flex items-center gap-3 px-3 py-2 rounded-lg z-10;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-base);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toolbar-btn {
+  @apply p-1.5 rounded transition-colors cursor-pointer;
+}
+
+.toolbar-btn:hover {
+  background-color: var(--bg-hover);
+}
+
+.toolbar-btn-danger:hover {
+  background-color: var(--error-bg);
+}
+
+.toolbar-btn.handle {
+  @apply cursor-grab;
+}
+
+.toolbar-btn.handle:active {
+  @apply cursor-grabbing;
+}
+
+.toolbar-btn i {
+  @apply w-4 h-4;
+  color: var(--text-secondary);
+}
+
+.toolbar-btn-danger i {
+  color: var(--error);
+}
+
+/* 分隔线 */
+.toolbar-divider {
+  @apply w-px h-4 mx-1;
+  background-color: var(--border-medium);
+}
+
+/* === Component Item Container === */
+.comp-item {
+  @apply relative mb-4 p-4 rounded-xl transition-all duration-200 cursor-pointer;
+  border: 2px solid transparent;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* === Component Title & Description === */
+.comp-item-title {
+  @apply mb-3 flex flex-col gap-1;
+}
+
+.comp-item-title .title-value {
+  @apply text-sm font-medium;
+  color: var(--text-primary);
+}
+
+.comp-item-title .number {
+  @apply mr-1;
+  color: var(--text-tertiary);
+}
+
+/* 必填星号样式 */
+.required-star {
+  color: var(--error);
+}
+
+.comp-item-description {
+  @apply text-xs mb-3;
+  color: var(--text-tertiary);
+}
+
+/* === Date & Time Input 隐藏原生图标 === */
+.date-input::-webkit-calendar-picker-indicator,
+.time-input::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.date-input::-webkit-inner-spin-button,
+.date-input::-webkit-clear-button,
+.time-input::-webkit-inner-spin-button,
+.time-input::-webkit-clear-button {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* === Checkbox & Radio 自定义样式 === */
+/* 自定义 Checkbox 核心动画逻辑 */
+.cb-input:checked + .cb-box {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 12px var(--primary-glow);
+}
+
+.cb-input:checked + .cb-box svg {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* 自定义 Radio 核心动画逻辑 */
+.radio-input:checked + .radio-box {
+  border-color: var(--primary);
+  box-shadow: 0 0 12px var(--primary-glow);
+}
+
+.radio-input:checked + .radio-box > div {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.checkbox-item:hover input[type="checkbox"],
+.checkbox-item:hover .custom-checkbox {
+  border-color: var(--primary);
+}
+
+/* === Bottom Settings Bar === */
+.bottom-setting {
+  @apply mt-6 pt-5;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.data-list-setting {
+  @apply flex justify-between items-center;
+}
+
+.data-list-setting button {
+  @apply outline-none;
+}
+
+.data-list-setting button:disabled {
+  @apply cursor-not-allowed;
+}

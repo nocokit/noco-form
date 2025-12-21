@@ -1,17 +1,16 @@
 
 <template>
   <div class="setting-item h-42 comp">
-    <a-typography-text type="secondary" class="secondary">虚线
-    </a-typography-text>
-    <a-space direction="vertical" class="abs-r switch-r  ">
-      <a-switch v-model:checked="comp.dividerBorderType" @change="changeValue($event)" />
-    </a-space> 
+    <span class="text-gray-500 secondary">虚线</span>
+    <div class="abs-r switch-r">
+      <TwSwitch v-model="comp.dividerBorderType" @change="changeValue" />
+    </div>
   </div>
 
 </template>
 <script lang="ts" setup>
-import type { SizeType } from 'ant-design-vue/es/config-provider';
 import { ref, watch, defineProps } from 'vue';
+import { TwSwitch } from '@/components/ui'
 import { useSelectCompStore  } from '@/stores/selectCompStore'
 
 interface Props {
@@ -29,8 +28,3 @@ const changeValue = (value: boolean) => {
 }
 
 </script>
-<style lang="scss" scoped>
-.comp {
-  margin-bottom: 10px;
-}
-</style>

@@ -70,19 +70,11 @@ onMounted(() => {
 
 </script>
 <style lang="scss" scoped>
-.header-img {
-  img {
-    width: 100%;
+  .header-img {
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
   }
-}
-
-.title-section {
-  margin: 30px 0;
-  .title {
-    margin: 10px 0 !important;
-  }
-  .description {
-    color: rgba(0, 0, 0, 0.45);
-  }
-}
 </style>

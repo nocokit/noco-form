@@ -1,14 +1,17 @@
 
 <template>
-  <div class="setting-item h-50">
-    <a-typography-text type="secondary" class="block-title2">大小</a-typography-text>
-    <a-select v-model:value="comp.size" style="width: 120px" class="abs-r" @change="handleChange">
-      <a-select-option :value="item.value" v-for="item in orientationList">{{ item.name }}</a-select-option>
-    </a-select>
+  <div class="setting-item">
+    <label class="setting-label">大小</label>
+    <TwSelect
+      v-model="comp.size"
+      :options="orientationList"
+      @change="handleChange"
+    />
   </div>
 </template>
 <script lang="ts" setup>
 import { defineProps, defineEmits, ref }  from 'vue'
+import { TwSelect } from '@/components/ui'
 import { useSelectCompStore  } from '@/stores/selectCompStore'
 import { textOrButtonSizeData } from '../setting-config-data'
 
@@ -17,10 +20,9 @@ const orientationList = ref([...textOrButtonSizeData])
 
 
 
-const handleChange = (event: any) => {
-  const data = event
+const handleChange = (value: any) => {
   compStore.updateCurrentComp({
-    size: data
+    size: value
   })
 }
 
@@ -32,14 +34,3 @@ const props = defineProps<Props>()
 const comp = ref(props.comp)
 
 </script>
-<style lang="scss" scoped>
-
-.comp {
-  padding: 10px;
-  color: yellowgreen;
-}
-.comp {
-  margin-bottom: 10px;
-}
-
-</style>

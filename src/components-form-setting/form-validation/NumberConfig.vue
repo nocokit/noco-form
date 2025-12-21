@@ -1,21 +1,29 @@
 <template>
   <div class="setting-item h-42">
-    <a-typography-text type="secondary" class="secondary">最小值</a-typography-text>
-
-    <a-input-number  class="abs-r" v-model:value="comp.minValue" placeholder="最小值" allow-clear
-      @Input="handleChangeInput($event, 'minValue')" />
+    <span class="text-gray-500 secondary">最小值</span>
+    <input
+      type="number"
+      class="abs-r w-30 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      v-model="comp.minValue"
+      placeholder="最小值"
+      @input="handleChangeInput($event, 'minValue')"
+    />
   </div>
 
   <div class="setting-item h-42">
-    <a-typography-text type="secondary" class="secondary">最大值</a-typography-text>
-    <a-input-number class="abs-r" v-model:value="comp.maxValue" placeholder="最大值" allow-clear
-      @Input="handleChangeInput($event, 'maxValue')" />
+    <span class="text-gray-500 secondary">最大值</span>
+    <input
+      type="number"
+      class="abs-r w-30 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      v-model="comp.maxValue"
+      placeholder="最大值"
+      @input="handleChangeInput($event, 'maxValue')"
+    />
   </div>
 
 
 </template>
 <script lang="ts" setup>
-import type { SizeType } from 'ant-design-vue/es/config-provider';
 import { ref } from 'vue';
 import { useSelectCompStore } from '@/stores/selectCompStore'
 
@@ -36,4 +44,3 @@ const handleChangeInput = (event: any, param: 'maxValue' | 'minValue') => {
 }
 
 </script>
-<style lang="scss" scoped></style>

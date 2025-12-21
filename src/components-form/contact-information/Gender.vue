@@ -1,19 +1,33 @@
 <template>
-  <a-checkbox-group :value="dataValue" :options="useOtherDataList ? [...dataList,...dataOtherList]: dataList"
-    :disabled="isDev"
-    :style="layoutType === 'vertical' || isSelected ? radioVerticalStyle : radioStyle" 
-    :class="{
-      'group-item': true,
-      'group-item-select': isSelected
-    }"
-    :key="isSelected + _updateKey ">
-    <template #label="{ label, subType, value, _index }" class="item list-item ">
-      <div class="editor-item" contenteditable="true" @blur="changeValue($event, _index)">{{ label }}</div>
-    </template>
-  </a-checkbox-group>
+  <div
+    class="group-item flex flex-col space-y-3"
+    :key="isSelected + _updateKey"
+  >
+    <label
+      v-for="(option, index) in useOtherDataList ? [...dataList,...dataOtherList]: dataList"
+      :key="option.value"
+      class="flex items-center gap-3 cursor-pointer group/item"
+      :class="{'pointer-events-none': isDev}"
+    >
+      <input
+        type="checkbox"
+        :value="option.value"
+        :checked="Array.isArray(dataValue) ? dataValue.includes(option.value) : false"
+        :disabled="isDev"
+        class="w-4 h-4 text-blue-600 border border-zinc-700 rounded bg-zinc-800/50 focus:ring-blue-500 focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
+      />
+      <div
+        class="editor-item outline-none text-sm text-zinc-400"
+        contenteditable="true"
+        @blur="changeValue($event, option._index !== undefined ? option._index : index)"
+      >
+        {{ option.label }}
+      </div>
+    </label>
+  </div>
 </template>
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { v4 as uuidv4  } from 'uuid'
 
 interface Props {
@@ -21,7 +35,6 @@ interface Props {
   useOtherDataList: boolean
   dataOtherList:  Array<any>
   dataValue: string
-  layoutType: string
   isDev: boolean
   isSelected: boolean
 }
@@ -57,71 +70,4 @@ const changeValue = (event: any, index: number) => {
 
 }
 
-const radioVerticalStyle = ref({
-  display: 'flex',
-  lineHeight: '40px',
-});
-
-const radioStyle = ref({
-  display: 'inline-block',
-  minHeight: '40px',
-  lineHeight: '40px'
-});
-
 </script>
-<style lang="scss" scoped>
-::v-deep {
-  .ant-checkbox-group-item {
-    position: relative;
-    min-height: 40px;
-    line-height: 40px;
-    width: 100%;
-
-    .delete  {
-    display: none;
-  }
-
-  &:hover, &:active, &:focus {
-    .delete {
-      position: absolute;
-      display: block;
-      right: 0;
-      top: 0;
-      cursor: pointer;
-    }
-  }
-  }
-
-  span.ant-checkbox {
-    position: absolute;
-    top:12px;
-  }
-}
-
-.other-val {
-  display: block;
-}
-
-
-
-::v-deep(:where(.css-dev-only-do-not-override-17yhhjv).ant-checkbox-disabled+span) {
-  color: #000;
-}
-
-
-::v-deep(:where(.css-dev-only-do-not-override-17yhhjv).ant-checkbox .ant-checkbox-input) {
-  display: inline;
-}
-
-.editor-item {
-  outline: none;
-  margin-left: 15px;
-  &:active,&:focus {
-    border:1px solid #e0e0e0;
-    padding: 0px 12px 0px 10px;
-    border-radius: 6px;
-  }
-}
-
-
-</style>

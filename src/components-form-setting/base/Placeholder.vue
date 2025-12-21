@@ -2,12 +2,13 @@
 <template>
   <div class="setting-item">
     <label class="setting-label">输入框提示</label>
-    <a-input
+    <input
       v-if="compStore.currentCompConfig"
+      type="text"
       placeholder="输入框提示文本"
-      allow-clear
-      v-model:value="comp.placeholder"
-      @Input="handleChangeInput"
+      v-model="comp.placeholder"
+      @input="handleChangeInput"
+      class="custom-input"
     />
   </div>
 </template>
@@ -33,6 +34,3 @@ const props = defineProps<Props>()
 const comp = ref(props.comp)
 </script>
 
-<style lang="scss" scoped>
-@import '@/components-form-setting/setting-common.css';
-</style>

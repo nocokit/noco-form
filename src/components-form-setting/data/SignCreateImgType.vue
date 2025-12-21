@@ -1,9 +1,13 @@
 <template>
   <div class="setting-item h-50">
-    <a-typography-text type="secondary" class="block-title2">保存图片格式</a-typography-text>
-    <a-select v-model:value="comp.sign_create_type" style="width: 120px" class="abs-r" @change="changeType">
-      <a-select-option :value="item.value" v-for="item in ImgTypeList">{{ item.label }}</a-select-option>
-    </a-select>
+    <span class="text-gray-500 block-title2">保存图片格式</span>
+    <select
+      v-model="comp.sign_create_type"
+      @change="changeType(($event.target as HTMLSelectElement).value)"
+      class="abs-r w-30 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    >
+      <option :value="item.value" v-for="item in ImgTypeList" :key="item.value">{{ item.label }}</option>
+    </select>
   </div>
 
 </template>
@@ -28,39 +32,3 @@ const changeType = (item: any) => {
 
 
 </script>
-<style lang="scss" scoped>
-.handle {
-  display: flex;
-  height: 36px;
-
-  img {
-    width: 12px;
-    cursor: move;
-  }
-}
-
-.label {
-  display: inline-block;
-  margin-left: 10px;
-  font-size: 14px;
-  color: #666;
-  user-select: none;
-  white-space: nowrap; /* 强制文本在一行显示 */
-  overflow: hidden; /* 隐藏超出部分 */
-  text-overflow: ellipsis; 
-  width: 200px;
-}
-
-.secondary {
-  display: block;
-  padding-bottom: 8px;
-}
-
-.form-item {
-  height: 36px;
-  line-height: 36px;
-  img {
-    margin-top: 0px;
-  }
-}
-</style>

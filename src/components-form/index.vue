@@ -1,104 +1,99 @@
 <template>
-  <div class="comp-item">
+  <div class="comp-item" :class="{ selected: compConfig.id === selectedComp?.id }">
     <div class="comp-item-title" v-if="!!displaySection">
-      <a-typography-title :level="5" class="title-value">
-        <span class="number" v-bind:class="{ 'title-value-isRequired': component.isRequired, number: true }"
-          v-if="formConfig?.displayNumberSort">
+      <div class="flex items-center gap-2">
+        <span v-if="formConfig?.displayNumberSort" class="text-zinc-600 font-mono text-xs">
           {{ component?.lineNumber }}.
         </span>
-        <span class="title-value">
-          <a-textarea class="input-comp" v-if="isDev && component?.id === selectedComp?.id"
-            :auto-size="{ minRows: 1, maxRows: 5 }" maxlength="50" v-model:value="component.title"
-            :placeholder="'请输入标题'" @change="changeValue($event, 'title')" allow-clear>
-          </a-textarea>
-
-          <a-typography-text v-else type="secondary">
-            <div class="description input-comp">
-              {{ component.title }}
-            </div>
-          </a-typography-text>
-        </span>
-      </a-typography-title>
-    </div>
-    <div class="comp-item-description" v-if="displaySection && formConfig?.displayDescription">
-      <div type="secondary" v-if="component?.id !== selectedComp?.id && isDev || renderType">
-        <div class="description">
-          {{ component.description }}
-        </div>
+        <h3 v-if="isDev && component?.id === selectedComp?.id" class="flex-1">
+          <input
+            type="text"
+            class="w-full bg-transparent border-none outline-none text-zinc-200 font-semibold tracking-wide placeholder:text-zinc-600"
+            maxlength="50"
+            v-model="component.title"
+            placeholder="请输入标题"
+            @change="changeValue($event, 'title')"
+          />
+        </h3>
+        <h3 v-else class="flex-1 text-zinc-200 font-semibold tracking-wide">
+          {{ component.title }}
+        </h3>
+        <span v-if="component.isRequired" class="required-star text-lg leading-none" style="color: rgb(244, 63, 94)">*</span>
       </div>
-      <a-textarea v-else :auto-size="{ minRows: 1, maxRows: 5 }" v-model:value="component.description"
-        :placeholder="'请输入描述'" @change="changeValue($event, 'description')" allow-clear>
-
-      </a-textarea>
+    </div>
+    <div class="comp-item-description" v-if="displaySection && (component.description || component?.id === selectedComp?.id)">
+      <!-- 未选中状态：显示描述文本 -->
+      <div class="text-xs text-zinc-500 leading-relaxed" v-if="component?.id !== selectedComp?.id && component.description">
+        {{ component.description }}
+      </div>
+      <!-- 选中状态：显示可编辑的 textarea -->
+      <textarea
+        v-if="component?.id === selectedComp?.id"
+        class="w-full mt-2 mb-2 px-4 py-2.5 text-xs text-zinc-300 rounded-xl border outline-none transition-all resize-y min-h-[80px] leading-relaxed bg-[#18181b] border-[#27272a] placeholder:text-[#52525b] hover:border-[#3f3f46] hover:bg-[#09090b] focus:border-indigo-500/50 focus:bg-[#09090b]"
+        v-model="component.description"
+        placeholder="请输入描述"
+        @change="changeValue($event, 'description')"
+        rows="1"
+        @input="autoResize($event)">
+      </textarea>
     </div>
     <div class="component">
-      <component 
-        :key="currentComp" 
+      <component
+        :key="currentComp"
         :isSelected="component?.id === selectedComp?.id"
-        :isPreviewRender="renderType === 'preview'" 
+        :isPreviewRender="renderType === 'preview'"
         :isDev="isDev"
         :previewType="previewType"
         :is="getCompConfig(props.type).comp" v-bind="component"></component>
     </div>
     <div class="active-comp-setting" v-if="compConfig.id === selectedComp?.id && !isIgnoreEditor()">
-
       <div class="bottom-setting">
         <div class="data-list-setting" v-if="HasSettingTypeList.includes(compConfig.type)">
-
-          <span class="add-item">
-            <a-typography-text type="warning" @click="addItem('new')">
-              <PlusCircleTwoTone class="icon" :style="{ fontSize: '16px', color: '#646a73' }" />
-              <span class="add-label">添加单项 </span>
-            </a-typography-text>
-          </span>
-
-          <!-- <span class="add-item">
-            <a-typography-text type="warning">模版</a-typography-text>
-            <span class="line"></span>
-          </span> -->
-          <span class="add-item">
-            <a-typography-text type="warning" :class="{ disabled: checkAddOtherClass() }"
-              @click="!checkAddOtherClass() && addItem('other')">
-              <PlusCircleTwoTone class="icon" :style="{ fontSize: '16px', color: '#646a73' }" />
-              <span class="add-label">添加其他 </span>
-            </a-typography-text>
-          </span>
-          <span class="add-item">
-            <a-typography-text type="warning"
-              @click="batchChangeData">
-              <ControlTwoTone class="icon" :style="{ fontSize: '16px', color: '#646a73' }" />
-              <span class="add-label">批量操作 </span>
-            </a-typography-text>
-          </span>
+          <div class="flex gap-4">
+            <button class="text-xs font-semibold text-blue-500 hover:text-blue-400 flex items-center gap-1 transition-colors" @click="addItem('new')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              增加选项
+            </button>
+            <button
+              class="text-xs font-semibold flex items-center gap-1 transition-colors"
+              :class="checkAddOtherClass() ? 'text-zinc-600 cursor-not-allowed' : 'text-blue-500 hover:text-blue-400 cursor-pointer'"
+              @click="!checkAddOtherClass() && addItem('other')"
+              :disabled="checkAddOtherClass()"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+              增加"其他"
+            </button>
+          </div>
+          <button class="text-[10px] font-bold text-zinc-600 hover:text-zinc-400 uppercase tracking-tighter transition-colors" @click="batchChangeData">
+            批量编辑选项
+          </button>
         </div>
-        <!-- <a-checkbox class="setting-item" v-model:checked="component.isRequired"
-          @click="component.isRequired = !component.isRequired">必填</a-checkbox> -->
-        <span class="setting-item">
-          <a-switch class="switch" v-model:checked="component.isRequired" @change="handleChangeRequired"> </a-switch>
-          <label for=""> 必填</label>
-        </span>
-
       </div>
     </div>
     <div class="floating-action-toolbar" v-if="compConfig.id === selectedComp?.id">
-      <a-tooltip placement="top">
-        <template #title>拖拽</template>
-        <div class="toolbar-btn handle">
+      <div class="flex items-center gap-2 pr-2 border-r border-zinc-700">
+        <span class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">必填</span>
+        <TwSwitch v-model="component.isRequired" @change="handleChangeRequired" />
+      </div>
+      <div class="flex gap-3">
+        <div class="toolbar-btn handle" title="拖拽移动">
           <i class="ri-drag-move-fill"></i>
         </div>
-      </a-tooltip>
-      <a-tooltip placement="top">
-        <template #title>复制</template>
-        <div class="toolbar-btn" @click="compControl($event, 'copy')">
+        <div class="toolbar-btn" @click="compControl($event, 'copy')" title="复制">
           <i class="ri-file-copy-line"></i>
         </div>
-      </a-tooltip>
-      <a-tooltip placement="top">
-        <template #title>删除</template>
-        <div class="toolbar-btn toolbar-btn-danger" @click="compControl($event, 'delete')">
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-btn toolbar-btn-danger" @click="compControl($event, 'delete')" title="删除">
           <i class="ri-delete-bin-line"></i>
         </div>
-      </a-tooltip>
+      </div>
     </div>
     <BatchOperationData 
     v-if="openBatchOperationDataBool"
@@ -113,15 +108,16 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch, defineEmits } from 'vue'
+import { TwSwitch } from '@/components/ui'
 // 显示组件
 import ImageComponent from '@/components-form/show/Image.vue'
 import VideoComponent from '@/components-form/show/Video.vue'
 import FormTitleComponent from '@/components-form/show/FormTitle.vue'
 
 // 基础组件
-import RadioComponent from '@/components-form/base/Radio.vue'
 import SelectComponent from '@/components-form/base/Select.vue'
-import CheckoutComponent from '@/components-form/base/Checkout.vue'
+import CheckboxGroupComponent from '@/components-form/base/CheckboxGroup.vue'
+import RadioGroupComponent from '@/components-form/base/RadioGroup.vue'
 import InputComponent from '@/components-form/base/Input.vue'
 import TextareaComponent from '@/components-form/base/Textarea.vue'
 import UrlComponent from '@/components-form/base/Url.vue'
@@ -131,12 +127,14 @@ import TimeComponent from '@/components-form/base/Time.vue'
 import DividerComponent from '@/components-form/base/Divider.vue'
 import PagingComponent from '@/components-form/base/Paging.vue'
 import RateComponent from '@/components-form/base/Rate.vue'
-import SelectRateComponent from '@/components-form/base/SelectRate.vue'
-import NPSComponent from '@/components-form/base/NPS.vue'
 import UploadComponent from '@/components-form/base/Upload.vue'
 import SwitchComponent from '@/components-form/base/Switch.vue'
 import NumberComponent from '@/components-form/base/Number.vue'
 import TimeRangeComponent from '@/components-form/base/TimeRange.vue'
+import CascaderComponent from '@/components-form/base/Cascader.vue'
+import CountrySelectorComponent from '@/components-form/base/CountrySelector.vue'
+import CaptchaComponent from '@/components-form/base/Captcha.vue'
+import PaymentComponent from '@/components-form/base/Payment.vue'
 
 // 联系方式
 import NameComponent from '@/components-form/contact-information/Name.vue'
@@ -234,12 +232,14 @@ function getTypeToComponent(type: string) {
     Img: ImageComponent,
     Video: VideoComponent,
     FormTitle: FormTitleComponent,
-    
+
     // 基础组件
-    Radio: RadioComponent,
     Input: InputComponent,
     Textarea: TextareaComponent,
-    Checkout: CheckoutComponent,
+    CheckboxGroup: CheckboxGroupComponent,
+    RadioGroup: RadioGroupComponent,
+    // 向后兼容旧的 Checkout 命名
+    Checkout: CheckboxGroupComponent,
     Date: DateComponent,
     DateRange: DateRangeComponent,
     Time: TimeComponent,
@@ -251,10 +251,13 @@ function getTypeToComponent(type: string) {
     Divider: DividerComponent,
     Paging: PagingComponent,
     Select: SelectComponent,
+    Cascader: CascaderComponent,
+    CountrySelector: CountrySelectorComponent,
+    Captcha: CaptchaComponent,
+    Payment: PaymentComponent,
 
     // 评分和满意度
     Rate: RateComponent,
-    NPS: NPSComponent,
     ElectronicSignature: SignComponent,
 
     // 联系信息
@@ -266,7 +269,6 @@ function getTypeToComponent(type: string) {
     Phone: PhoneComponent,
     TelePhone: TelePhoneComponent,
     Address: AddressComponent,
-    SelectRate: SelectRateComponent,
   }
   const comp = compsObject[type]
   return comp
@@ -293,296 +295,14 @@ const checkAddOtherClass = () => {
   return _.filter(props.component.dataList, { subType: 'other' }).length > 0
 }
 
+const autoResize = (event: Event) => {
+  const textarea = event.target as HTMLTextAreaElement
+  textarea.style.height = 'auto'
+  textarea.style.height = textarea.scrollHeight + 'px'
+}
+
 </script>
-<style lang="scss" scoped>
-@import './form-common.css';
 
-::v-deep {
-  textarea.input-comp,
-  .description.input-comp {
-    background: transparent;
-    border: none !important;
-    padding: 6px 12px !important;
-    margin-left: -10px !important;
-    color: var(--text-secondary) !important;
-    font-size: var(--text-base) !important;
-
-    &:focus {
-      outline: none;
-      box-shadow: none;
-    }
-  }
-
-  textarea.input-comp,
-  span.input-comp {
-    background: rgba(99, 102, 241, 0.05);
-    border-radius: var(--radius-sm);
-  }
-}
-
-
-.description {
-  width: 100%;
-  padding: 6px 12px;
-  outline: none;
-  margin-left: -10px;
-  border-radius: var(--radius-md);
-  overflow-wrap: break-word;
-  white-space: normal;
-  font-weight: var(--font-normal);
-  color: var(--text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.data-list-setting {
-  display: inline-block;
-  left: 0;
-}
-
-.add-item {
-  position: relative;
-  cursor: pointer;
-  margin-right: 20px;
-
-  .icon {
-    margin-right: 5px;
-    font-size: 18px;
-    position: absolute;
-    left: 0;
-    top: 4px;
-  }
-
-  .add-label {
-    margin-left: 24px;
-  }
-}
-
-.disabled {
-  color: #ddd !important;
-}
-
-::v-deep(.ant-typography.ant-typography-warning) {
-  color: var(--text-secondary);
-  padding: 2px 0px;
-  font-size: var(--text-sm);
-  transition: color var(--transition-fast);
-
-  &:hover {
-    color: var(--primary);
-  }
-}
-
-.line {
-  border-left: 1px solid #e0e0e0;
-  height: 10px;
-  margin: 0 12px;
-}
-
-/* Disabled states are now handled in form-common.css */
-
-::v-deep(.ant-divider-horizontal.ant-divider-with-text::before) {
-  transform: translateY(100%) !important;
-}
-
-::v-deep(.ant-divider-horizontal.ant-divider-with-text::after) {
-  transform: translateY(100%) !important;
-}
-
-.control {
-
-  &:active,
-  &:hover {
-    background: #ebebeb;
-  }
-}
-
-.form-item {
-  .comp-item {
-    padding: 16px 60px 24px;
-  }
-}
-
-.form-item-active {
-  .comp-item {
-    padding: 32px 60px 40px;
-  }
-
-}
-
-.comp-item {
-  position: relative;
-
-  .title-value {
-    position: relative;
-    color: var(--text-primary);
-    font-weight: var(--font-medium);
-
-    .description {
-      &:empty:before {
-        content: '请输入标题';
-        color: var(--text-tertiary);
-        font-weight: var(--font-normal);
-      }
-    }
-  }
-
-  .number {
-    position: absolute;
-    left: -40px;
-    top: 6px;
-    color: var(--text-secondary);
-    font-size: var(--text-sm);
-  }
-
-  .title-value-isRequired::before {
-    color: var(--error);
-    font-size: 12px;
-    position: absolute;
-    top: 8px;
-    left: -9px;
-    font-family: SimSun, sans-serif;
-    line-height: 1;
-    display: inline-block;
-    margin-inline-end: 4px;
-    content: "*";
-  }
-
-  .comp-item-title {
-    min-height: 36px;
-    line-height: 36px;
-  }
-
-  .comp-item-description {
-    padding-bottom: var(--spacing-3);
-    color: var(--text-secondary);
-    font-size: var(--text-sm);
-    line-height: 1.6;
-  }
-}
-
-.active-drag {
-  position: absolute;
-  left: 3px;
-  border-bottom-right-radius: 6px;
-  border-top-right-radius: 6px;
-  width: 46px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  padding: 10px 6px;
-  height: 100%;
-  border-radius: 6px;
-  cursor: move;
-
-  img {
-    width: 20px;
-    position: absolute;
-    top: 50%;
-    z-index: 1000000;
-    transform: translateY(-50%);
-  }
-}
-
-.active-comp-setting-side-bar {
-  position: absolute;
-  right: -33px;
-  width: 32px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--bg-panel);
-  border: 1px solid var(--border-medium);
-  font-size: 14px;
-  padding: 5px 3px;
-  border-bottom-right-radius: var(--radius-md);
-  border-top-right-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-
-  .control {
-    padding: 10px 5px;
-    color: var(--text-secondary);
-    transition: all var(--transition-fast);
-    border-radius: var(--radius-sm);
-
-    &:hover {
-      color: var(--text-primary);
-      background: var(--bg-hover);
-    }
-  }
-}
-
-.active-comp-setting {
-  width: 100%;
-  position: relative;
-  height: 64px;
-  line-height: 64px;
-  padding-top: var(--spacing-4);
-  margin-top: var(--spacing-3);
-  border-top: 1px solid var(--border-subtle);
-
-  .bottom-setting {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 120px;
-  }
-}
-
-.item-comp {
-  width: 100%;
-}
-
-.setting-item {
-  position: absolute;
-  right: 0px;
-  top: 16px;
-  font-size: var(--text-sm);
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2);
-
-  label {
-    color: var(--text-primary);
-    font-weight: var(--font-medium);
-  }
-
-  .switch {
-    position: relative;
-    margin-top: -2px;
-  }
-}
-
-::v-deep(:where(.comp-item-description .css-dev-only-do-not-override-17yhhjv).ant-input-affix-wrapper-textarea-with-clear-btn) {
-  background: transparent !important;
-  left: -10px;
-
-  .anticon-close-circle {
-    display: none;
-
-    &:hover,
-    &:active,
-    &:focus {
-      display: block;
-    }
-  }
-
-
-
-  :where(.comp-item-description .css-dev-only-do-not-override-17yhhjv).ant-input {
-    background: transparent !important;
-    border-style: none;
-    color: rgba(0, 0, 0, 0.45);
-
-    &:active,
-    &:hover,
-    &:focus {
-      // border-style: solid;
-      // border-color: #e0e0e0;
-      outline: none;
-      box-shadow: none;
-
-
-    }
-  }
-}
+<style scoped lang="scss">
+@use './form-common.scss';
 </style>

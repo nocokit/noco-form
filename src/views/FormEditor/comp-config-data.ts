@@ -1,38 +1,49 @@
-
 import { CompType } from "./comp-data"
-import Name from '/src/assets/form/name.svg';
-import TelePhone from '/src/assets/form/telePhone.svg';
 
-type ClassifyList = 'personal'
+// 枚举定义
+export enum DisplayMode {
+  Display = 'display',
+  Hidden = 'hidden',
+  ReadOnly = 'readonly'
+}
+
+export enum DataSourceType {
+  Static = 'static',
+  API = 'api',
+  Expression = 'expression'
+}
+
+export enum DateType {
+  Date = 'date',
+  DateTime = 'datetime',
+  DateRange = 'daterange',
+  Month = 'month',
+  Year = 'year'
+}
 
 interface CompConfig {
-  name: string 
+  name: string
   type: string // 类型
   title: string // 标题
   description: string | null // 描述
   dataValue: any // 赋值，因为value和vue的绑定冲突，所以改成dataValue
   dividerValue?: string // 分割线文本
   pagingValue?: string // 分页内容
+  pageSubTitle?: string // 分页标题
+  pageSubDescription?: string // 分页描述
   defaultValue: string | null// 默认值
   dataList?: any[] // 列表数据，包括单选，多选，下拉选择
   dataOtherList?: any[] // 其他数据
   useOtherDataList?: boolean // 是否使用其他数据
-  layoutType?: 'horizontal' | 'vertical' // 横向布局，纵向布局
   isRequired?: boolean // 必填
   placeholder?: string // 占位符
-  placeholderRange?: [string, string ] // 占位符-范围场景
   isCustomErrorMessage?: boolean // 自定义报错
   customErrorMessage?: string // 自定义报错
   formValidationFormat?: string // 表单校验格式
   formValidationFormatRegex?: string // 表单正则校验内容
-  classify?: ClassifyList[] // 分类
 
   // 值
   value?: string | string[] | null // 值
-
-  // NPS满意度
-  startValue?: number // 开始值
-  startValueList?: number[] // 开始值List
 
   // 标题
   titleValue?: string
@@ -40,20 +51,9 @@ interface CompConfig {
   titleDescription?: string
   titleImageUrl?: string
 
-
-  // 按钮
-  buttonText?: string // 按钮文本
-  size?: 'large' | 'middle' | 'small' // 按钮大小
-  position?: 'left' | 'right' | 'center' // 按钮位置
-  buttonIconShowBool?: boolean // 按钮图标
-
-  // 地址
-  address?: string[] // 地址
-  address_detail?: string // 详细地址
-  address_default?: string[] // 默认地址
-  address_detail_default?: string // 默认详细地址
-  address_placeholder?: string // 地址占位符
-  address_detail_placeholder?: string // 详细地址占位符
+  // 尺寸和位置
+  size?: 'large' | 'middle' | 'small' // 尺寸
+  position?: 'left' | 'right' | 'center' // 位置
 
   // 电子签名
   sign_create_type?: 'png' | 'jpg'
@@ -64,10 +64,53 @@ interface CompConfig {
 
   // 布局组件
   isLayoutComp?: boolean // 布局组件
-  
+
+  // ===== 新增字段（从新类型系统） =====
+  id?: string // 组件唯一ID
+  field?: string // 数据字段名
+  display?: DisplayMode // 显示模式
+  readonly?: boolean // 只读
+  disabled?: boolean // 禁用
+
+  // Input 特有
+  minLength?: number // 最小长度
+  maxLength?: number // 最大长度
+  showCount?: boolean // 显示字数统计
+  allowClear?: boolean // 清除按钮
+
+  // Number 特有
+  step?: number // 步长
+  precision?: number // 精度
+
+  // Date 特有
+  dateType?: DateType // 日期类型
+  format?: string // 显示格式
+  valueFormat?: string // 值格式
+
+  // 数据源
+  dataSource?: any // 数据源配置
+
+  // Upload 特有
+  uploadConfig?: {
+    maxCount?: number
+    maxSize?: number
+    accept?: string
+    multiple?: boolean
+  }
+
+  // 响应式控制
+  hiddenExpression?: string
+  disabledExpression?: string
+  readonlyExpression?: string
+
+  // 联动和事件
+  linkage?: any[]
+  events?: any
+  rules?: any[]
 }
 
-export const HasSettingTypeList = ['Radio', 'Checkout', 'Select']
+// 更新：支持新旧两种组件类型
+export const HasSettingTypeList = ['Checkout', 'CheckboxGroup', 'RadioGroup', 'Select']
 
 export const defaultConfig: CompConfig = {
   name: '',
@@ -77,48 +120,48 @@ export const defaultConfig: CompConfig = {
   defaultValue: null,
   customErrorMessage: '',
   title: '',
+  display: DisplayMode.Display,
+  readonly: false,
+  disabled: false,
 }
+
+// 组件类型分类（更新以支持新类型）
 export const isFormTitle: CompType[] = [CompType.formTitle]
-export const dataListType: CompType[] = [CompType.checkout, CompType.radio, CompType.select] // 数组列表
-export const isLayoutType: CompType[] = [CompType.paging, CompType.divider] 
-export const hasIgnoreRequireType: CompType[] = [CompType.paging, CompType.divider, CompType.button]  // 忽略类型
-export const hasPlaceholderType: CompType[] = [CompType.input, CompType.textarea, CompType.number, CompType.date, CompType.time,CompType.url, 
+export const dataListType: CompType[] = [CompType.checkboxGroup, CompType.radioGroup, CompType.select] // 数组列表
+export const isLayoutType: CompType[] = [CompType.paging, CompType.divider]
+export const hasIgnoreRequireType: CompType[] = [CompType.paging, CompType.divider]  // 忽略必填
+export const hasPlaceholderType: CompType[] = [
+  CompType.input,
+  CompType.textarea,
+  CompType.number,
+  CompType.date,
+  CompType.url,
   CompType.email,
-  CompType.phone, 
-  CompType.idCard, 
-  CompType.location,
-  CompType.wx,
-  CompType.telePhone,
-  CompType.phone,
-  CompType.name,
   CompType.select,
+  CompType.cascader,
+  CompType.countrySelector,
 ]
-export const isPersonalClassifyList = [  
-  CompType.email,
-  CompType.phone, 
-  CompType.idCard, 
-  CompType.location,
-  CompType.wx,
-  CompType.telePhone,
-  CompType.phone,
-  CompType.name,
-  CompType.gender
-]
-export const isGender = [CompType.gender]
-export const isRangePlaceholderType: CompType[]  = [CompType.dateRange, CompType.timeRange]
 export const isNumberType: CompType[] = [CompType.number]
-export const isButton: CompType[] = [CompType.button]
+export const isInputType: CompType[] = [CompType.input]
+export const isTextareaType: CompType[] = [CompType.textarea]
+export const isDateType: CompType[] = [CompType.date]
 export const isRate: CompType[] = [CompType.rate]
-export const isNPS: CompType[] = [CompType.nps, CompType.selectRate]
-export const isAddress: CompType[] = [CompType.address]
 export const isSign: CompType[] = [CompType.electronicSignature]
+export const isUpload: CompType[] = [CompType.upload]
+export const isImage: CompType[] = [CompType.image]
+export const isVideo: CompType[] = [CompType.video]
 
 export const getCompConfig = (type: CompType) => {
-  let compConfig: any = {}
+  let compConfig: any = {
+    display: DisplayMode.Display,
+    readonly: false,
+    disabled: false,
+  }
+
+  // 数组列表类型（Select, CheckboxGroup, RadioGroup）
   if(dataListType.includes(type)) {
     compConfig  = {
       ...compConfig,
-      layoutType: 'vertical',
       dataList: [{
         label: '选项一',
         value: '选项一',
@@ -131,42 +174,110 @@ export const getCompConfig = (type: CompType) => {
         label: '选项三',
         value: '选项三',
         _index: 2,
-      }]
+      }],
+      // 新增：数据源配置
+      dataSource: {
+        type: DataSourceType.Static,
+        staticData: [
+          { label: '选项一', value: 'option1' },
+          { label: '选项二', value: 'option2' },
+          { label: '选项三', value: 'option3' }
+        ]
+      }
     }
   }
 
-  if(isGender.includes(type)) {
+  // Input 组件
+  if(isInputType.includes(type)) {
     compConfig = {
       ...compConfig,
-      layoutType: 'vertical',
-      dataList: [{
-        label: '男',
-        value: '男',
-        _index: 0,
-      },{
-        label: '女',
-        value: '女',
-        _index: 1,
-      }],
-      dataOtherList:[ {
-        label: '暂不透露',
-        value: '暂不透露',
-        _index: 2,
-      }],
-      useOtherDataList: true,
+      minLength: 0,
+      maxLength: 200,
+      showCount: false,
+      allowClear: true,
     }
   }
 
-  if(isLayoutType.includes(type)) {
-    const isPageBool = CompType.paging === type 
-    const data = isPageBool ? {
-      pagingValue: '分页',
-      pageSubTitle: '',
-      pageSubDescription: ''
-    } : {
-      dividerValue: '分割线',
-      position: 'center'
+  // Textarea 组件
+  if(isTextareaType.includes(type)) {
+    compConfig = {
+      ...compConfig,
+      minLength: 0,
+      maxLength: 1000,
+      showCount: true,
+      allowClear: true,
     }
+  }
+
+  // Number 组件
+  if(isNumberType.includes(type)) {
+    compConfig = {
+      ...compConfig,
+      minValue: 0,
+      maxValue: 100,
+      step: 1,
+      precision: 0,
+      placeholder: '请输入数字'
+    }
+  }
+
+  // Date 组件
+  if(isDateType.includes(type)) {
+    compConfig = {
+      ...compConfig,
+      dateType: DateType.Date,
+      format: 'YYYY-MM-DD',
+      valueFormat: 'YYYY-MM-DD',
+    }
+  }
+
+  // Upload 组件
+  if(isUpload.includes(type)) {
+    compConfig = {
+      ...compConfig,
+      uploadConfig: {
+        maxCount: 5,
+        maxSize: 10 * 1024 * 1024, // 10MB
+        accept: 'image/*,.pdf,.doc,.docx',
+        multiple: true
+      }
+    }
+  }
+
+  // 布局组件
+  if(isLayoutType.includes(type)) {
+    let data = {}
+
+    if (CompType.paging === type) {
+      data = {
+        pagingValue: '分页',
+        pageSubTitle: '',
+        pageSubDescription: ''
+      }
+    } else if (CompType.divider === type) {
+      data = {
+        dividerValue: '分割线',
+        position: 'center'
+      }
+    } else if (CompType.grid === type) {
+      data = {
+        columnCount: 2,
+        gap: 16,
+        layout: [12, 12], // 基于24栅格
+        responsiveStack: true,
+        children: [] // 子组件ID列表
+      }
+    } else if (CompType.stepper === type) {
+      data = {
+        steps: [
+          { title: 'Step 1', description: '' },
+          { title: 'Step 2', description: '' },
+          { title: 'Step 3', description: '' }
+        ],
+        currentStep: 0
+      }
+    }
+
     compConfig = {
       ...compConfig,
       ...data,
@@ -174,62 +285,37 @@ export const getCompConfig = (type: CompType) => {
     }
   }
 
+  // 非布局组件需要必填和描述
   if(!hasIgnoreRequireType.includes(type)) {
     compConfig = {
       ...compConfig,
       isRequired: true,
       isCustomErrorMessage: false,
-      description: '描述',
+      description: '',
+      rules: [] // 新增：校验规则数组
     }
   }
 
+  // 占位符
   if(hasPlaceholderType.includes(type)) {
     compConfig = {
       ...compConfig,
-      placeholder:  getCompPlaceHolderDataByType(type) || '请输入'
+      placeholder: getCompPlaceHolderDataByType(type) || '请输入'
     }
   }
 
-  if(isNumberType.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      minValue: 0,
-      maxValue: 100,
-      placeholder: '请输入数字'
-    }
-  }
-
-  if(isRangePlaceholderType.includes(type)) {
-    let rangePlaceholder = []
-    switch (type) {
-      case CompType.dateRange:
-        rangePlaceholder = ['开始日期', '结束日期']
-        break;
-      case CompType.timeRange:
-        rangePlaceholder = ['开始时间', '结束时间']
-        break;
-      default: 
-        rangePlaceholder = ['开始', '结束']
-        break;
-    }
-
-    compConfig = {
-      ...compConfig,
-      placeholderRange: rangePlaceholder
-    }
-  }
-
+  // 评分组件
   if(isRate.includes(type)) {
     compConfig = {
       ...compConfig,
-      rateCount:5,
+      rateCount: 5,
       rateCharacter: '⭐️',
       rateColor: '#ff9900',
       rateAllowHalf: false,
     }
   }
 
-  // 标题
+  // 标题组件
   if(isFormTitle.includes(type)) {
     compConfig = {
       type,
@@ -241,53 +327,7 @@ export const getCompConfig = (type: CompType) => {
       titleImageShow: true,
       titleDescriptionPosition: 'center'
     }
-
     return compConfig
-  }
-  
-  // 按钮
-  if(isButton.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      type,
-      title: '提交按钮',
-      buttonText: '提交',
-      size: 'large',
-      position: 'center',
-      buttonIconShowBool: true,
-    }
-  }
-
-  // Personal类型
-  if(isPersonalClassifyList.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      classify: ['personal']
-    }
-  }
-
-  // NPS组件
-  if(isNPS) {
-    compConfig = {
-      ...compConfig,
-      defaultValue: 0,
-      startValue: 0,
-      rateCount:10,
-      startValueList: [0,1]
-    }
-  }
-
-  // 地址
-  if(isAddress.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      address: [],
-      address_detail: '',
-      address_default: [],
-      address_detail_default: '',
-      address_placeholder: '请选择省/市/区',
-      address_detail_placeholder: '请输入详细地址',
-    }
   }
 
   // 电子签名
@@ -298,29 +338,81 @@ export const getCompConfig = (type: CompType) => {
     }
   }
 
-  return compConfig
+  // 图片组件
+  if(isImage.includes(type)) {
+    compConfig = {
+      type,
+      imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426',
+      imageTitle: '关于我们的愿景',
+      imageDescription: '在 NOCO FORM，我们相信数据收集应当是优雅且充满力量的。',
+      imageBadge: 'Introduction',
+      imageAlt: 'Product Preview',
+      showOverlay: true,
+      showBadge: true,
+    }
+    return compConfig
+  }
 
+  // 视频组件
+  if(isVideo.includes(type)) {
+    compConfig = {
+      type,
+      videoUrl: '',
+      videoTitle: '快速了解我们的生产环境 (2025版)',
+      videoDescription: '观看此 2 分钟视频，深入了解我们的背后团队。',
+      videoPoster: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=2344',
+      videoLabel: 'Company Showreel',
+      autoplay: false,
+      controls: true,
+      loop: false,
+    }
+    return compConfig
+  }
+
+  return compConfig
 }
 
 export const getCompPlaceHolderDataByType = (type: string) => {
   const placeholderObject: any = {
-    Name: '请输入名称',
-    Gender: '请选择性别',
-    Phone: '请输入手机号',
-    TelePhone: '请输入固话',
-    IDCard: '请输入身份证',
-    Email: '请输入邮件',
-    WX: '请输入微信',
+    Input: '请输入',
+    Textarea: '请输入',
+    Number: '请输入数字',
+    Date: '请选择日期',
+    Url: '请输入网址',
+    Email: '请输入邮箱',
     Select: '请选择',
+    CheckboxGroup: '请选择',
+    RadioGroup: '请选择',
+    Cascader: '请选择',
+    CountrySelector: '请选择国家',
   }
 
   return placeholderObject[type]
 }
 
+/**
+ * 获取默认配置（增强版）
+ * 自动生成 id 和 field
+ */
 export const getDefaultConfig = (type: CompType | CompType[], ignoreDefault: boolean = false) => {
-  let configData = ignoreDefault ? {} :{
+  let configData: any = ignoreDefault ? {} :{
     ...defaultConfig
   }
+
+  // 生成唯一ID和字段名
+  const singleType = Array.isArray(type) ? type[0] : type
+
+  if (!singleType) {
+    console.error('getDefaultConfig: type is undefined or empty')
+    return configData
+  }
+
+  const timestamp = Date.now()
+  const random = Math.floor(Math.random() * 10000)
+
+  configData.id = `comp_${singleType}_${timestamp}_${random}`
+  configData.field = `field_${String(singleType).toLowerCase()}_${timestamp}`
+
   if(Array.isArray(type)) {
     type.map((itemType) => {
       const compConfig = getCompConfig(itemType)
@@ -329,7 +421,6 @@ export const getDefaultConfig = (type: CompType | CompType[], ignoreDefault: boo
         ...compConfig
       }
     })
-
   } else {
     const compConfig = getCompConfig(type)
     configData = {
@@ -339,7 +430,6 @@ export const getDefaultConfig = (type: CompType | CompType[], ignoreDefault: boo
   }
 
   return {...configData}
-
 }
 
 export const disableInputByDev = '编辑模式不支持输入'
@@ -347,14 +437,11 @@ export const hasOwnPropertyFunction = (object: Object, key: string)=> {
   return object && Object.prototype.hasOwnProperty.call(object, key)
 }
 
-
 export const verifyRegularityCompList = () => {
   return [
     CompType.input,
     CompType.textarea,
     CompType.url,
     CompType.email,
-    CompType.phone,
-    CompType.idCard
   ]
 }

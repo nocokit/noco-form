@@ -1,17 +1,18 @@
 
 <template>
-  <a-typography-text type="secondary" class="block-title">分割线文本</a-typography-text>
-  <a-input 
-    class="comp"
-    v-if="compStore.currentCompConfig"
-    placeholder="输入分割线文本" 
-    allow-clear 
-    v-model:value="comp.dividerValue"
-    @Input="handleChangeInput"
-    maxLength="30"
-    showCount
-  ></a-input>
-
+  <div class="setting-item">
+    <label class="setting-label">分割线文本</label>
+    <input
+      v-if="compStore.currentCompConfig"
+      type="text"
+      placeholder="输入分割线文本"
+      v-model="comp.dividerValue"
+      @input="handleChangeInput"
+      maxlength="30"
+      class="custom-input"
+    />
+    <div class="char-count" v-if="comp.dividerValue">{{ comp.dividerValue.length }} / 30</div>
+  </div>
 </template>
 <script lang="ts" setup>
 import { defineProps, defineEmits, ref }  from 'vue'
@@ -35,14 +36,3 @@ const props = defineProps<Props>()
 const comp = ref(props.comp)
 
 </script>
-<style lang="scss" scoped>
-
-.comp {
-  padding: 10px;
-  color: yellowgreen;
-}
-.comp {
-  margin-bottom: 10px;
-}
-
-</style>

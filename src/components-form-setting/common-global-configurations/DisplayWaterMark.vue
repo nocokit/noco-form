@@ -1,57 +1,49 @@
 
 <template>
-  <div class="setting-item h-42">
-    <a-typography-text type="secondary" class="secondary">
-      水印
-      <a-tooltip placement="top">
-        <template #title>
-          <span>可根据需求灵活使用水印，需要注意平衡品牌宣传，专业形象，版权所有权声明和用户体验</span>
-        </template>
-        <QuestionCircleOutlined />
-    </a-tooltip>
-    </a-typography-text>
-    <a-space direction="vertical" class="abs-r switch-r " >
-      <a-switch  v-model:checked="form.displayWaterMark"  @change="changeValue($event)" />
-    </a-space> 
-  </div>
-  <a-input 
-    class="mb-10"
-    v-if="compStore.currentCompConfig && form.displayWaterMark"
-    placeholder="请输入水印（最多15个字）" 
-    v-model:value="form.waterMarkText"
-    @Input="handleChangeInput"
-    :maxlength="15"
-  ></a-input>
+  <div class="watermark-setting">
+    <TwSwitch v-model="form.displayWaterMark" @change="handleChange" />
 
+    <div class="setting-item" v-if="form.displayWaterMark && !compact" style="margin-top: 12px;">
+      <label class="setting-label">Watermark Text</label>
+      <input
+        type="text"
+        placeholder="Enter watermark text (max 15 chars)"
+        v-model="form.waterMarkText"
+        @input="handleChangeInput"
+        maxlength="15"
+        class="custom-input"
+      />
+    </div>
+  </div>
 </template>
 <script lang="ts" setup>
-import type { SizeType } from 'ant-design-vue/es/config-provider';
-import { ref, watch, defineProps } from 'vue';
-import { useSelectCompStore  } from '@/stores/selectCompStore'
+import { ref } from 'vue'
+import { TwSwitch } from '@/components/ui'
+import { useSelectCompStore } from '@/stores/selectCompStore'
 
 interface Props {
   form: any
+  compact?: boolean
 }
 
-const props = defineProps<Props>()
-const form = ref(props.form)
+const props = withDefaults(defineProps<Props>(), {
+  compact: false
+})
 
+const form = ref(props.form)
 const compStore = useSelectCompStore()
 
-const changeValue = (value: boolean) => {
+const handleChange = (value: boolean) => {
   compStore.updateGlobalFormConfig({
     displayWaterMark: value
   })
 }
 
 const handleChangeInput = (event: any) => {
-  const data = event.target.value 
-  compStore.updateCurrentComp({
+  const data = event.target.value
+  compStore.updateGlobalFormConfig({
     waterMarkText: data
   })
 }
 
 </script>
-<style lang="scss" scoped>
-
-</style>
