@@ -5,7 +5,7 @@
       <!-- Top Professional Toolbar -->
       <header class="top-bar">
         <div class="logo-section">
-          <span class="logo-text">PREVIEW</span>
+          <span class="logo-text">{{ t('preview.title').toUpperCase() }}</span>
           <span class="separator">/</span>
           <span class="project-name">{{ props.selectForm?.formTitle || 'NOCO FORM' }}</span>
         </div>
@@ -18,7 +18,7 @@
             @click="previewType = 'Phone'"
           >
             <i class="ri-smartphone-line"></i>
-            Mobile
+            {{ t('preview.mobile') }}
           </button>
           <button
             class="tab-btn"
@@ -26,38 +26,18 @@
             @click="previewType = 'PC'"
           >
             <i class="ri-computer-line"></i>
-            Desktop
-          </button>
-        </div>
-
-        <!-- Theme Switches -->
-        <div class="theme-switches">
-          <button
-            class="tab-btn"
-            :class="{ active: currentTheme === 'light' }"
-            @click="setTheme('light')"
-          >
-            <i class="ri-sun-line"></i>
-            Light
-          </button>
-          <button
-            class="tab-btn"
-            :class="{ active: currentTheme === 'dark' }"
-            @click="setTheme('dark')"
-          >
-            <i class="ri-moon-line"></i>
-            Dark
+            {{ t('preview.desktop') }}
           </button>
         </div>
 
         <!-- Action Buttons -->
         <div class="actions">
-          <button class="tab-btn icon-only" title="Share Preview">
+          <button class="tab-btn icon-only" :title="t('preview.share')">
             <i class="ri-share-line"></i>
           </button>
           <button class="tab-btn exit-btn" @click="handleClose">
             <i class="ri-close-line"></i>
-            Exit Preview
+            {{ t('preview.exit') }}
           </button>
         </div>
       </header>
@@ -108,7 +88,7 @@
                   <!-- Submit Button -->
                   <div class="form-footer" v-if="selectForm?.displayBtn" style="display: flex; justify-content: center;">
                     <TwButton
-                      :text="pageFooter.buttonText || '提交反馈'"
+                      :text="pageFooter.buttonText || t('preview.submitButton')"
                       :size="(pageFooter.size as 'small' | 'default' | 'large') || 'default'"
                       :loading="isSubmitting"
                       :success="submitSuccess"
@@ -121,8 +101,8 @@
                 <!-- Empty State -->
                 <div v-else class="empty-state">
                   <i class="ri-file-list-3-line empty-icon"></i>
-                  <p class="empty-text">No form fields yet</p>
-                  <p class="empty-subtext">Add components from the editor</p>
+                  <p class="empty-text">{{ t('preview.emptyState') }}</p>
+                  <p class="empty-subtext">{{ t('preview.emptyStateDesc') }}</p>
                 </div>
               </div>
             </div>
@@ -134,7 +114,7 @@
           <!-- Live Schema Section -->
           <div class="inspector-section">
             <div class="inspector-header">
-              <span>Live Schema Inspector</span>
+              <span>{{ t('preview.schemaInspector') }}</span>
               <i class="ri-code-s-slash-line"></i>
             </div>
             <div class="code-container">
@@ -145,10 +125,10 @@
           <!-- Form Submission Data Section -->
           <div class="inspector-section submission-data">
             <div class="inspector-header">
-              <span>Form Submission Data</span>
+              <span>{{ t('preview.submissionData') }}</span>
               <div class="status-indicator">
                 <span class="status-dot"></span>
-                <span class="status-text">{{ filledFieldsCount }}/{{ totalFieldsCount }} filled</span>
+                <span class="status-text">{{ filledFieldsCount }}/{{ totalFieldsCount }} {{ t('preview.filled') }}</span>
               </div>
             </div>
             <div class="data-preview">
@@ -158,7 +138,7 @@
               </div>
               <div v-if="Object.keys(formData).length === 0" class="no-data">
                 <i class="ri-database-2-line"></i>
-                <p>Interact with form to see data</p>
+                <p>{{ t('preview.interactHint') }}</p>
               </div>
             </div>
           </div>
@@ -182,12 +162,14 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, provide, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 import FormComponent from '@/components-form/index.vue'
 import { TwButton } from '@/components/ui'
-import { useTheme } from '@/composables/useTheme'
 
 type PreviewType = 'Phone' | 'PC'
-type ThemeType = 'light' | 'dark'
+type ThemeType = 'dark'
 
 interface Props {
   open: boolean
@@ -199,11 +181,8 @@ interface Props {
 const props = defineProps<Props>()
 const emit = defineEmits(['onClose'])
 
-// Use global theme composable
-const { theme: globalTheme, setTheme: setGlobalTheme } = useTheme()
-
 const previewType = ref<PreviewType>('Phone')
-const currentTheme = ref<ThemeType>('light')
+const currentTheme = ref<ThemeType>('dark')
 const displayPaging = ref(true)
 const currentTime = ref(new Date().toLocaleTimeString())
 
@@ -250,17 +229,6 @@ const handleSubmit = async () => {
 provide('previewFormData', {
   formData,
   updateFormData
-})
-
-// Set theme (sync with global theme)
-const setTheme = (theme: ThemeType) => {
-  currentTheme.value = theme
-  setGlobalTheme(theme)
-}
-
-// Initialize preview theme from global theme
-onMounted(() => {
-  currentTheme.value = globalTheme.value as ThemeType
 })
 
 const handleClose = () => {
@@ -440,7 +408,6 @@ onUnmounted(() => {
 }
 
 .mode-switches,
-.theme-switches,
 .actions {
   display: flex;
   gap: 4px;

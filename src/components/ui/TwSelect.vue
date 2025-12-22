@@ -4,9 +4,7 @@
       :value="modelValue"
       :disabled="disabled"
       :class="[
-        'tw-select',
-        'w-full px-4 py-2.5 text-xs rounded-xl border outline-none transition-all cursor-pointer',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
+        'item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600',
         customClass
       ]"
       v-bind="$attrs"
@@ -93,30 +91,14 @@ const handleChange = (event: Event) => {
 </script>
 
 <style scoped>
-.tw-select {
-  background: var(--bg-panel);
-  border-color: var(--border-base);
-  color: var(--text-primary);
-}
-
-.tw-select:hover:not(:disabled) {
-  border-color: var(--border-medium);
-  background: var(--bg-deep);
-}
-
-.tw-select:focus {
-  border-color: var(--primary);
-  background: var(--bg-deep);
-}
-
-.tw-select-placeholder {
-  background: var(--bg-panel);
-  color: var(--text-tertiary);
-}
-
-.tw-select-option {
-  background: var(--bg-panel);
-  color: var(--text-primary);
+/* Select options styling */
+select option {
+  background: #18181b;
+  color: #d4d4d8;
   padding: 0.5rem;
+}
+
+select option:checked {
+  background: #27272a;
 }
 </style>

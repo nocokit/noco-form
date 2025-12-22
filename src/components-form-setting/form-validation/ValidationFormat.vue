@@ -5,7 +5,7 @@
     <select
       v-model="comp.formValidationFormat"
       @change="handleChangeInput(($event.target as HTMLSelectElement).value)"
-      class="abs-r w-30 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      class="item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600 abs-r w-30"
     >
       <option :value="item.value" v-for="item in systemFormatList" :key="item.value">{{ item.name }}</option>
     </select>
@@ -17,7 +17,7 @@
       placeholder="请输入自定义正则表达式"
       maxlength="40"
       @input="changeValidationFormatRegexInput"
-      class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      class="w-full px-3 py-2 border-none rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
     />
   </div>
 </template>

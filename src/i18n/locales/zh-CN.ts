@@ -51,11 +51,11 @@ export default {
     search: '快速搜索',
     searchPlaceholder: '搜索组件...',
     categories: {
-      basic: '基础组件',
-      advanced: '高级组件',
-      layout: '布局组件',
-      identity: '联系信息',
-      display: '展示组件',
+      Layout: '布局组件',
+      Media: '媒体内容',
+      Inputs: '输入组件',
+      Selection: '选择组件',
+      Feedback: '反馈组件',
     },
   },
 
@@ -303,6 +303,19 @@ export default {
 
     // 品牌配置
     branding: '品牌配置',
+    brandingPro: 'Branding PRO',
+    paidFeature: '付费功能',
+    removePoweredBy: '移除 "Powered by"',
+    builtWithNoco: 'Built with NOCO FORM',
+    brandingSupport: '保持品牌水印能帮助我们成长。感谢您的支持！',
+    unlockNow: '立即解锁',
+    upgradeToPro: '升级至 Pro',
+    upgradeDesc: '移除 NOCO 品牌并自定义您的 Logo，打造完全白标化的表单体验。',
+    removePoweredByBadge: '移除 "Powered by" 徽章',
+    uploadCustomLogo: '上传自定义 Logo',
+    fullWhiteLabeling: '完全白标化控制',
+    prioritySupport: '优先支持',
+    freeTrial: '开始您的 14 天免费试用',
     brandingTitle: '品牌标题',
     brandingLogo: '品牌Logo',
     brandingLogoPlaceholder: '请输入Logo URL',
@@ -320,11 +333,14 @@ export default {
     enableAI: '启用 AI 翻译',
     translateNow: '立即翻译',
 
-    // 其他
+    // 配置项
     submitButton: '提交按钮',
     submitButtonDesc: '显示/隐藏表单页脚',
     fieldIndexing: '字段编号',
-    watermark: 'Powered by Noco',
+    fieldIndexingDesc: '显示问题编号',
+    watermark: '水印',
+    watermarkDesc: '显示品牌水印',
+    poweredBy: 'Powered by Noco',
   },
 
   // ==================== 国际化设置 ====================
@@ -359,22 +375,12 @@ export default {
   languages: {
     zh: '简体中文',
     en: 'English',
-    ja: '日本語',
-    es: 'Español',
-    de: 'Deutsch',
-    fr: 'Français',
-    pt: 'Português',
   },
 
   // ==================== 语言区域 ====================
   locales: {
     'zh-CN': '简体中文 (Chinese Simplified)',
     'en-US': 'English (United States)',
-    'ja-JP': '日本語 (Japanese)',
-    'es-ES': 'Español (Spanish)',
-    'de-DE': 'Deutsch (German)',
-    'fr-FR': 'Français (French)',
-    'pt-BR': 'Português (Portuguese)',
   },
 
   // ==================== 画布 ====================
@@ -384,6 +390,24 @@ export default {
     dropHere: '释放以添加组件',
     emptyForm: '表单为空',
     emptyFormDesc: '从左侧拖拽组件到此处开始创建表单',
+  },
+
+  // ==================== 预览 ====================
+  preview: {
+    title: '预览',
+    mobile: '移动端',
+    desktop: '桌面端',
+    light: '浅色',
+    dark: '深色',
+    share: '分享预览',
+    exit: '退出预览',
+    emptyState: '暂无表单字段',
+    emptyStateDesc: '从编辑器添加组件',
+    schemaInspector: '实时模式检查器',
+    submissionData: '表单提交数据',
+    submitButton: '提交反馈',
+    filled: '已填',
+    interactHint: '与表单交互以查看数据',
   },
 
   // ==================== 操作提示 ====================

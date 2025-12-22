@@ -1,79 +1,60 @@
-import { ref, computed, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { ref, computed } from 'vue'
+import i18n from '@/i18n'
+
+// Map short codes to full locale codes (only languages with translations)
+const localeMap: Record<string, string> = {
+  'zh': 'zh-CN',
+  'en': 'en-US',
+}
+
+// Reverse map
+const reverseLocaleMap: Record<string, string> = {
+  'zh-CN': 'zh',
+  'en-US': 'en',
+}
+
+// Global state - singleton
+const currentLocale = computed({
+  get: () => i18n.global.locale.value,
+  set: (value: string) => {
+    i18n.global.locale.value = value as any
+  }
+})
+
+const currentShortLocale = computed({
+  get: () => reverseLocaleMap[currentLocale.value] || 'zh',
+  set: (newShortLocale: string) => {
+    const newFullLocale = localeMap[newShortLocale]
+    if (newFullLocale) {
+      setLocale(newShortLocale)
+    }
+  }
+})
+
+// Only include languages with complete translations
+const availableLocales = ref([
+  { code: 'zh', fullCode: 'zh-CN', label: '简体中文' },
+  { code: 'en', fullCode: 'en-US', label: 'English' },
+])
+
+const setLocale = (newShortLocale: string) => {
+  const newFullLocale = localeMap[newShortLocale]
+
+  if (!newFullLocale) {
+    console.error('Invalid locale:', newShortLocale)
+    return
+  }
+
+  // Update i18n locale (this is the single source of truth)
+  i18n.global.locale.value = newFullLocale as any
+
+  // Save to localStorage
+  localStorage.setItem('noco-form-locale', newFullLocale)
+
+  console.log('Locale changed to:', newFullLocale)
+}
 
 export const useLocale = () => {
-  const router = useRouter()
-  const route = useRoute()
-
-  // Map short codes to full locale codes
-  const localeMap: Record<string, string> = {
-    'zh': 'zh-CN',
-    'en': 'en-US',
-    'ja': 'ja-JP',
-    'es': 'es-ES',
-    'de': 'de-DE',
-    'fr': 'fr-FR',
-    'pt': 'pt-BR'
-  }
-
-  // Reverse map
-  const reverseLocaleMap: Record<string, string> = {
-    'zh-CN': 'zh',
-    'en-US': 'en',
-    'ja-JP': 'ja',
-    'es-ES': 'es',
-    'de-DE': 'de',
-    'fr-FR': 'fr',
-    'pt-BR': 'pt'
-  }
-
-  const currentLocale = computed(() => {
-    const routeLocale = route.params.locale as string
-    return routeLocale || 'zh-CN'
-  })
-
-  const currentShortLocale = computed(() => {
-    return reverseLocaleMap[currentLocale.value] || 'zh'
-  })
-
-  const availableLocales = [
-    { code: 'zh', fullCode: 'zh-CN', label: '简体中文' },
-    { code: 'en', fullCode: 'en-US', label: 'English' },
-    { code: 'ja', fullCode: 'ja-JP', label: '日本語' },
-    { code: 'es', fullCode: 'es-ES', label: 'Español' },
-    { code: 'de', fullCode: 'de-DE', label: 'Deutsch' },
-    { code: 'fr', fullCode: 'fr-FR', label: 'Français' },
-    { code: 'pt', fullCode: 'pt-BR', label: 'Português' },
-  ]
-
-  const setLocale = (newShortLocale: string) => {
-    const newFullLocale = localeMap[newShortLocale]
-
-    if (!newFullLocale) {
-      console.error('Invalid locale:', newShortLocale)
-      return
-    }
-
-    // Save to localStorage
-    localStorage.setItem('noco-form-editor-locale', newShortLocale)
-
-    // Update route
-    const currentPath = route.path
-    const currentParams = route.params
-    const id = currentParams.id
-
-    // Build new path
-    let newPath = `/${newFullLocale}`
-    if (id) {
-      newPath += `/${id}`
-    }
-
-    // Navigate to new locale route
-    if (currentPath !== newPath) {
-      router.push(newPath)
-    }
-  }
-
   return {
     currentLocale,
     currentShortLocale,

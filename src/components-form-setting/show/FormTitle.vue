@@ -12,7 +12,7 @@
       v-model="comp.titleImageUrl"
       @input="handleChangeInput($event, 'titleImageUrl')"
       maxlength="400"
-      class="w-full bg-[#18181b] border border-[#27272a] rounded-xl px-4 py-2.5 text-xs text-white font-inherit transition-all placeholder:text-[#52525b] hover:border-[#3f3f46] hover:bg-[#09090b] focus:outline-none focus:border-indigo-500/50 focus:bg-[#09090b]"
+      class="custom-input"
     />
   </div>
 
@@ -24,7 +24,7 @@
       v-model="comp.titleValue"
       @input="handleChangeInput"
       maxlength="30"
-      class="w-full bg-[#18181b] border border-[#27272a] rounded-xl px-4 py-2.5 text-xs text-white font-inherit transition-all placeholder:text-[#52525b] hover:border-[#3f3f46] hover:bg-[#09090b] focus:outline-none focus:border-indigo-500/50 focus:bg-[#09090b]"
+      class="custom-input"
     />
   </div>
 
@@ -49,7 +49,7 @@
       @input="handleChangeInput($event, 'titleDescription')"
       maxlength="200"
       rows="3"
-      class="w-full bg-[#18181b] border border-[#27272a] rounded-xl px-4 py-2.5 text-xs text-white font-inherit resize-vertical min-h-[80px] transition-all leading-relaxed placeholder:text-[#52525b] hover:border-[#3f3f46] hover:bg-[#09090b] focus:outline-none focus:border-indigo-500/50 focus:bg-[#09090b]"
+      class="custom-textarea"
     ></textarea>
     <div class="text-right text-[10px] text-[#71717a] mt-1" v-if="comp.titleDescription">{{ comp.titleDescription.length }} / 200</div>
   </div>

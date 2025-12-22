@@ -77,10 +77,10 @@
 .custom-input,
 .custom-textarea,
 .custom-select {
-  @apply w-full px-4 py-2.5 text-xs rounded-xl border outline-none transition-all;
-  background: var(--bg-panel);
-  border-color: var(--border-base);
-  color: var(--text-primary);
+  @apply w-full px-4 py-2.5 text-xs rounded-xl outline-none transition-all;
+  background: #18181b;
+  border: none !important;
+  color: #d4d4d8;
   font-family: inherit;
 }
 
@@ -91,8 +91,8 @@
 .custom-input:hover,
 .custom-textarea:hover,
 .custom-select:hover {
-  border-color: var(--border-medium);
-  background: var(--bg-deep);
+  border-color: rgb(63 63 70 / var(--tw-border-opacity, 1));
+  background: #18181b;
 }
 
 .setting-row input:focus,
@@ -101,13 +101,15 @@
 .custom-input:focus,
 .custom-textarea:focus,
 .custom-select:focus {
-  border-color: var(--primary);
-  background: var(--bg-deep);
+  border-color: #3b82f6;
+  background: #18181b;
 }
 
 .custom-input::placeholder,
-.custom-textarea::placeholder {
-  color: var(--text-dim);
+.custom-textarea::placeholder,
+.setting-row input::placeholder,
+.setting-row textarea::placeholder {
+  color: #71717a;
 }
 
 .custom-textarea {

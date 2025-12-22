@@ -9,7 +9,7 @@
   <span class="text-gray-500 block-title">标题图片</span>
   <input
     type="text"
-    class="mb-10 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    class="custom-input mb-10"
     placeholder="请输入图片URL"
     v-model="comp.titleImageUrl"
     @input="handleChangeInput($event, 'titleImageUrl')"
@@ -19,7 +19,7 @@
   <span class="text-gray-500 block-title">表单标题</span>
   <input
     type="text"
-    class="mb-10 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+    class="custom-input mb-10"
     placeholder="请输入标题文字（最多30个字）"
     v-model="comp.titleValue"
     @input="handleChangeInput"
@@ -31,7 +31,7 @@
     <select
       v-model="comp.titleSize"
       @change="changeSelect(($event.target as HTMLSelectElement).value)"
-      class="abs-r w-30 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      class="item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600 abs-r w-30"
     >
       <option :value="item.value" v-for="item in orientationList" :key="item.value">{{ item.name }}</option>
     </select>
@@ -46,7 +46,7 @@
   <span class="text-gray-500 block-title">标题描述</span>
   <div class="relative mb-10 m-b-10">
     <textarea
-      class="w-full px-4 py-2.5 text-xs text-white rounded-xl border outline-none transition-all resize-y min-h-[80px] leading-relaxed bg-[#18181b] border-[#27272a] placeholder:text-[#52525b] hover:border-[#3f3f46] hover:bg-[#09090b] focus:border-indigo-500/50 focus:bg-[#09090b]"
+      class="custom-textarea"
       placeholder="请输入描述"
       v-model="comp.titleDescription"
       @input="handleChangeInput($event, 'titleDescription')"
@@ -60,7 +60,7 @@
     <select
       v-model="comp.titleDescriptionPosition"
       @change="changeSelect(($event.target as HTMLSelectElement).value, 'titleDescriptionPosition')"
-      class="abs-r w-30 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      class="item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600 abs-r w-30"
     >
       <option :value="item.value" v-for="item in positionList" :key="item.value">{{ item.name }}</option>
     </select>

@@ -1,27 +1,19 @@
 <template>
-  <div class="image-wrapper relative group cursor-pointer rounded-3xl overflow-hidden">
-    <!-- Image Display -->
-    <div class="aspect-video relative bg-zinc-900">
+  <div class="image-component">
+    <div class="image-container" :style="containerStyle">
       <img
-        :src="imageUrl || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426'"
+        :src="imageUrl || defaultImageUrl"
         :alt="imageAlt || 'Image'"
-        class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+        class="image-element"
       />
 
-      <!-- Overlay with Title and Description -->
-      <div v-if="showOverlay" class="glass-overlay absolute inset-0 flex flex-col justify-end p-8">
-        <div v-if="showBadge" class="flex items-center gap-3 mb-2">
-          <span class="px-2 py-0.5 bg-blue-600 text-[10px] font-black rounded uppercase">
-            {{ imageBadge || 'Feature' }}
-          </span>
-          <div class="h-px flex-1 bg-white/10"></div>
+      <div v-if="showOverlay" class="image-overlay">
+        <div v-if="showBadge && imageBadge" class="badge-wrapper">
+          <span class="badge">{{ imageBadge }}</span>
+          <div class="divider"></div>
         </div>
-        <h2 class="text-2xl font-bold text-white tracking-tight">
-          {{ imageTitle || 'Image Title' }}
-        </h2>
-        <p v-if="imageDescription" class="text-zinc-300 text-sm mt-2 max-w-md leading-relaxed">
-          {{ imageDescription }}
-        </p>
+        <h2 v-if="imageTitle" class="image-title">{{ imageTitle }}</h2>
+        <p v-if="imageDescription" class="image-description">{{ imageDescription }}</p>
       </div>
     </div>
   </div>
@@ -37,6 +29,7 @@ interface Props {
   imageDescription?: string
   imageBadge?: string
   imageAlt?: string
+  imageAspectRatio?: string
   showOverlay?: boolean
   showBadge?: boolean
   isDev?: boolean
@@ -44,20 +37,99 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  imageAspectRatio: '16/9',
   showOverlay: true,
   showBadge: true,
   isDev: false,
   isSelected: false
 })
+
+const defaultImageUrl = 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2426'
+
+const containerStyle = computed(() => {
+  return {
+    aspectRatio: props.imageAspectRatio || '16/9'
+  }
+})
 </script>
 
 <style scoped>
-.image-wrapper {
+.image-component {
+  width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
 
-.glass-overlay {
+.image-container {
+  position: relative;
+  width: 100%;
+  background-color: #18181b;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.image-element {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.8;
+  transition: opacity 0.7s ease;
+}
+
+.image-container:hover .image-element {
+  opacity: 1;
+}
+
+.image-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
   background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
+  pointer-events: none;
+}
+
+.badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.badge {
+  padding: 0.125rem 0.5rem;
+  background-color: #2563eb;
+  color: white;
+  font-size: 10px;
+  font-weight: 900;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.divider {
+  flex: 1;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.image-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.image-description {
+  color: #d4d4d8;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  max-width: 28rem;
+  line-height: 1.625;
 }
 </style>

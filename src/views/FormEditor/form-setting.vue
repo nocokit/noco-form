@@ -9,14 +9,14 @@
           @click="activeTab = 'component'"
           v-if="currentCompId"
         >
-          组件设置
+          {{ t('properties.componentSettings') }}
         </button>
         <button
           class="tab-item"
           :class="{ active: activeTab === 'form' }"
           @click="activeTab = 'form'"
         >
-          表单设置
+          {{ t('properties.formSettings') }}
         </button>
       </div>
     </div>
@@ -37,7 +37,7 @@
             <div class="group-header" @click="toggleGroup('basic')">
               <div class="group-header-title">
                 <i class="ri-settings-2-line"></i>
-                <span>基础设置</span>
+                <span>{{ t('properties.basicSettings') }}</span>
               </div>
               <i class="ri-arrow-down-s-line" :class="{ 'rotate-180': !collapsedGroups.basic }"></i>
             </div>
@@ -72,7 +72,7 @@
             <div class="group-header" @click="toggleGroup('validation')">
               <div class="group-header-title">
                 <i class="ri-shield-check-line"></i>
-                <span>校验与逻辑</span>
+                <span>{{ t('properties.validation') }}</span>
               </div>
               <i class="ri-arrow-down-s-line" :class="{ 'rotate-180': !collapsedGroups.validation }"></i>
             </div>
@@ -92,17 +92,15 @@
       <!-- Form Settings Tab -->
       <div v-show="activeTab === 'form'" class="tab-content-panel">
         <div class="panel-header-title">
-          <h2 class="component-title-main">表单设置</h2>
+          <h2 class="component-title-main">{{ t('formSettings.title') }}</h2>
         </div>
-
-        <LocalizationSimple :form="selectForm"/>
 
         <!-- Configuration Section -->
         <div class="group-container">
           <div class="group-header" @click="toggleGroup('configuration')">
             <div class="group-header-title">
               <i class="ri-settings-3-line"></i>
-              <span>配置选项</span>
+              <span>{{ t('formSettings.globalConfig') }}</span>
             </div>
             <i class="ri-arrow-down-s-line" :class="{ 'rotate-180': !collapsedGroups.configuration }"></i>
           </div>
@@ -110,24 +108,24 @@
             <div class="toggle-list">
               <div class="toggle-item">
                 <div class="toggle-label-group">
-                  <span class="toggle-label-main">Submit Button</span>
-                  <span class="toggle-label-sub">Show/Hide form footer</span>
+                  <span class="toggle-label-main">{{ t('formSettings.submitButton') }}</span>
+                  <span class="toggle-label-sub">{{ t('formSettings.submitButtonDesc') }}</span>
                 </div>
                 <DisplayBtn :form="selectForm" compact/>
               </div>
 
               <div class="toggle-item">
                 <div class="toggle-label-group">
-                  <span class="toggle-label-main">Field Indexing</span>
-                  <span class="toggle-label-sub">Display question numbers</span>
+                  <span class="toggle-label-main">{{ t('formSettings.fieldIndexing') }}</span>
+                  <span class="toggle-label-sub">{{ t('formSettings.fieldIndexingDesc') }}</span>
                 </div>
                 <DisplaySerialNumber :form="selectForm" compact/>
               </div>
 
               <div class="toggle-item">
                 <div class="toggle-label-group">
-                  <span class="toggle-label-main">Watermark</span>
-                  <span class="toggle-label-sub">Show branding watermark</span>
+                  <span class="toggle-label-main">{{ t('formSettings.watermark') }}</span>
+                  <span class="toggle-label-sub">{{ t('formSettings.watermarkDesc') }}</span>
                 </div>
                 <DisplayWaterMark :form="selectForm" compact/>
               </div>
@@ -150,6 +148,9 @@
 </template>
 <script setup lang="ts">
 import { ref, watch, reactive, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // 基础设置
 import Title from '@/components-form-setting/base/Title.vue'
@@ -187,7 +188,6 @@ import DisplayDescription from '@/components-form-setting/common-global-configur
 import DisplayTitle from '@/components-form-setting/common-global-configurations/DisplayTitle.vue'
 import DisplayBtn from '@/components-form-setting/common-global-configurations/DisplayBtn.vue'
 import Localization from '@/components-form-setting/common-global-configurations/Localization.vue'
-import LocalizationSimple from '@/components-form-setting/common-global-configurations/LocalizationSimple.vue'
 import BrandingConfig from '@/components-form-setting/common-global-configurations/BrandingConfig.vue'
 
 import { hasOwnPropertyFunction, verifyRegularityCompList } from '@/views/FormEditor/comp-config-data'

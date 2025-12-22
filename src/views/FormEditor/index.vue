@@ -14,7 +14,7 @@
       <div class="actions-right">
         <div class="lang-selector">
           <i class="ri-global-line lang-icon"></i>
-          <select class="lang-select" v-model="currentShortLocale" @change="handleEditorLocaleChange">
+          <select class="item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600" v-model="currentShortLocale">
             <option
               v-for="locale in availableLocales"
               :key="locale.code"
@@ -25,24 +25,20 @@
           </select>
         </div>
         <div class="divider-vertical"></div>
-        <button class="github-btn" @click="toGithub" title="GitHub Repository">
+        <button class="github-btn" @click="toGithub" :title="t('header.github')">
           <i class="ri-github-fill"></i>
-        </button>
-        <div class="divider-vertical"></div>
-        <button class="theme-toggle-btn" @click="toggleTheme" :title="theme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'">
-          <i :class="theme === 'dark' ? 'ri-sun-line' : 'ri-moon-line'"></i>
         </button>
         <div class="divider-vertical"></div>
         <button class="btn-publish px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 flex items-center gap-2" @click="preview">
           <i class="ri-send-plane-line"></i>
-          <span>Publish</span>
+          <span>{{ t('header.publish') }}</span>
         </button>
       </div>
     </header>
     <div class="content editor-content">
       <div class="comps glass">
         <div class="panel-header">
-          <span>Components</span>
+          <span>{{ t('components.title') }}</span>
         </div>
 
         <!-- Quick Search with shortcut hint -->
@@ -51,7 +47,7 @@
             <i class="ri-search-line search-icon-enhanced"></i>
             <input
               type="text"
-              placeholder="Quick Search"
+              :placeholder="t('components.searchPlaceholder')"
               class="search-input-enhanced"
               v-model="searchQuery"
               @input="handleSearch"
@@ -64,7 +60,7 @@
           <div class="comp-category-section" v-for="compCategory in filteredCompList" :key="compCategory.name" v-show="compCategory.children.length > 0">
             <!-- Category Title with minimal design -->
             <div class="category-title-enhanced">
-              <span>{{ compCategory.name.toUpperCase() }}</span>
+              <span>{{ t(`components.categories.${compCategory.name}`).toUpperCase() }}</span>
               <i class="ri-information-line category-info-icon" v-if="compCategory.tooltip" :title="compCategory.tooltip"></i>
             </div>
 
@@ -85,7 +81,7 @@
                 @click="createCompByClick(item)"
               >
                 <i class="comp-icon" :class="item.icon" v-if="item.icon"></i>
-                <span class="comp-label">{{ item.label }}</span>
+                <span class="comp-label">{{ t(`componentTypes.${item.type}`) }}</span>
               </div>
             </VueDraggable>
           </div>
@@ -117,7 +113,7 @@
                           <span class="text" :class="{
                             'has-data': pageCompList.length
                           }">
-                            点击左侧题目 / 拖拽题目到此区域
+                            {{ t('canvas.noData') }}
                           </span>
 
                         </div>
@@ -146,7 +142,7 @@
                 'active-comp': activeComp.id === pageFooter.id
               }" style="display: flex; justify-content: center;">
                 <TwButton
-                  :text="pageFooter.buttonText || '提交'"
+                  :text="pageFooter.buttonText || t('common.submit')"
                   :size="(pageFooter.size as 'small' | 'default' | 'large') || 'default'"
                   :show-icon="pageFooter.buttonIconShowBool"
                 />
@@ -213,26 +209,22 @@ interface FooterType {
 
 const openDraw = ref(false)
 
-// Use locale composable for route-based i18n
+// Use i18n for translations
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
+// Use locale composable for i18n management
 import { useLocale } from '@/composables/useLocale'
-const { currentLocale, currentShortLocale, availableLocales, setLocale } = useLocale()
+const { currentLocale, currentShortLocale, availableLocales } = useLocale()
 
-// Use theme composable for theme switching
-import { useTheme } from '@/composables/useTheme'
-const { theme, toggleTheme } = useTheme()
-
-const handleEditorLocaleChange = (event: Event) => {
-  const target = event.target as HTMLSelectElement
-  const newLocale = target.value
-
-  // Use composable to change locale (will update route)
-  setLocale(newLocale)
-
-  // Show notification
-  showLocaleNotification(`Editor language changed to ${newLocale}`)
-
-  console.log('Editor locale changed to:', newLocale, 'Route:', currentLocale.value)
-}
+// Watch for locale changes and show notification
+watch(currentLocale, (newLocale, oldLocale) => {
+  if (oldLocale && newLocale !== oldLocale) {
+    const localeName = availableLocales.value.find(l => l.fullCode === newLocale)?.label || newLocale
+    showLocaleNotification(`${t('actions.languageChanged')} ${localeName}`)
+    console.log('Locale changed to:', newLocale)
+  }
+})
 
 const showLocaleNotification = (message: string) => {
   const notification = document.createElement('div')
@@ -686,29 +678,6 @@ const onClose = () => {
     gap: 12px;
 
     .github-btn {
-      background: transparent;
-      border: 1px solid var(--border-base);
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      color: var(--text-secondary);
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      i {
-        font-size: 16px;
-      }
-
-      &:hover {
-        background: var(--bg-hover);
-        color: var(--primary);
-        border-color: var(--border-medium);
-      }
-    }
-
-    .theme-toggle-btn {
       background: transparent;
       border: 1px solid var(--border-base);
       padding: 6px 10px;
@@ -1265,7 +1234,7 @@ const onClose = () => {
   background: var(--bg-panel-alpha);
   border: 1px solid var(--border-base);
   border-radius: 8px;
-  padding: 6px 10px;
+  padding: 0px 10px;
   transition: all 0.2s;
 
   &:focus-within {

@@ -8,8 +8,8 @@
       :maxlength="maxlength"
       :rows="rows"
       :class="[
-        'tw-textarea',
-        'w-full px-4 py-2.5 text-xs rounded-xl border outline-none transition-all leading-relaxed',
+        'tw-textarea-custom',
+        'w-full bg-[#18181b] px-4 py-2.5 text-xs text-zinc-300 rounded-lg outline-none transition-all leading-relaxed focus:ring-2 focus:ring-blue-500 focus:border-transparent',
         resizeClass,
         'disabled:opacity-50 disabled:cursor-not-allowed',
         error ? 'tw-textarea-error' : '',
@@ -115,27 +115,19 @@ const handleBlur = (event: FocusEvent) => {
 </script>
 
 <style scoped>
-.tw-textarea {
-  background: var(--bg-panel);
-  border-color: var(--border-base);
-  color: var(--text-primary);
+.tw-textarea-custom {
+  border: 1px solid rgb(39 39 42 / var(--tw-border-opacity, 1));
 }
 
-.tw-textarea::placeholder {
-  color: var(--text-dim);
+.tw-textarea-custom:hover:not(:disabled) {
+  border-color: rgb(63 63 70 / var(--tw-border-opacity, 1));
 }
 
-.tw-textarea:hover:not(:disabled) {
-  border-color: var(--border-medium);
-  background: var(--bg-deep);
-}
-
-.tw-textarea:focus {
-  border-color: var(--primary);
-  background: var(--bg-deep);
+textarea::placeholder {
+  color: #71717a;
 }
 
 .tw-textarea-error {
-  border-color: var(--error) !important;
+  border-color: #ef4444 !important;
 }
 </style>

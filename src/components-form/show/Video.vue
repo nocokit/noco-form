@@ -12,17 +12,29 @@
     </div>
 
     <!-- Video Player -->
-    <div class="aspect-video bg-black rounded-xl relative overflow-hidden flex items-center justify-center">
+    <div class="bg-black rounded-xl relative overflow-hidden flex items-center justify-center w-full" :style="{ aspectRatio: videoAspectRatio || '16/9' }">
+      <!-- Loading State -->
+      <div v-if="isLoadingPoster" class="absolute inset-0 flex items-center justify-center bg-black">
+        <div class="loading-spinner"></div>
+      </div>
+
+      <!-- Error State -->
+      <div v-if="hasError && !isLoadingPoster" class="absolute inset-0 flex flex-col items-center justify-center bg-zinc-900 text-zinc-500">
+        <i class="ri-video-line text-4xl mb-2"></i>
+        <span class="text-sm">{{ videoUrl ? '视频加载失败' : '请输入视频URL' }}</span>
+      </div>
+
       <!-- Video Element or Poster -->
-      <div v-if="!isPlaying" class="absolute inset-0 bg-cover bg-center opacity-40 blur-[2px]"
-           :style="{ backgroundImage: `url(${videoPoster || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=2344'})` }">
+      <div v-if="!isPlaying && !isLoadingPoster && !hasError && posterImageSrc"
+           class="absolute inset-0 bg-cover bg-center opacity-40 blur-[2px]"
+           :style="{ backgroundImage: `url(${posterImageSrc})` }">
       </div>
 
       <video
-        v-if="videoUrl"
+        v-if="videoUrl && !hasError"
         ref="videoRef"
         :src="videoUrl"
-        :poster="videoPoster"
+        :poster="posterImageSrc"
         :autoplay="autoplay"
         :controls="controls && isPlaying"
         :loop="loop"
@@ -30,11 +42,13 @@
         :class="{ 'hidden': !isPlaying }"
         @play="isPlaying = true"
         @pause="handlePause"
+        @error="handleVideoError"
+        @loadeddata="handleVideoLoad"
       ></video>
 
       <!-- Play Button Overlay -->
       <div
-        v-if="!isPlaying"
+        v-if="!isPlaying && !isLoadingPoster && !hasError && videoUrl"
         @click="playVideo"
         class="relative z-10 w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 hover:scale-110 transition-transform shadow-2xl cursor-pointer"
       >
@@ -64,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 interface Props {
   id?: string
@@ -73,6 +87,7 @@ interface Props {
   videoDescription?: string
   videoPoster?: string
   videoLabel?: string
+  videoAspectRatio?: string
   autoplay?: boolean
   controls?: boolean
   loop?: boolean
@@ -81,6 +96,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  videoAspectRatio: '16/9',
   autoplay: false,
   controls: true,
   loop: false,
@@ -92,9 +108,17 @@ const videoRef = ref<HTMLVideoElement | null>(null)
 const isPlaying = ref(false)
 const currentTime = ref(0)
 const duration = ref(0)
+const isLoadingPoster = ref(false)
+const hasError = ref(false)
+
+const defaultPoster = 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=2344'
+
+const posterImageSrc = computed(() => {
+  return props.videoPoster || defaultPoster
+})
 
 const playVideo = () => {
-  if (videoRef.value) {
+  if (videoRef.value && props.videoUrl) {
     videoRef.value.play()
     isPlaying.value = true
   }
@@ -105,6 +129,23 @@ const handlePause = () => {
     isPlaying.value = false
   }
 }
+
+const handleVideoError = () => {
+  hasError.value = true
+  isLoadingPoster.value = false
+}
+
+const handleVideoLoad = () => {
+  hasError.value = false
+  isLoadingPoster.value = false
+}
+
+// 当URL变化时重置状态
+watch(() => props.videoUrl, () => {
+  isPlaying.value = false
+  hasError.value = !props.videoUrl
+  isLoadingPoster.value = false
+}, { immediate: true })
 
 const progress = computed(() => {
   if (!duration.value) return 0
@@ -122,5 +163,20 @@ const formattedTime = computed(() => {
 .video-wrapper {
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

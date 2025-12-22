@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "run-p type-check \"build-only {@}\" --",
@@ -13,7 +14,9 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "axios": "^1.8.4",
@@ -23,6 +26,7 @@
     "uuid": "^11.0.2",
     "vue": "^3.5.12",
     "vue-draggable-plus": "^0.5.6",
+    "vue-i18n": "^11.2.7",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
@@ -41,6 +45,7 @@
     "eslint": "^9.13.0",
     "eslint-plugin-cypress": "^4.0.0",
     "eslint-plugin-vue": "^9.29.0",
+    "gh-pages": "^6.3.0",
     "jsdom": "^25.0.1",
     "npm-run-all2": "^7.0.1",
     "postcss": "^8.5.6",

@@ -1,6 +1,6 @@
-import { ref, watch, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
-export type Theme = 'light' | 'dark'
+export type Theme = 'dark'
 
 const STORAGE_KEY = 'noco-form-theme'
 
@@ -11,59 +11,47 @@ const currentTheme = ref<Theme>('dark')
  * Theme Management Composable
  *
  * Features:
+ * - Dark theme only (light theme disabled)
  * - Persistent theme storage (localStorage)
- * - System preference detection
- * - Real-time theme switching
  * - Auto-apply theme on mount
  */
 export function useTheme() {
   /**
-   * Set theme and persist to localStorage
+   * Set theme (always dark)
    */
   const setTheme = (theme: Theme) => {
-    currentTheme.value = theme
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem(STORAGE_KEY, theme)
+    currentTheme.value = 'dark'
+    document.documentElement.setAttribute('data-theme', 'dark')
+    localStorage.setItem(STORAGE_KEY, 'dark')
   }
 
   /**
-   * Toggle between light and dark theme
+   * Toggle theme (disabled - always dark)
    */
   const toggleTheme = () => {
-    const newTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
-    setTheme(newTheme)
+    // Theme toggle disabled - always use dark theme
+    setTheme('dark')
   }
 
   /**
-   * Detect system color scheme preference
+   * Get system theme (always returns dark)
    */
   const getSystemTheme = (): Theme => {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark'
-    }
-    return 'light'
+    return 'dark'
   }
 
   /**
-   * Initialize theme from localStorage or system preference
+   * Initialize theme (always dark)
    */
   const initTheme = () => {
-    const savedTheme = localStorage.getItem(STORAGE_KEY) as Theme | null
-    const initialTheme = savedTheme || getSystemTheme()
-    setTheme(initialTheme)
+    setTheme('dark')
   }
 
   /**
-   * Listen to system theme changes
+   * Listen to system theme changes (disabled)
    */
   const watchSystemTheme = () => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    mediaQuery.addEventListener('change', (e) => {
-      // Only auto-switch if user hasn't set a preference
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        setTheme(e.matches ? 'dark' : 'light')
-      }
-    })
+    // System theme watching disabled - always use dark theme
   }
 
   // Auto-initialize on first use

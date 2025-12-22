@@ -5,16 +5,16 @@
       <div class="section-header">
         <div class="section-title-wrapper">
           <i class="ri-vip-crown-line crown-icon"></i>
-          <span class="section-title">Branding PRO</span>
+          <span class="section-title">{{ t('formSettings.brandingPro') }}</span>
         </div>
-        <span class="paid-badge">Paid Feature</span>
+        <span class="paid-badge">{{ t('formSettings.paidFeature') }}</span>
       </div>
 
       <!-- PRO Locked Card -->
       <div class="pro-card" @mouseenter="showUnlock = true" @mouseleave="showUnlock = false">
         <div class="pro-content">
           <div class="pro-header">
-            <span class="pro-title">移除 "Powered by"</span>
+            <span class="pro-title">{{ t('formSettings.removePoweredBy') }}</span>
             <i class="ri-lock-line lock-icon"></i>
           </div>
 
@@ -24,17 +24,17 @@
               <div class="badge-icon">N</div>
             </div>
             <div class="badge-text-wrapper">
-              <p class="badge-text">Built with NOCO FORM</p>
+              <p class="badge-text">{{ t('formSettings.builtWithNoco') }}</p>
               <i class="ri-heart-line heart-icon"></i>
             </div>
           </div>
 
-          <p class="pro-support">保持品牌水印能帮助我们成长。感谢您的支持！</p>
+          <p class="pro-support">{{ t('formSettings.brandingSupport') }}</p>
         </div>
 
         <!-- Hover Unlock Overlay -->
         <div class="unlock-overlay" :class="{ show: showUnlock }">
-          <button class="unlock-button" @click="handleUpgradeClick">Unlock Now</button>
+          <button class="unlock-button" @click="handleUpgradeClick">{{ t('formSettings.unlockNow') }}</button>
         </div>
       </div>
     </section>
@@ -50,37 +50,37 @@
           <i class="ri-vip-crown-fill"></i>
         </div>
 
-        <h3 class="modal-title">Upgrade to Pro</h3>
+        <h3 class="modal-title">{{ t('formSettings.upgradeToPro') }}</h3>
         <p class="modal-description">
-          Remove NOCO branding and customize your own logo to create a fully white-labeled form experience.
+          {{ t('formSettings.upgradeDesc') }}
         </p>
 
         <div class="modal-features">
           <div class="feature-item">
             <i class="ri-check-line"></i>
-            <span>Remove "Powered by" badge</span>
+            <span>{{ t('formSettings.removePoweredByBadge') }}</span>
           </div>
           <div class="feature-item">
             <i class="ri-check-line"></i>
-            <span>Upload custom logo</span>
+            <span>{{ t('formSettings.uploadCustomLogo') }}</span>
           </div>
           <div class="feature-item">
             <i class="ri-check-line"></i>
-            <span>Full white-labeling control</span>
+            <span>{{ t('formSettings.fullWhiteLabeling') }}</span>
           </div>
           <div class="feature-item">
             <i class="ri-check-line"></i>
-            <span>Priority support</span>
+            <span>{{ t('formSettings.prioritySupport') }}</span>
           </div>
         </div>
 
         <button class="upgrade-button">
           <i class="ri-vip-crown-line"></i>
-          Upgrade to Pro
+          {{ t('formSettings.upgradeToPro') }}
           <i class="ri-arrow-right-line"></i>
         </button>
 
-        <p class="modal-footer">Start your 14-day free trial</p>
+        <p class="modal-footer">{{ t('formSettings.freeTrial') }}</p>
       </div>
     </div>
   </div>
@@ -88,6 +88,9 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Props {
   form?: any

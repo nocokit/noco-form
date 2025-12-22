@@ -78,7 +78,7 @@
       </div>
     </div>
     <div class="floating-action-toolbar" v-if="compConfig.id === selectedComp?.id">
-      <div class="flex items-center gap-2 pr-2 border-r border-zinc-700">
+      <div class="flex items-center gap-2 pr-2 border-r border-zinc-700" v-if="displaySection">
         <span class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">必填</span>
         <TwSwitch v-model="component.isRequired" @change="handleChangeRequired" />
       </div>
@@ -224,12 +224,12 @@ const handleBatchOperation = (isOk: boolean, dataList: any[]) => {
   }
 }
 
-const displaySection = computed(() => !['Divider', 'Paging', 'FormTitle'].includes(props.type))
+const displaySection = computed(() => !['Divider', 'Paging', 'FormTitle', 'Image', 'Video'].includes(props.type))
 
 function getTypeToComponent(type: string) {
   const compsObject: any = {
     // 显示组件
-    Img: ImageComponent,
+    Image: ImageComponent,
     Video: VideoComponent,
     FormTitle: FormTitleComponent,
 

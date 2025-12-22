@@ -36,7 +36,7 @@
         <span v-if="item.subType === 'other'" class="other-val flex-1">
           <input
             :disabled="isDev"
-            class="item-comp w-full px-2 py-1 border border-gray-300 rounded"
+            class="item-comp w-full px-2 py-1 border-none rounded"
             v-model="item.value"
             placeholder="其他选项内容自定义"
           />

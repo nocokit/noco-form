@@ -2,19 +2,17 @@ import { createI18n } from 'vue-i18n'
 import zhCN from './locales/zh-CN'
 import enUS from './locales/en-US'
 
-// Get language from localStorage or browser
+// Get language from localStorage or browser (only supported languages)
 const getDefaultLocale = (): string => {
+  // Use same localStorage key as useLocale
   const savedLocale = localStorage.getItem('noco-form-locale')
-  if (savedLocale) return savedLocale
+  if (savedLocale && (savedLocale === 'zh-CN' || savedLocale === 'en-US')) {
+    return savedLocale
+  }
 
   const browserLang = navigator.language.toLowerCase()
   if (browserLang.startsWith('zh')) return 'zh-CN'
   if (browserLang.startsWith('en')) return 'en-US'
-  if (browserLang.startsWith('ja')) return 'ja-JP'
-  if (browserLang.startsWith('es')) return 'es-ES'
-  if (browserLang.startsWith('de')) return 'de-DE'
-  if (browserLang.startsWith('fr')) return 'fr-FR'
-  if (browserLang.startsWith('pt')) return 'pt-BR'
 
   return 'zh-CN' // Default fallback
 }

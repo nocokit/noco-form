@@ -12,10 +12,9 @@
 
       <div class="locale-controls">
         <div class="select-wrapper group">
-          <select v-model="runtimeLocale" @change="handleRuntimeLocaleChange" class="locale-select">
+          <select v-model="runtimeLocale" @change="handleRuntimeLocaleChange" class="item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600">
             <option value="zh-CN">简体中文 (Simplified Chinese)</option>
             <option value="en-US">English (US)</option>
-            <option value="ja-JP">日本語 (Japanese)</option>
           </select>
           <i class="ri-arrow-down-s-line select-arrow"></i>
         </div>

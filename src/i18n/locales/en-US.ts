@@ -51,11 +51,11 @@ export default {
     search: 'Quick Search',
     searchPlaceholder: 'Search components...',
     categories: {
-      basic: 'Basic',
-      advanced: 'Advanced',
-      layout: 'Layout',
-      identity: 'Contact Info',
-      display: 'Display',
+      Layout: 'Layout',
+      Media: 'Media & Content',
+      Inputs: 'Inputs',
+      Selection: 'Selection',
+      Feedback: 'Feedback',
     },
   },
 
@@ -303,6 +303,19 @@ export default {
 
     // Branding Config
     branding: 'Branding',
+    brandingPro: 'Branding PRO',
+    paidFeature: 'Paid Feature',
+    removePoweredBy: 'Remove "Powered by"',
+    builtWithNoco: 'Built with NOCO FORM',
+    brandingSupport: 'Keeping the brand watermark helps us grow. Thank you for your support!',
+    unlockNow: 'Unlock Now',
+    upgradeToPro: 'Upgrade to Pro',
+    upgradeDesc: 'Remove NOCO branding and customize your own logo to create a fully white-labeled form experience.',
+    removePoweredByBadge: 'Remove "Powered by" badge',
+    uploadCustomLogo: 'Upload custom logo',
+    fullWhiteLabeling: 'Full white-labeling control',
+    prioritySupport: 'Priority support',
+    freeTrial: 'Start your 14-day free trial',
     brandingTitle: 'Brand Title',
     brandingLogo: 'Brand Logo',
     brandingLogoPlaceholder: 'Enter logo URL',
@@ -320,11 +333,14 @@ export default {
     enableAI: 'Enable AI Translation',
     translateNow: 'Translate Now',
 
-    // Others
+    // Configuration Items
     submitButton: 'Submit Button',
     submitButtonDesc: 'Show/Hide form footer',
     fieldIndexing: 'Field Indexing',
-    watermark: 'Powered by Noco',
+    fieldIndexingDesc: 'Display question numbers',
+    watermark: 'Watermark',
+    watermarkDesc: 'Show branding watermark',
+    poweredBy: 'Powered by Noco',
   },
 
   // ==================== Localization Settings ====================
@@ -359,22 +375,12 @@ export default {
   languages: {
     zh: '简体中文',
     en: 'English',
-    ja: '日本語',
-    es: 'Español',
-    de: 'Deutsch',
-    fr: 'Français',
-    pt: 'Português',
   },
 
   // ==================== Locales ====================
   locales: {
     'zh-CN': '简体中文 (Chinese Simplified)',
     'en-US': 'English (United States)',
-    'ja-JP': '日本語 (Japanese)',
-    'es-ES': 'Español (Spanish)',
-    'de-DE': 'Deutsch (German)',
-    'fr-FR': 'Français (French)',
-    'pt-BR': 'Português (Portuguese)',
   },
 
   // ==================== Canvas ====================
@@ -384,6 +390,24 @@ export default {
     dropHere: 'Drop to add component',
     emptyForm: 'Empty Form',
     emptyFormDesc: 'Drag components from the left to start building your form',
+  },
+
+  // ==================== Preview ====================
+  preview: {
+    title: 'Preview',
+    mobile: 'Mobile',
+    desktop: 'Desktop',
+    light: 'Light',
+    dark: 'Dark',
+    share: 'Share Preview',
+    exit: 'Exit Preview',
+    emptyState: 'No form fields yet',
+    emptyStateDesc: 'Add components from the editor',
+    schemaInspector: 'Live Schema Inspector',
+    submissionData: 'Form Submission Data',
+    submitButton: 'Submit Feedback',
+    filled: 'filled',
+    interactHint: 'Interact with form to see data',
   },
 
   // ==================== Action Messages ====================

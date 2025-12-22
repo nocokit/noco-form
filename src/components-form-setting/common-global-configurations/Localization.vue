@@ -21,14 +21,9 @@
           <span class="field-badge">APP</span>
         </div>
         <div class="select-wrapper">
-          <select v-model="editorLanguage" @change="handleEditorLanguageChange" class="custom-select">
+          <select v-model="editorLanguage" @change="handleEditorLanguageChange" class="item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600">
             <option value="zh">简体中文</option>
             <option value="en">English</option>
-            <option value="ja">日本語</option>
-            <option value="es">Español</option>
-            <option value="de">Deutsch</option>
-            <option value="fr">Français</option>
-            <option value="pt">Português</option>
           </select>
           <i class="ri-arrow-down-s-line select-arrow"></i>
         </div>
@@ -42,14 +37,9 @@
           <i class="ri-question-line help-icon"></i>
         </div>
         <div class="select-wrapper">
-          <select v-model="runtimeLocale" @change="handleRuntimeLocaleChange" class="custom-select primary">
+          <select v-model="runtimeLocale" @change="handleRuntimeLocaleChange" class="item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600">
             <option value="zh-CN">简体中文 (Chinese Simplified)</option>
             <option value="en-US">English (United States)</option>
-            <option value="ja-JP">日本語 (Japanese)</option>
-            <option value="es-ES">Español (Spanish)</option>
-            <option value="de-DE">Deutsch (German)</option>
-            <option value="fr-FR">Français (French)</option>
-            <option value="pt-BR">Português (Portuguese)</option>
           </select>
           <i class="ri-arrow-down-s-line select-arrow primary"></i>
         </div>

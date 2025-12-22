@@ -18,10 +18,8 @@
         :readonly="readonly"
         :maxlength="maxlength"
         :class="[
-          'tw-input',
-          'w-full py-2.5 text-xs rounded-xl border outline-none transition-all',
+          'tw-input-custom w-full bg-[#18181b] rounded-lg py-2.5 text-xs text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed border-none',
           prefix ? 'pl-8 pr-4' : suffix || clearable ? 'pl-4 pr-8' : 'px-4',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
           error ? 'tw-input-error' : '',
           customClass
         ]"
@@ -161,27 +159,7 @@ defineExpose({
 </script>
 
 <style scoped>
-.tw-input {
-  background: var(--bg-panel);
-  border-color: var(--border-base);
-  color: var(--text-primary);
-}
-
-.tw-input::placeholder {
-  color: var(--text-dim);
-}
-
-.tw-input:hover:not(:disabled) {
-  border-color: var(--border-medium);
-  background: var(--bg-deep);
-}
-
-.tw-input:focus {
-  border-color: var(--primary);
-  background: var(--bg-deep);
-}
-
-.tw-input-error {
-  border-color: var(--error) !important;
+input::placeholder {
+  color: #71717a;
 }
 </style>

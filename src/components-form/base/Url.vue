@@ -12,7 +12,7 @@
       :title="isDev ? disableInputByDev : placeholder"
       v-model="value"
       :placeholder="placeholder || '提示信息'"
-      class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+      class="w-full pl-10 pr-3 py-2 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
     />
   </div>
 </template>

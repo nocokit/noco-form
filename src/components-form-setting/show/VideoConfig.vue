@@ -1,30 +1,30 @@
 <template>
   <div class="video-config">
-    <span class="text-gray-500 block-title">视频 URL</span>
+    <span class="text-gray-500 block-title">{{ t('settings.videoUrl') }}</span>
     <input
       type="text"
-      class="mb-10 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      placeholder="请输入视频URL (支持 MP4, WebM 等格式)"
+      class="custom-input mb-10"
+      :placeholder="t('settings.videoUrlPlaceholder')"
       v-model="comp.videoUrl"
       @input="handleChangeInput($event, 'videoUrl')"
       maxlength="500"
     />
 
-    <span class="text-gray-500 block-title">视频标题</span>
+    <span class="text-gray-500 block-title">{{ t('settings.videoTitle') }}</span>
     <input
       type="text"
-      class="mb-10 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      placeholder="请输入视频标题"
+      class="custom-input mb-10"
+      :placeholder="t('settings.videoTitlePlaceholder')"
       v-model="comp.videoTitle"
       @input="handleChangeInput($event, 'videoTitle')"
       maxlength="100"
     />
 
-    <span class="text-gray-500 block-title">视频描述</span>
+    <span class="text-gray-500 block-title">{{ t('settings.videoDescription') }}</span>
     <div class="relative mb-10">
       <textarea
-        class="w-full px-4 py-2.5 text-xs text-white rounded-xl border outline-none transition-all resize-y min-h-[80px] leading-relaxed bg-[#18181b] border-[#27272a] placeholder:text-[#52525b] hover:border-[#3f3f46] hover:bg-[#09090b] focus:border-indigo-500/50 focus:bg-[#09090b]"
-        placeholder="请输入视频描述"
+        class="custom-textarea"
+        :placeholder="t('settings.videoDescriptionPlaceholder')"
         v-model="comp.videoDescription"
         @input="handleChangeInput($event, 'videoDescription')"
         rows="3"
@@ -35,42 +35,50 @@
       </div>
     </div>
 
-    <span class="text-gray-500 block-title">封面图片 URL</span>
+    <span class="text-gray-500 block-title">{{ t('settings.videoPoster') }}</span>
     <input
       type="text"
-      class="mb-10 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      placeholder="请输入视频封面图片URL"
+      class="custom-input mb-10"
+      :placeholder="t('settings.videoPosterPlaceholder')"
       v-model="comp.videoPoster"
       @input="handleChangeInput($event, 'videoPoster')"
       maxlength="500"
     />
 
-    <span class="text-gray-500 block-title">视频标签</span>
+    <span class="text-gray-500 block-title">{{ t('settings.videoLabel') }}</span>
     <input
       type="text"
-      class="mb-10 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      placeholder="请输入视频标签"
+      class="custom-input mb-10"
+      :placeholder="t('settings.videoLabelPlaceholder')"
       v-model="comp.videoLabel"
       @input="handleChangeInput($event, 'videoLabel')"
       maxlength="50"
     />
 
+    <span class="text-gray-500 block-title">视频宽高比</span>
+    <TwSelect
+      v-model="comp.videoAspectRatio"
+      :options="aspectRatioOptions"
+      @change="(value) => handleAspectRatioChange(value)"
+      custom-class="mb-10"
+    />
+
     <div class="setting-item h-42">
-      <span class="text-gray-500 secondary">自动播放</span>
+      <span class="text-gray-500 secondary">{{ t('settings.autoplay') }}</span>
       <div class="abs-r switch-r">
         <TwSwitch v-model="comp.autoplay" @change="(value) => changeValue(value, 'autoplay')" />
       </div>
     </div>
 
     <div class="setting-item h-42">
-      <span class="text-gray-500 secondary">显示控制栏</span>
+      <span class="text-gray-500 secondary">{{ t('settings.controls') }}</span>
       <div class="abs-r switch-r">
         <TwSwitch v-model="comp.controls" @change="(value) => changeValue(value, 'controls')" />
       </div>
     </div>
 
     <div class="setting-item h-42">
-      <span class="text-gray-500 secondary">循环播放</span>
+      <span class="text-gray-500 secondary">{{ t('settings.loop') }}</span>
       <div class="abs-r switch-r">
         <TwSwitch v-model="comp.loop" @change="(value) => changeValue(value, 'loop')" />
       </div>
@@ -79,16 +87,40 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue'
-import { TwSwitch } from '@/components/ui'
+import { defineProps, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { TwSwitch, TwSelect } from '@/components/ui'
 import { useSelectCompStore } from '@/stores/selectCompStore'
 
+const { t } = useI18n()
+
 const compStore: any = useSelectCompStore()
+
+interface Props {
+  comp: any
+}
+
+const props = defineProps<Props>()
+const comp = ref(props.comp)
+
+const aspectRatioOptions = [
+  { label: '16:9 (宽屏)', value: '16/9' },
+  { label: '4:3 (标准)', value: '4/3' },
+  { label: '1:1 (正方形)', value: '1/1' },
+  { label: '21:9 (超宽)', value: '21/9' },
+  { label: '9:16 (竖屏)', value: '9/16' },
+]
 
 const handleChangeInput = (event: any, params?: string) => {
   const data = event.target.value
   compStore.updateCurrentComp({
     [params || 'videoUrl']: data
+  })
+}
+
+const handleAspectRatioChange = (value: any) => {
+  compStore.updateCurrentComp({
+    videoAspectRatio: value
   })
 }
 
@@ -98,12 +130,6 @@ const changeValue = (event: any, param?: string) => {
     [param || 'autoplay']: data
   })
 }
-
-interface Props {
-  comp: any
-}
-
-const props = defineProps<Props>()
 </script>
 
 <style scoped>

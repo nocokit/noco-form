@@ -4,7 +4,7 @@
     <select
       v-model="comp.sign_create_type"
       @change="changeType(($event.target as HTMLSelectElement).value)"
-      class="abs-r w-30 px-3 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      class="item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600 abs-r w-30"
     >
       <option :value="item.value" v-for="item in ImgTypeList" :key="item.value">{{ item.label }}</option>
     </select>

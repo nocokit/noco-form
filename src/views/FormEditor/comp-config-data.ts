@@ -347,6 +347,7 @@ export const getCompConfig = (type: CompType) => {
       imageDescription: '在 NOCO FORM，我们相信数据收集应当是优雅且充满力量的。',
       imageBadge: 'Introduction',
       imageAlt: 'Product Preview',
+      imageAspectRatio: '16/9',
       showOverlay: true,
       showBadge: true,
     }
@@ -362,6 +363,7 @@ export const getCompConfig = (type: CompType) => {
       videoDescription: '观看此 2 分钟视频，深入了解我们的背后团队。',
       videoPoster: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=2344',
       videoLabel: 'Company Showreel',
+      videoAspectRatio: '16/9',
       autoplay: false,
       controls: true,
       loop: false,
