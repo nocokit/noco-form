@@ -1,12 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/lemon-form/favicon.ico">
+    <link rel="icon" href="/noco-form/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>柠檬轻表单</title>
-    <script type="module" crossorigin src="/lemon-form/assets/index-elLRXM3_.js"></script>
-    <link rel="stylesheet" crossorigin href="/lemon-form/assets/index-BTek3-Bo.css">
+    <title>Noco-Form - 专业表单编辑器</title>
+    <!-- Fonts: Inter + JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Remix Icon CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <style>
+      /* 右侧配置面板输入框背景增强样式 */
+      :root {
+        --input-bg-primary: rgba(0, 0, 0, 0.2);
+        --input-bg-hover: rgba(0, 0, 0, 0.3);
+        --input-bg-focus: rgba(0, 0, 0, 0.4);
+        --input-border: rgba(255, 255, 255, 0.08);
+        --input-border-hover: rgba(255, 255, 255, 0.12);
+        --input-border-focus: var(--accent, #6366f1);
+      }
+
+      /* 配置面板输入框统一样式 */
+      .control-field,
+      .config-input {
+        background: var(--input-bg-primary) !important;
+        border: 1px solid var(--input-border) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+
+      .control-field:hover,
+      .config-input:hover {
+        background: var(--input-bg-hover) !important;
+        border-color: var(--input-border-hover) !important;
+      }
+
+      .control-field:focus,
+      .config-input:focus {
+        background: var(--input-bg-focus) !important;
+        border-color: var(--input-border-focus) !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+      }
+
+      /* Textarea 特殊样式 */
+      .control-field.textarea {
+        min-height: 80px;
+        resize: vertical;
+        font-family: 'JetBrains Mono', monospace;
+        line-height: 1.6;
+      }
+
+      /* Select 下拉框样式 */
+      .control-field.select {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23A1A1AA' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px !important;
+      }
+
+      /* 数字输入框样式 */
+      .control-field.number {
+        font-family: 'JetBrains Mono', monospace;
+        text-align: right;
+      }
+
+      /* 禁用状态 */
+      .control-field:disabled,
+      .config-input:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: rgba(0, 0, 0, 0.1) !important;
+      }
+    </style>
+    <script type="module" crossorigin src="/noco-form/assets/index-BjpBsx0W.js"></script>
+    <link rel="stylesheet" crossorigin href="/noco-form/assets/index-Cwvv0FaF.css">
   </head>
   <body>
     <div id="app"></div>
@@ -15,7 +83,7 @@
       (function() {
         var hm = document.createElement("script");
         hm.src = "https://hm.baidu.com/hm.js?c5dccd849776998e32c386a648159c7a";
-        var s = document.getElementsByTagName("script")[0]; 
+        var s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(hm, s);
       })();
       </script>
