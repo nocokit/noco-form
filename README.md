@@ -25,6 +25,4 @@ npm run dev
 
 - **高性能基座**：采用 Vite 5.4 + Pinia 3.0 + Tailwind CSS 3.4 现代技术栈，代码 100% MIT 开源。
 
-- **在线预览**：[https://bojue.github.io/noco-form](https://bojue.github.io/noco-form)
-
 
