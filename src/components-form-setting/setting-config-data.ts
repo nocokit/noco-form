@@ -1,21 +1,21 @@
 export const optionData = [{
-  name: "左",
+  label: "左",
   value: 'left'
 }, {
-  name: '中',
+  label: '中',
   value: 'center'
 }, {
-  name: "右",
+  label: "右",
   value: 'right'
 }]
 
 export const textOrButtonSizeData = [{
-  name: "小",
+  label: "小",
   value: 'small'
 }, {
-  name: '中',
+  label: '中',
   value: 'middle'
 }, {
-  name: "大",
+  label: "大",
   value: 'large'
 }]

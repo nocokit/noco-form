@@ -14,7 +14,7 @@ const getDefaultLocale = (): string => {
   if (browserLang.startsWith('zh')) return 'zh-CN'
   if (browserLang.startsWith('en')) return 'en-US'
 
-  return 'zh-CN' // Default fallback
+  return 'en-US' // Default fallback
 }
 
 export type MessageSchema = typeof zhCN
@@ -22,7 +22,7 @@ export type MessageSchema = typeof zhCN
 const i18n = createI18n<[MessageSchema], 'zh-CN' | 'en-US'>({
   legacy: false,
   locale: getDefaultLocale(),
-  fallbackLocale: 'zh-CN',
+  fallbackLocale: 'en-US',
   messages: {
     'zh-CN': zhCN,
     'en-US': enUS,
@@ -34,12 +34,12 @@ export default i18n
 
 // Export helper functions
 export const setLocale = (locale: string) => {
-  i18n.global.locale.value = locale as 'zh-CN' | 'en-US'
+  i18n.global.locale = locale as any
   localStorage.setItem('noco-form-locale', locale)
 }
 
 export const getLocale = () => {
-  return i18n.global.locale.value
+  return i18n.global.locale as unknown as string
 }
 
 export const t = i18n.global.t

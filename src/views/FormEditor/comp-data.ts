@@ -45,9 +45,7 @@ export const checkout = CompType.checkboxGroup;
 export const IgnoreLineNumberTypeList = [
   CompType.formTitle,
   CompType.divider,
-  CompType.paging,
-  CompType.grid,
-  CompType.stepper
+  CompType.paging
 ]
 
 // 组件元素类型

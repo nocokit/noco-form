@@ -211,7 +211,7 @@ const selectForm = reactive(props.selectForm)
 const activeTab = ref(props.currentCompId ? 'component' : 'form')
 
 // Group collapse management
-const collapsedGroups = reactive({
+const collapsedGroups = reactive<Record<string, boolean>>({
   basic: false,
   validation: false,
   configuration: false,

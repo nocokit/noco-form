@@ -15,7 +15,7 @@
       </option>
       <option
         v-for="option in normalizedOptions"
-        :key="option.value"
+        :key="String(option.value)"
         :value="option.value"
         :disabled="option.disabled"
         class="tw-select-option"

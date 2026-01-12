@@ -259,23 +259,6 @@ export const getCompConfig = (type: CompType) => {
         dividerValue: '分割线',
         position: 'center'
       }
-    } else if (CompType.grid === type) {
-      data = {
-        columnCount: 2,
-        gap: 16,
-        layout: [12, 12], // 基于24栅格
-        responsiveStack: true,
-        children: [] // 子组件ID列表
-      }
-    } else if (CompType.stepper === type) {
-      data = {
-        steps: [
-          { title: 'Step 1', description: '' },
-          { title: 'Step 2', description: '' },
-          { title: 'Step 3', description: '' }
-        ],
-        currentStep: 0
-      }
     }
 
     compConfig = {

@@ -14,10 +14,7 @@
         }">{{ props.titleValue }}</div>
       </div>
       <div class="description" v-if="props.titleDescriptionShow">
-        <div class="description-value" :style="{
-          ...computedStyle,
-         'font-size': props.titleSize === 'large' ? '16px' : (props.titleSize === 'middle' ? '14px' : '12px'),
-        }"> {{ props.titleDescription }}</div>
+        <div class="description-value" :style="computedStyle"> {{ props.titleDescription }}</div>
       </div>
     </section>
 
@@ -47,7 +44,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const computedStyle = computed(() => ({
-     'text-align': props.titleDescriptionPosition || 'center'
+     textAlign: (props.titleDescriptionPosition || 'center') as any
 }));
 
 const getImageUrl = (imgUrl: string) => {

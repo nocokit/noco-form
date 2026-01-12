@@ -6,7 +6,7 @@
 #### **快速开始**：
   
 ```SHELL
-git clone git@github.com:bojue/noco-form.git 
+git clone git@github.com:nocokit/noco-form.git
 
 cd noco-form  
 

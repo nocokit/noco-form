@@ -33,7 +33,7 @@
       @change="changeSelect(($event.target as HTMLSelectElement).value)"
       class="item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600 abs-r w-30"
     >
-      <option :value="item.value" v-for="item in orientationList" :key="item.value">{{ item.name }}</option>
+      <option :value="item.value" v-for="item in orientationList" :key="item.value">{{ item.label }}</option>
     </select>
   </div>
 
@@ -62,7 +62,7 @@
       @change="changeSelect(($event.target as HTMLSelectElement).value, 'titleDescriptionPosition')"
       class="item-comp w-full bg-[#18181b] border border-zinc-800 rounded-lg px-4 py-2.5 text-zinc-300 transition-colors appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:border-zinc-600 abs-r w-30"
     >
-      <option :value="item.value" v-for="item in positionList" :key="item.value">{{ item.name }}</option>
+      <option :value="item.value" v-for="item in positionList" :key="item.value">{{ item.label }}</option>
     </select>
   </div>
 

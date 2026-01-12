@@ -15,14 +15,14 @@ const reverseLocaleMap: Record<string, string> = {
 
 // Global state - singleton
 const currentLocale = computed({
-  get: () => i18n.global.locale.value,
+  get: () => i18n.global.locale as unknown as string,
   set: (value: string) => {
-    i18n.global.locale.value = value as any
+    i18n.global.locale = value as any
   }
 })
 
 const currentShortLocale = computed({
-  get: () => reverseLocaleMap[currentLocale.value] || 'zh',
+  get: () => reverseLocaleMap[currentLocale.value] || 'en',
   set: (newShortLocale: string) => {
     const newFullLocale = localeMap[newShortLocale]
     if (newFullLocale) {
@@ -46,7 +46,7 @@ const setLocale = (newShortLocale: string) => {
   }
 
   // Update i18n locale (this is the single source of truth)
-  i18n.global.locale.value = newFullLocale as any
+  i18n.global.locale = newFullLocale as any
 
   // Save to localStorage
   localStorage.setItem('noco-form-locale', newFullLocale)
