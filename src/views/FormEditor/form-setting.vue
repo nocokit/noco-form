@@ -4,7 +4,7 @@
       <a-typography-title class="title-val" :level="5">
         <img v-if="currCompIcon" :src="currCompIcon" class="compIcon" alt="">
         <span v-if="!currCompIcon" class="compIcon">🍋</span>
-        <span class="name">  {{ selectComp?.name || selectComp?.type === 'Button' && '提交按钮' || '表单配置' }} </span>
+        <span class="name">  {{ selectComp?.name || selectComp?.type === CompType.button && '提交按钮' || '表单配置' }} </span>
       </a-typography-title>
     </div>
     <div class="setting-base">
@@ -13,10 +13,10 @@
         基础设置 
       </div>
       <div class="content m-b-0">
-        <FormTitle v-if="selectComp.type === 'FormTitle'" :comp="selectComp" :key="selectComp._selectedId "/>
-        <Title v-if="showParams('name') && !showParams('isLayoutComp') && !['FormTitle'].includes(selectComp.type)" :comp="selectComp" :key="selectComp._selectedId "/>
+        <FormTitle v-if="selectComp.type === CompType.formTitle" :comp="selectComp" :key="selectComp._selectedId "/>
+        <Title v-if="showParams('name') && !showParams('isLayoutComp') && selectComp.type !== CompType.formTitle" :comp="selectComp" :key="selectComp._selectedId "/>
         <ButtonText v-if="showParams('buttonText')" :comp="selectComp" :key="selectComp._selectedId "/>
-        <Description v-if="showParams('description') && !['FormTitle'].includes(selectComp.type)"s :comp="selectComp" :key="selectComp._selectedId "/>
+        <Description v-if="showParams('description') && selectComp.type !== CompType.formTitle"s :comp="selectComp" :key="selectComp._selectedId "/>
         <PageSubTitle v-if="showParams('pageSubTitle')"  :comp="selectComp" :key="selectComp._selectedId "/>
         <PageSubDescription v-if="showParams('pageSubTitle')" :comp="selectComp" :key="selectComp._selectedId "/>
         <Placeholder v-if="showParams('placeholder')" :comp="selectComp" :key="selectComp._selectedId "/>
@@ -27,8 +27,8 @@
         <DividerBorderType v-if="showParams('dividerValue')" :comp="selectComp"></DividerBorderType>
         <Position v-if="showParams('position')" :comp="selectComp"/>
         <Size v-if="showParams('size')" :comp="selectComp"/>
-        <RateConfig v-if="selectComp?.type=== 'Rate'" :comp="selectComp" />
-        <NPSConfig v-if="['NPS', 'SelectRate'].includes(selectComp?.type)" :comp="selectComp" />
+        <RateConfig v-if="selectComp?.type === CompType.rate" :comp="selectComp" />
+        <NPSConfig v-if="[CompType.nps, CompType.selectRate].includes(selectComp?.type)" :comp="selectComp" />
         <DataList v-if="showParams('dataList')" :comp="selectComp" />
         <UseOtherDataList v-if="showParams('useOtherDataList')" :comp="selectComp"/>
         <SignCreateImgType v-if="showParams('sign_create_type')" :comp="selectComp"/>
@@ -99,10 +99,12 @@ import DisplayBtn from '@/components-form-setting/common-global-configurations/D
 
 import { hasOwnPropertyFunction, verifyRegularityCompList } from '@/views/FormEditor/comp-config-data'
 import * as _ from 'lodash'
-import { JustShowCompType } from '@/views/FormEditor/comp-data'
+import { JustShowCompType, CompType } from '@/views/FormEditor/comp-data'
 import { CompListData } from '@/views/FormEditor/comp-data'
 import Icon from './comp-icon'
 
+// 静态数据预计算，不在 computed 内重复展开
+const allCompList = CompListData.flatMap(item => item.children)
 
 interface Props {
   selectComp: any
@@ -115,14 +117,8 @@ const selectComp = reactive(props.selectComp)
 const selectForm = reactive(props.selectForm)
 
 const currCompIcon = computed(() => {
-  let _list: any[] = []
-  CompListData.map(item =>{
-    _list = [..._list, ...item.children]})
-  const comp = _.filter(_list, {
-    type : selectComp?.type
-  })?.[0]?.icon
-
-  return comp || selectComp?.type === 'Button' && Icon.Button
+  const comp = allCompList.find(item => item.type === selectComp?.type)?.icon
+  return comp || (selectComp?.type === CompType.button && Icon.Button)
 })
 
 const showParams = (params: string) => {
@@ -137,11 +133,11 @@ const showRegParams = () => {
 
 watch([() => props.selectComp, () => props.selectForm],
 ([newValue,newFormConfig]) => {
-    if(!selectComp) {
-      return 
+    if(!newValue) {
+      return
     }
-    selectComp.value = newValue
-    selectForm.value = newFormConfig
+    Object.assign(selectComp, newValue)
+    Object.assign(selectForm, newFormConfig)
   },
 );
 

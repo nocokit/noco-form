@@ -124,7 +124,7 @@
                 'text-align': pageFooter.position || 'left'
               }">
                 <a-button class="submit" type="primary" :icon="pageFooter.buttonIconShowBool ? h(CheckOutlined) : null"
-                  :size="pageFooter.size" :style="{ 'padding': getSize(), 'lineHeight': getLineHeight() }">
+                  :size="pageFooter.size" :style="{ 'padding': getSize, 'lineHeight': getLineHeight }">
                   {{ pageFooter.buttonText || '提交' }}
                 </a-button>
               </div>
@@ -144,7 +144,7 @@
 </template>
 <script setup lang="ts">
 import { VueDraggable } from 'vue-draggable-plus'
-import { computed, h, onMounted, reactive, ref, watch, } from 'vue'
+import { computed, h, onMounted, ref, watch, } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import { CompListData, CompType, IgnoreLineNumberTypeList } from './comp-data'
 import SidebarComp from '@/views/FormEditor/form-sidebar.vue'
@@ -153,15 +153,13 @@ import PreviewPage from '@/views/Preview/index.vue'
 import FormComponent from '@/components-form/index.vue'
 import { getDefaultConfig } from '@/views/FormEditor/comp-config-data';
 import { useSelectCompStore } from '@/stores/selectCompStore'
-import { useRoute, createRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { toGithub } from '@/utils/toGithub'
 import { CheckOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
-
-
-import * as _ from 'lodash'
 import Icon from './comp-icon'
 import router from '@/router'
+
 
 interface ActiveCompType {
   type: 'component' | 'header'
@@ -193,7 +191,7 @@ interface FooterType {
 const currentSideItemType = ref('questionBank') // 当前侧边栏选中类型
 
 const openDraw = ref(false)
-const compList = ref([...CompListData]) // 来源组件列表
+const compList = CompListData // 来源组件列表，静态数据无需 ref
 const globalData = ref()
 
 const selectSideItemType = (item: string) => {
@@ -207,15 +205,15 @@ const selectSideItemType = (item: string) => {
  * 3. pageFooter // 底部提交按钮配置
  */
 
-const getSize = () => {
-  const data = pageFooter?.value
-  return data?.size == 'large' ? "0 26px" : (data?.size == "small" ? "0 10px" : "0 16px")
-}
+const footerSize = computed(() => pageFooter.value?.size)
 
-const getLineHeight = () => {
-  const data = pageFooter.value
-  return data.size == 'large' ? "40px" : (data.size == "small" ? "24px" : "32px")
-}
+const getSize = computed(() => {
+  return footerSize.value === 'large' ? '0 26px' : (footerSize.value === 'small' ? '0 10px' : '0 16px')
+})
+
+const getLineHeight = computed(() => {
+  return footerSize.value === 'large' ? '40px' : (footerSize.value === 'small' ? '24px' : '32px')
+})
 
 const pageCompList = ref<any[]>([]) // 页面组件内容
 const pageHeader = ref<HeaderType>({
@@ -258,8 +256,10 @@ const defaultFormConfig = {
   waterMarkText: '柠檬轻表单🍋',
 }
 
+const useCompStore = useSelectCompStore()
+
 onMounted(() => {
-  const data = useCompStore.initGlobalFormConfig({ ...defaultFormConfig })
+  useCompStore.initGlobalFormConfig({ ...defaultFormConfig })
   globalData.value = useCompStore.currentGlobalFormConfig
   // 组件初始化
   // @ts-ignore
@@ -268,10 +268,8 @@ onMounted(() => {
   // @ts-ignore
   pageFooter.value = getDefaultConfig(CompType.button)
   pageFooter.value.id = uuidv4()
-
 })
 
-const useCompStore = useSelectCompStore()
 const isFormEditorDevBool = computed(() => {
   const bool = useRoute().path.includes('form-editor')
   return bool
@@ -290,9 +288,7 @@ const updateCompByChange = (compConfig: any) => {
     pageCompList.value[index] = { ...pageCompList.value[index], ...compConfig }
   }
 }
-const currentCompKeyData = computed(() => useCompStore.currentCompKey)
-
-watch(currentCompKeyData, (newValue) => {
+watch(() => useCompStore.currentCompKey, (newValue) => {
   updateCompKey.value = newValue
 })
 
@@ -306,35 +302,29 @@ watch([() => useCompStore.compConfig, () => useCompStore.currentGlobalFormConfig
 
 
 const updateCompLineNumber = () => {
-  if (Array.isArray(pageCompList.value)) {
-    let lineNumber = 0
-    let pageCount = _.filter(pageCompList.value, {
-      type: CompType.paging
-    })?.length
-    let pageNumber = 0
-    _.map(pageCompList.value, (item: any) => {
-      const isIgnoreTypeBool = IgnoreLineNumberTypeList.includes(item.type)
-      const isPageTypeBool = CompType.paging === item.type
-      if (!isIgnoreTypeBool) {
-        lineNumber++
-        item.lineNumber = lineNumber && lineNumber.toString()?.length === 1 ? '0' + lineNumber : lineNumber
-      }
-      if (isPageTypeBool) {
-        pageNumber++
-        item.pagingValue = `第 ${pageNumber} 页 / 共 ${pageCount} 页`
-      }
-    })
+  if (!Array.isArray(pageCompList.value)) return
+  const pageCount = pageCompList.value.filter(item => item.type === CompType.paging).length
+  let lineNumber = 0
+  let pageNumber = 0
+  for (const item of pageCompList.value) {
+    if (!IgnoreLineNumberTypeList.includes(item.type)) {
+      lineNumber++
+      item.lineNumber = lineNumber < 10 ? '0' + lineNumber : lineNumber
+    }
+    if (item.type === CompType.paging) {
+      pageNumber++
+      item.pagingValue = `第 ${pageNumber} 页 / 共 ${pageCount} 页`
+    }
   }
 }
 
-watch(pageCompList, (newValue) => {
-  pageCompList.value = newValue
+watch(pageCompList, () => {
   updateCompLineNumber()
-})
+}, { deep: true })
 
 const createByClickOrClone = (element: any) => {
   const defaultComp: any = getDefaultConfig(element.type)
-  const item = {
+  return {
     ...defaultComp,
     ...element.value,
     id: element.id || uuidv4(),
@@ -342,7 +332,6 @@ const createByClickOrClone = (element: any) => {
     type: element.type,
     name: element.name
   }
-  return { ...item }
 }
 
 const onClone = (element: any) => {
@@ -358,25 +347,20 @@ const createCompByClick = (item: any) => {
 
 
 const selectComp = (item: any) => {
-  useCompStore.initCurrentComp({
-    ...item
-  })
+  useCompStore.initCurrentComp(item)
   activeComp.value.id = item.id
-
-  console.log("当前选中组件：", item)
 }
 
 const updateDataListIndex = (index: number) => {
   if (index > -1 && Array.isArray(pageCompList.value[index]?.dataList)) {
-    _.map(pageCompList.value[index].dataList, (item: any, index: number) => {
-      item._index = index
+    pageCompList.value[index].dataList.forEach((item: any, i: number) => {
+      item._index = i
     })
   }
 }
 
-const addItem = (type: 'new' | 'other', item: any, index: number) => {
+const addItem = (type: 'new' | 'other', _item: any, index: number) => {
   const isNewBool = type === 'new'
-  const isOtherBool = type === 'other'
   const newDataItem = isNewBool ? {
     label: '选项',
     value: '选项',
@@ -400,7 +384,7 @@ const deleteSuccess = (compName = '') => {
 };
 
 const compControl = (controlType: string, value: any) => {
-  const index = _.findIndex(pageCompList.value, (item: any) => item.id === value.id)
+  const index = pageCompList.value.findIndex((item: any) => item.id === value.id)
   if (index === -1) {
     console.log("没有查询到组件！！！")
     return
@@ -414,7 +398,7 @@ const compControl = (controlType: string, value: any) => {
   }
   if (controlType === 'delete') {
     const deleteComp = pageCompList.value.splice(index, 1)
-    activeComp.value.id = pageCompList.value[index - 1]?.id
+    activeComp.value.id = pageCompList.value[index]?.id || pageCompList.value[index - 1]?.id || ''
     deleteSuccess(deleteComp?.[0]?.name)
   }
   initDataState()
@@ -424,7 +408,7 @@ const compControl = (controlType: string, value: any) => {
 
 const getActiveComp = () => {
   // 组件列表
-  const item = _.filter(pageCompList.value, (item: any) => item.id === activeComp.value.id)?.[0]
+  const item = pageCompList.value.find((item: any) => item.id === activeComp.value.id)
   if (item) {
     return item
   }
@@ -437,24 +421,12 @@ const getActiveComp = () => {
 }
 
 const getActiveCompIndex = () => {
-  return _.findIndex(pageCompList.value, (item: any) => item.id === activeComp.value.id)
+  return pageCompList.value.findIndex((item: any) => item.id === activeComp.value.id)
 }
 
 const callback = () => {
-  // router.go(-1)
   router.push('/workspace/product')
 }
-
-const getImageUrl = (imgUrl: string) => {
-  try {
-    return new URL(`/src/assets/background/${imgUrl}`, import.meta.url).href;
-  } catch (e) {
-    // @ts-ignore
-    const defaultUrl = pageHeader?.defUrl
-    return new URL(`/src/assets/background/${defaultUrl}`, import.meta.url).href;
-  }
-}
-
 
 const handleDragHandle = (e: any) => {
   e.preventDefault()
@@ -503,17 +475,6 @@ const onClose = () => {
   grid-template-columns: 56px 270px 1fr 260px;
   padding: 0 0 0 0px;
   height: calc(100% - 86px);
-
-  @media(max-width: 1400px) {
-    grid-template-columns: 56px 220px 1fr 220px;
-    overflow-x: auto;
-
-    .form {
-      width: auto;
-    }
-
-
-  }
 
   @media(max-width: 1400px) {
     grid-template-columns: 56px 260px 1fr 250px;
