@@ -1,0 +1,13 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#18181B"/>
+
+  <!-- Left Vertical Bar -->
+  <rect x="7" y="6" width="5" height="20" rx="1" fill="white"/>
+
+  <!-- Right Vertical Bar -->
+  <rect x="20" y="6" width="5" height="20" rx="1" fill="white"/>
+
+  <!-- The Bridge (Diagonal) - Brand Blue -->
+  <path d="M12 9L20 23H15L7 9H12Z" fill="#2563EB"/>
+</svg>
