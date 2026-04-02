@@ -1,5 +1,5 @@
 export const toGithub = () => {
-  window.open('https://github.com/bojue/lemon-form', '_blank');
+  window.open('https://github.com/nocokit/noco-form', '_blank');
 }
 
 export const toZhiHuJT = () => {
