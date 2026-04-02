@@ -1,0 +1,13 @@
+{
+  "type": "ElectronicSignature",
+  "name": "电子签名",
+  "label": "电子签名",
+  "icon": "Sign",
+  "category": "advanced",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "isCustomErrorMessage": false,
+    "sign_create_type": "png"
+  }
+}

@@ -2,6 +2,7 @@
 import { CompType } from "./comp-data"
 import Name from '/src/assets/form/name.svg';
 import TelePhone from '/src/assets/form/telePhone.svg';
+import { getComponentConfig } from '@/components-config/registry'
 
 type ClassifyList = 'personal'
 
@@ -321,9 +322,12 @@ export const getDefaultConfig = (type: CompType | CompType[], ignoreDefault: boo
   let configData = ignoreDefault ? {} :{
     ...defaultConfig
   }
+
   if(Array.isArray(type)) {
     type.map((itemType) => {
-      const compConfig = getCompConfig(itemType)
+      // 优先使用插件化配置
+      const pluginConfig = getComponentConfig(itemType)
+      const compConfig = Object.keys(pluginConfig).length > 0 ? pluginConfig : getCompConfig(itemType)
       configData = {
         ...configData,
         ...compConfig
@@ -331,7 +335,9 @@ export const getDefaultConfig = (type: CompType | CompType[], ignoreDefault: boo
     })
 
   } else {
-    const compConfig = getCompConfig(type)
+    // 优先使用插件化配置
+    const pluginConfig = getComponentConfig(type)
+    const compConfig = Object.keys(pluginConfig).length > 0 ? pluginConfig : getCompConfig(type)
     configData = {
       ...configData,
       ...compConfig

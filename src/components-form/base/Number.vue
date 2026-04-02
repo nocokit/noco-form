@@ -1,12 +1,12 @@
 <template>
- <a-input-number 
-  :disabled="isDev" 
-  :title="isDev ? disableInputByDev : placeholder" 
-  class="item-comp" 
-  v-model:value="value" 
+ <a-input-number
+  :disabled="isDev"
+  :title="isDev ? disableInputByDev : placeholder"
+  class="item-comp"
+  v-model:value="value"
   :placeholder="placeholder || '提示信息'"
-  :min="1" 
-  :max="100" />
+  :min="minValue ?? 0"
+  :max="maxValue ?? 100" />
 </template>
 <script setup lang="ts">
 import { ref,watch, reactive } from 'vue'
@@ -17,10 +17,16 @@ interface Props {
   placeholder: string
   value: string | null
   isDev: boolean
+  minValue?: number
+  maxValue?: number
 }
 
 const props = defineProps<Props>()
-const value = ref(props.value || '')
+const value = ref(props.value ?? null)
+
+watch(() => props.value, (val) => {
+  value.value = val ?? null
+})
 
 </script>
 <style lang="scss">

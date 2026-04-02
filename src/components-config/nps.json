@@ -1,0 +1,16 @@
+{
+  "type": "NPS",
+  "name": "NPS",
+  "label": "NPS",
+  "icon": "NPS",
+  "category": "basic",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "isCustomErrorMessage": false,
+    "defaultValue": 0,
+    "startValue": 0,
+    "rateCount": 10,
+    "startValueList": [0, 1]
+  }
+}

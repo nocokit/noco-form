@@ -1,0 +1,16 @@
+{
+  "type": "SelectRate",
+  "name": "下拉评分",
+  "label": "下拉评分",
+  "icon": "Select",
+  "category": "basic",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "isCustomErrorMessage": false,
+    "defaultValue": 0,
+    "startValue": 0,
+    "rateCount": 10,
+    "startValueList": [0, 1]
+  }
+}

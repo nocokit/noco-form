@@ -1,0 +1,20 @@
+{
+  "type": "Checkout",
+  "name": "多选",
+  "label": "多选",
+  "icon": "Checkout",
+  "category": "basic",
+  "defaultConfig": {
+    "layoutType": "vertical",
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请选择",
+    "isCustomErrorMessage": false,
+    "dataList": [
+      {"label": "选项一", "value": "选项一", "_index": 0},
+      {"label": "选项二", "value": "选项二", "_index": 1},
+      {"label": "选项三", "value": "选项三", "_index": 2}
+    ],
+    "classify": []
+  }
+}

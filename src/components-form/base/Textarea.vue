@@ -14,7 +14,11 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const value = ref(props.value || '')
+const value = ref(props.value ?? '')
+
+watch(() => props.value, (val) => {
+  value.value = val ?? ''
+})
 
 </script>
 <style lang="scss">

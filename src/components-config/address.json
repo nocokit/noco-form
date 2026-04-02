@@ -1,0 +1,19 @@
+{
+  "type": "Address",
+  "name": "地址",
+  "label": "地址",
+  "icon": "Address",
+  "category": "personal",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "isCustomErrorMessage": false,
+    "address": [],
+    "address_detail": "",
+    "address_default": [],
+    "address_detail_default": "",
+    "address_placeholder": "请选择省/市/区",
+    "address_detail_placeholder": "请输入详细地址",
+    "classify": ["personal"]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "Input",
+  "name": "单行输入",
+  "label": "单行输入",
+  "icon": "Input",
+  "category": "basic",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请输入",
+    "isCustomErrorMessage": false,
+    "classify": []
+  }
+}

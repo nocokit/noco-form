@@ -1,0 +1,14 @@
+{
+  "type": "IDCard",
+  "name": "身份证",
+  "label": "身份证",
+  "icon": "ID",
+  "category": "personal",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请输入身份证",
+    "isCustomErrorMessage": false,
+    "classify": ["personal"]
+  }
+}

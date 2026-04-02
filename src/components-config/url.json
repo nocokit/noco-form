@@ -1,0 +1,14 @@
+{
+  "type": "Url",
+  "name": "网址",
+  "label": "网址",
+  "icon": "Url",
+  "category": "personal",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请输入网址",
+    "isCustomErrorMessage": false,
+    "classify": ["personal"]
+  }
+}

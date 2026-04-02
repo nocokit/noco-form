@@ -1,0 +1,12 @@
+{
+  "type": "Switch",
+  "name": "开关",
+  "label": "开关",
+  "icon": "Switch",
+  "category": "basic",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "isCustomErrorMessage": false
+  }
+}

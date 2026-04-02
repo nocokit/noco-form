@@ -1,0 +1,12 @@
+{
+  "type": "Divider",
+  "name": "分割线",
+  "label": "分割线",
+  "icon": "Divider",
+  "category": "layout",
+  "defaultConfig": {
+    "dividerValue": "分割线",
+    "position": "center",
+    "isLayoutComp": true
+  }
+}

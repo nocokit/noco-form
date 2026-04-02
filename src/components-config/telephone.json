@@ -1,0 +1,14 @@
+{
+  "type": "TelePhone",
+  "name": "固定电话",
+  "label": "固定电话",
+  "icon": "TelePhone",
+  "category": "personal",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请输入固话",
+    "isCustomErrorMessage": false,
+    "classify": ["personal"]
+  }
+}

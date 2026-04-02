@@ -1,0 +1,16 @@
+{
+  "type": "Rate",
+  "name": "评分",
+  "label": "评分",
+  "icon": "Rate",
+  "category": "basic",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "isCustomErrorMessage": false,
+    "rateCount": 5,
+    "rateCharacter": "⭐️",
+    "rateColor": "#ff9900",
+    "rateAllowHalf": false
+  }
+}

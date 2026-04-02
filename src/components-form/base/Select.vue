@@ -26,7 +26,7 @@
 </template>
 <script setup lang="ts">
 import { Layout } from 'ant-design-vue';
-import { ref, reactive } from 'vue'
+import { ref, watch } from 'vue'
 import { v4 as uuidv4  } from 'uuid'
 
 interface Props {
@@ -51,8 +51,12 @@ const radioStyle = ref({
   lineHeight: '40px',
 });
 const props = defineProps<Props>()
-const _dataValue = ref(null)
+const _dataValue = ref(props.dataValue ?? null)
 const _updateKey = ref('')
+
+watch(() => props.dataValue, (val) => {
+  _dataValue.value = val ?? null
+})
 
 
 const updateKey = () => {

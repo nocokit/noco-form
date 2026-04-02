@@ -1,0 +1,14 @@
+{
+  "type": "Name",
+  "name": "姓名",
+  "label": "姓名",
+  "icon": "Name",
+  "category": "personal",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请输入名称",
+    "isCustomErrorMessage": false,
+    "classify": ["personal"]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "Email",
+  "name": "邮件",
+  "label": "邮件",
+  "icon": "Email",
+  "category": "personal",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请输入邮件",
+    "isCustomErrorMessage": false,
+    "classify": ["personal"]
+  }
+}

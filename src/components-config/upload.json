@@ -1,0 +1,12 @@
+{
+  "type": "Upload",
+  "name": "上传",
+  "label": "上传",
+  "icon": "Upload",
+  "category": "advanced",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "isCustomErrorMessage": false
+  }
+}

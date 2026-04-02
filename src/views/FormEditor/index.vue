@@ -147,6 +147,7 @@ import { VueDraggable } from 'vue-draggable-plus'
 import { computed, h, onMounted, ref, watch, } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import { CompListData, CompType, IgnoreLineNumberTypeList } from './comp-data'
+import { generateCompListData } from './comp-list-generator'
 import SidebarComp from '@/views/FormEditor/form-sidebar.vue'
 import SettingComp from '@/views/FormEditor/form-setting.vue'
 import PreviewPage from '@/views/Preview/index.vue'
@@ -191,7 +192,8 @@ interface FooterType {
 const currentSideItemType = ref('questionBank') // 当前侧边栏选中类型
 
 const openDraw = ref(false)
-const compList = CompListData // 来源组件列表，静态数据无需 ref
+// 优先使用动态生成的组件列表，回退到静态配置
+const compList = generateCompListData().length > 0 ? generateCompListData() : CompListData
 const globalData = ref()
 
 const selectSideItemType = (item: string) => {
@@ -425,7 +427,7 @@ const getActiveCompIndex = () => {
 }
 
 const callback = () => {
-  router.push('/workspace/product')
+  router.push('/')
 }
 
 const handleDragHandle = (e: any) => {

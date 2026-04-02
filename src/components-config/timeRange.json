@@ -1,0 +1,13 @@
+{
+  "type": "TimeRange",
+  "name": "时间范围",
+  "label": "时间范围",
+  "icon": "TimeRange",
+  "category": "basic",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholderRange": ["开始时间", "结束时间"],
+    "isCustomErrorMessage": false
+  }
+}

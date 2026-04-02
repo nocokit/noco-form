@@ -1,0 +1,13 @@
+{
+  "type": "Textarea",
+  "name": "多行输入",
+  "label": "多行输入",
+  "icon": "TextArea",
+  "category": "basic",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请输入",
+    "isCustomErrorMessage": false
+  }
+}

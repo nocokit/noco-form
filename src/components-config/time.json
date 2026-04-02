@@ -1,0 +1,13 @@
+{
+  "type": "Time",
+  "name": "时间",
+  "label": "时间",
+  "icon": "Time",
+  "category": "basic",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请选择时间",
+    "isCustomErrorMessage": false
+  }
+}

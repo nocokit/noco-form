@@ -10,7 +10,7 @@
   </a-input>
  </template>
  <script setup lang="ts">
- import { ref, reactive } from 'vue'
+ import { ref, watch } from 'vue'
  import { IeOutlined } from '@ant-design/icons-vue';
  import { disableInputByDev } from '@/views/FormEditor/comp-config-data'
  interface Props {
@@ -21,7 +21,11 @@
 }
 
 const props = defineProps<Props>()
-const value = ref(props.value || null)
+const value = ref(props.value ?? null)
+
+watch(() => props.value, (val) => {
+  value.value = val ?? null
+})
  
  </script>
  <style lang="scss">

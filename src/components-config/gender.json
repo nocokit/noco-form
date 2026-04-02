@@ -1,0 +1,23 @@
+{
+  "type": "Gender",
+  "name": "性别",
+  "label": "性别",
+  "icon": "Gender",
+  "category": "personal",
+  "defaultConfig": {
+    "layoutType": "vertical",
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请选择性别",
+    "isCustomErrorMessage": false,
+    "dataList": [
+      {"label": "男", "value": "男", "_index": 0},
+      {"label": "女", "value": "女", "_index": 1}
+    ],
+    "dataOtherList": [
+      {"label": "暂不透露", "value": "暂不透露", "_index": 2}
+    ],
+    "useOtherDataList": true,
+    "classify": ["personal"]
+  }
+}

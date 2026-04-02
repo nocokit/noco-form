@@ -1,0 +1,15 @@
+{
+  "type": "Number",
+  "name": "数字",
+  "label": "数字",
+  "icon": "Number",
+  "category": "basic",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请输入数字",
+    "isCustomErrorMessage": false,
+    "minValue": 0,
+    "maxValue": 100
+  }
+}

@@ -72,8 +72,6 @@
               <a-button type="primary" html-type="submit">Submit</a-button>
             </a-form-item>
           </a-form> -->
-          <SupportComp/>
-      
 
         </a-watermark>
 
@@ -89,8 +87,7 @@
 </template>
 <script setup lang="ts">
 type PreviewType = 'Phone' | 'PC'
-import { ref, reactive, h } from 'vue';
-import SupportComp from '@/components/Support.vue'
+import { ref, h } from 'vue';
 import type { DrawerProps } from 'ant-design-vue';
 import { CheckOutlined } from '@ant-design/icons-vue';
 import FormComponent from '@/components-form/index.vue'
@@ -100,12 +97,6 @@ const formShowConfig = ref({
   waterMarkBool: true,
   displayPaging: true,
 })
-
-const formState = reactive({
-  username: '',
-  password: '',
-  remember: true,
-});
 
 const previewType = ref<PreviewType>('Phone')
 const emit = defineEmits(['onClose'])

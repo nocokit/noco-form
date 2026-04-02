@@ -1,0 +1,14 @@
+{
+  "type": "WX",
+  "name": "微信",
+  "label": "微信",
+  "icon": "WX",
+  "category": "personal",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请输入微信",
+    "isCustomErrorMessage": false,
+    "classify": ["personal"]
+  }
+}

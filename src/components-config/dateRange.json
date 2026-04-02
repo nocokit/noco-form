@@ -1,0 +1,13 @@
+{
+  "type": "DateRange",
+  "name": "日期范围",
+  "label": "日期范围",
+  "icon": "DateRange",
+  "category": "basic",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholderRange": ["开始日期", "结束日期"],
+    "isCustomErrorMessage": false
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "Phone",
+  "name": "手机",
+  "label": "手机",
+  "icon": "Phone",
+  "category": "personal",
+  "defaultConfig": {
+    "isRequired": true,
+    "description": "描述",
+    "placeholder": "请输入手机号",
+    "isCustomErrorMessage": false,
+    "classify": ["personal"]
+  }
+}

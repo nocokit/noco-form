@@ -1,0 +1,13 @@
+{
+  "type": "Paging",
+  "name": "分页",
+  "label": "分页",
+  "icon": "Paging",
+  "category": "layout",
+  "defaultConfig": {
+    "pagingValue": "分页",
+    "pageSubTitle": "",
+    "pageSubDescription": "",
+    "isLayoutComp": true
+  }
+}
