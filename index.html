@@ -4,9 +4,35 @@
     <meta charset="UTF-8">
     <link rel="icon" href="/noco-form/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>柠檬轻表单</title>
-    <script type="module" crossorigin src="/noco-form/assets/index-uDSOX9I3.js"></script>
-    <link rel="stylesheet" crossorigin href="/noco-form/assets/index-DfK2htwt.css">
+    <title>Noco-Form</title>
+    <script>
+      // GitHub Pages SPA 路径恢复
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+        // 处理 404.html 传来的 query string 路径
+        var search = window.location.search;
+        if (search) {
+          var p = search.slice(1).split('&').reduce(function(acc, s) {
+            var r = s.split('=');
+            acc[decodeURIComponent(r[0])] = r.slice(1).join('=').replace(/~and~/g, '&');
+            return acc;
+          }, {});
+          if (p.p !== undefined) {
+            window.history.replaceState(
+              null, null,
+              window.location.pathname.slice(0, -1) + (p.p || '/') +
+              (p.q ? '?' + p.q : '') + (window.location.hash || '')
+            );
+          }
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/noco-form/assets/index-CnjvoyFS.js"></script>
+    <link rel="stylesheet" crossorigin href="/noco-form/assets/index-BarcRGgj.css">
   </head>
   <body>
     <div id="app"></div>
