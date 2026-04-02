@@ -1,24 +1,42 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+# 发布到 GitHub Pages 脚本
+# 使用方法: ./deploy.sh
+
 set -e
 
-# 部署到 https://nocokit.github.io/noco-form/
-# 目标仓库: https://github.com/nocokit/noco-form
+echo "🚀 开始构建项目..."
 
-DEPLOY_REPO="git@github.com:nocokit/noco-form.git"
-DEPLOY_BRANCH="gh-pages"
+# 构建项目
+VITE_BASE=/noco-form/ npm run build-only
 
-echo ">>> 构建项目..."
-VITE_BASE=/noco-form/ yarn build-only
+echo "✅ 构建完成"
 
-echo ">>> 进入 dist 目录..."
+# 进入构建产物目录
 cd dist
 
-echo ">>> 初始化 git 并推送到 gh-pages..."
-git init
-git checkout -b "$DEPLOY_BRANCH"
-git add -A
-git commit -m "deploy: $(date '+%Y-%m-%d %H:%M:%S')"
-git push -f "$DEPLOY_REPO" "$DEPLOY_BRANCH"
+# 初始化 git（如果还没有）
+if [ ! -d .git ]; then
+  git init
+  git remote add origin git@github.com:nocokit/noco-form.git
+fi
 
-cd -
-echo ">>> 部署完成: https://nocokit.github.io/noco-form/"
+echo "📦 准备发布..."
+
+# 添加所有文件
+git add -A
+
+# 提交
+git commit -m "Deploy to GitHub Pages - $(date '+%Y-%m-%d %H:%M:%S')"
+
+# 切换到 gh-pages 分支
+git branch -M gh-pages
+
+# 推送到远程
+echo "🚢 推送到 gh-pages 分支..."
+git push -f origin gh-pages
+
+cd ..
+
+echo "✨ 发布成功！"
+echo "🌐 访问地址: https://nocokit.github.io/noco-form/"
