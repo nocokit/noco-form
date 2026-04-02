@@ -236,7 +236,7 @@ export const getCompConfig = (type: CompType) => {
       type,
       titleValue: '标题名称',
       titleSize: 'middle',
-      titleDescription: '柠檬轻表单，Github仓库已免费开源，感谢你的使用！',
+      titleDescription: 'Noco-Form，Github仓库已免费开源，感谢你的使用！',
       titleImageUrl: 'bg.png',
       titleDescriptionShow: true,
       titleImageShow: true,

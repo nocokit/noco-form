@@ -2,9 +2,12 @@
   <div class="form-editor">
     <div class="nav-data">
       <div class="header">
-        <div class="title-data">
-          <span class="name">Vue动态表单</span>
-          <a-typography-text type="secondary" class='time'>编辑于2024-11-03 09:12</a-typography-text>
+        <div class="logo-title">
+          <img class="logo" src="http://localhost:5174/logo.png" alt="logo">
+          <div class="title-data">
+            <span class="name">Noco-Form</span>
+            <a-typography-text type="secondary" class='time'>by nocokit</a-typography-text>
+          </div>
         </div>
         <div class="control">
           <div class="cont-item">
@@ -256,7 +259,7 @@ const pageHeader = ref<HeaderType>({
   id: '',
   titleValue: '标题名称',
   titleSize: 'middle',
-  titleDescription: '柠檬轻表单，Github仓库已免费开源，感谢你的使用！',
+  titleDescription: 'Noco-Form，Github仓库已免费开源，感谢你的使用！',
   titleImageUrl: 'bg.png',
   defUrl: 'bg.png',
   type: '',
@@ -289,7 +292,7 @@ const defaultFormConfig = {
   displayTitle: true,
   displayBtn: true,
   displayWaterMark: false,
-  waterMarkText: '柠檬轻表单🍋',
+  waterMarkText: 'Noco-Form',
 }
 
 const useCompStore = useSelectCompStore()
@@ -545,13 +548,41 @@ const onClose = () => {
   height: 56px;
   line-height: 1;
   box-shadow: inset 0 -1px 0 #e7e7e7;
-  padding: 0 50px;
+  padding: 0 16px;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .logo-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .logo {
+      width: 36px;
+      height: 36px;
+    }
+  }
 
   .title-data {
     display: flex;
     flex-direction: column;
-    padding: 10px;
     font-size: 16px;
+
+    .name {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .time {
+      font-size: 12px;
+      line-height: 1.4;
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-const DB_NAME = 'lemon-form-db'
+const DB_NAME = 'noco-form-db'
 const DB_VERSION = 1
 const STORE_NAME = 'form-data'
 
