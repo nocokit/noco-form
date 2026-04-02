@@ -13,11 +13,6 @@ const router = createRouter({
       name: 'form-editor',
       component: () => import('../views/FormEditor/index.vue')
     },
-    {
-      path: '/:id/form-editor',
-      name: 'form-editor-id',
-      component: () => import('../views/FormEditor/index.vue')
-    },
     { path: '/:pathMatch(.*)*', component: PathNotFound },
   ]
 })

@@ -2,10 +2,6 @@
   <div class="form-editor">
     <div class="nav-data">
       <div class="header">
-        <div class="callback" @click="callback()">
-
-          <img src="@/assets/form-editor/callback.svg" alt="">
-        </div>
         <div class="title-data">
           <span class="name">Vue动态表单</span>
           <a-typography-text type="secondary" class='time'>编辑于2024-11-03 09:12</a-typography-text>
@@ -20,7 +16,7 @@
             </a-button>
           </div>
           <div class="cont-item">
-            <a-button type="default">
+            <a-button type="default" @click="handleSave">
               <img class="btn-icon" src="@/assets/form-editor/save.svg" alt="">
               <span class="name">
                 保存
@@ -42,6 +38,14 @@
     <div class="content editor-content">
       <SidebarComp @selectSideItemType="selectSideItemType" :currentSideItemType="currentSideItemType" />
       <div class="comps">
+        <template v-if="currentSideItemType === 'theme'">
+          <div class="theme">
+            <div class="theme-item" v-for="item in themeList" :key="item.url" @click="selectThemeImg(item.url)">
+              <img :src="getImageUrl(item.url)" alt="">
+            </div>
+          </div>
+        </template>
+        <template v-if="currentSideItemType === 'questionBank'">
         <div class="comp-category-item" v-for="compCategory in compList">
           <div class="category-title">
             {{ compCategory.name }}
@@ -65,8 +69,9 @@
             </div>
           </VueDraggable>
         </div>
+        </template>
       </div>
-      <div class="editor">
+      <div class="editor" :style="{ 'background-image': `url(${getImageUrl(selectForm?.bgImgUrl)})` }">
         <div class="preview-control" title="预览" @click="preview">
           <img :src="Icon.Preview" alt="">
           <div class="label">
@@ -159,7 +164,7 @@ import { toGithub } from '@/utils/toGithub'
 import { CheckOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import Icon from './comp-icon'
-import router from '@/router'
+import { indexedDB } from '@/utils/indexedDB'
 
 
 interface ActiveCompType {
@@ -195,6 +200,35 @@ const openDraw = ref(false)
 // 优先使用动态生成的组件列表，回退到静态配置
 const compList = generateCompListData().length > 0 ? generateCompListData() : CompListData
 const globalData = ref()
+
+const themeList = ref([{
+  url: 'bg0.png',
+},{
+  url: 'bg1.png',
+},{
+  url: 'bg2.png',
+},{
+  url: 'bg3.png',
+},{
+  url: 'bg4.png',
+},{
+  url: 'bg5.png',
+}])
+
+const selectThemeImg = (url: string) => {
+  useCompStore.updateGlobalFormConfig({
+    bgImgUrl: url
+  })
+}
+
+const getImageUrl = (imgUrl: string) => {
+  try {
+    return new URL(`/src/assets/background/${imgUrl}`, import.meta.url).href
+  } catch (e) {
+    const defaultUrl = 'bg0.png'
+    return new URL(`/src/assets/background/${defaultUrl}`, import.meta.url).href
+  }
+}
 
 const selectSideItemType = (item: string) => {
   currentSideItemType.value = item
@@ -260,7 +294,42 @@ const defaultFormConfig = {
 
 const useCompStore = useSelectCompStore()
 
-onMounted(() => {
+// 从 IndexedDB 加载表单数据
+const loadFormData = async () => {
+  try {
+    const savedData = await indexedDB.getForm()
+    if (savedData) {
+      pageCompList.value = savedData.pageCompList || []
+      if (savedData.pageHeader) {
+        pageHeader.value = savedData.pageHeader
+      }
+      if (savedData.pageFooter) {
+        pageFooter.value = savedData.pageFooter
+      }
+      if (savedData.globalConfig) {
+        useCompStore.initGlobalFormConfig(savedData.globalConfig)
+      }
+    }
+  } catch (error) {
+    console.error('加载表单数据失败:', error)
+  }
+}
+
+// 保存表单数据到 IndexedDB
+const saveFormData = async () => {
+  try {
+    await indexedDB.saveForm({
+      pageCompList: pageCompList.value,
+      pageHeader: pageHeader.value,
+      pageFooter: pageFooter.value,
+      globalConfig: useCompStore.currentGlobalFormConfig
+    })
+  } catch (error) {
+    console.error('保存表单数据失败:', error)
+  }
+}
+
+onMounted(async () => {
   useCompStore.initGlobalFormConfig({ ...defaultFormConfig })
   globalData.value = useCompStore.currentGlobalFormConfig
   // 组件初始化
@@ -270,6 +339,9 @@ onMounted(() => {
   // @ts-ignore
   pageFooter.value = getDefaultConfig(CompType.button)
   pageFooter.value.id = uuidv4()
+
+  // 加载保存的数据
+  await loadFormData()
 })
 
 const isFormEditorDevBool = computed(() => {
@@ -322,6 +394,12 @@ const updateCompLineNumber = () => {
 
 watch(pageCompList, () => {
   updateCompLineNumber()
+  saveFormData()
+}, { deep: true })
+
+// 监听全局配置变化，自动保存
+watch(() => useCompStore.currentGlobalFormConfig, () => {
+  saveFormData()
 }, { deep: true })
 
 const createByClickOrClone = (element: any) => {
@@ -426,14 +504,19 @@ const getActiveCompIndex = () => {
   return pageCompList.value.findIndex((item: any) => item.id === activeComp.value.id)
 }
 
-const callback = () => {
-  router.push('/')
-}
-
 const handleDragHandle = (e: any) => {
   e.preventDefault()
   const { type } = e
   noDataContentRef.value = type
+}
+
+const handleSave = async () => {
+  try {
+    await saveFormData()
+    message.success('保存成功！', 1)
+  } catch (error) {
+    message.error('保存失败，请重试', 1)
+  }
 }
 
 const preview = () => {
@@ -560,6 +643,25 @@ const onClose = () => {
     overflow-y: auto;
     background-image: url(./bg.png);
     background-repeat: round;
+  }
+
+  .theme {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 10px;
+    padding: 20px 2px;
+
+    .theme-item {
+      display: flex;
+      flex: 0 0 100%;
+      cursor: pointer;
+      img {
+        height: 120px;
+        width: 100%;
+        border-radius: 5px;
+      }
+    }
   }
 
   .body {
@@ -753,20 +855,6 @@ const onClose = () => {
 ::v-deep(.ant-drawer-bottom>.ant-drawer-content-wrapper) {
   height: calc(100% - 50px) !important;
 
-}
-
-.callback {
-  position: absolute;
-  left: 12px;
-  padding-top: 16px;
-  cursor: pointer !important;
-
-
-  img {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-  }
 }
 
 .control {

@@ -7,7 +7,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.VITE_BASE || '/lemon-form/',
+  base: process.env.VITE_BASE || '/',
   plugins: [
     vue(),
     vueDevTools(),

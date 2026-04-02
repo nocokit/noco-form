@@ -31,7 +31,7 @@ const classifyList = ref<ClassifyType[]>([{
 }, {
   label: '主题',
   icon: Icon.Theme,
-  type: 'outline'
+  type: 'theme'
 // }, {
 //   label: '逻辑',
 //   icon: Icon.Logic,
