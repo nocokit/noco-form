@@ -24,6 +24,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { type CSSProperties } from 'vue'
 import { ref, reactive, onMounted, computed } from 'vue'
 import { disableInputByDev } from '@/views/FormEditor/comp-config-data'
 
@@ -46,8 +47,8 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const computedStyle = computed(() => ({
-     'text-align': props.titleDescriptionPosition || 'center'
+const computedStyle = computed((): CSSProperties => ({
+  textAlign: (props.titleDescriptionPosition || 'center') as CSSProperties['textAlign'],
 }));
 
 const getImageUrl = (imgUrl: string) => {

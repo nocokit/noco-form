@@ -22,11 +22,7 @@ export const useSelectCompStore = defineStore('compEvent', () => {
   }
   // 当前组件配置
   const currentCompConfig = computed(() => compConfig.value)
-  // 获取当前组件
-  const getCurrentCompConfig = () => {
-    return currentCompConfig
-  }
-  
+
 
   // 初始化全局配置
   const initGlobalFormConfig = (config: any) => {
@@ -43,26 +39,20 @@ export const useSelectCompStore = defineStore('compEvent', () => {
 
   const currentGlobalFormConfig = computed(() => globalFormConfig.value)
 
-  const getGlobalFormConfig = () => {
-    return currentGlobalFormConfig
-  }
-
   const updateCurrentCompKey = (key: string) => {
     currentCompKey.value = key
   }
   
 
-  return { 
+  return {
     compConfig,
     currentCompConfig,
     globalFormConfig,
     currentGlobalFormConfig,
     initCurrentComp,
     updateCurrentComp,
-    getCurrentCompConfig,
     initGlobalFormConfig,
     updateGlobalFormConfig,
-    getGlobalFormConfig,
     currentCompKey,
     updateCurrentCompKey
   }

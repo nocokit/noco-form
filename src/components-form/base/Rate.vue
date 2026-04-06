@@ -1,11 +1,13 @@
 
 
 <template>
-  <a-rate class='item' v-model:value="props.value" :character="rateCharacter" :count="props.rateCount" :allowHalf="props.rateAllowHalf" />
+  <a-rate class='item' v-model:value="localValue" :character="rateCharacter" :count="props.rateCount" :allowHalf="props.rateAllowHalf" @change="onRateChange" />
 </template>
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, watch } from 'vue'
+import { useFormValues } from '@/composables/useFormValues'
 interface Props{
+  id?: string
   value: string,
   rateCharacter: number | string
   rateCount: number
@@ -13,6 +15,14 @@ interface Props{
 }
 
 const props = defineProps<Props>()
+const formValues = useFormValues()
+const localValue = ref(props.value ?? 0)
+
+watch(() => props.value, (val) => { localValue.value = val ?? 0 })
+
+const onRateChange = (val: number) => {
+  if (formValues && props.id) formValues[props.id] = val
+}
 
 </script>
 <style lang="scss" scoped>

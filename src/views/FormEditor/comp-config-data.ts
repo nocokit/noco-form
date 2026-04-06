@@ -1,76 +1,55 @@
 
 import { CompType } from "./comp-data"
-import Name from '/src/assets/form/name.svg';
-import TelePhone from '/src/assets/form/telePhone.svg';
 import { getComponentConfig } from '@/components-config/registry'
 
-type ClassifyList = 'personal'
-
 interface CompConfig {
-  name: string 
-  type: string // 类型
-  title: string // 标题
-  description: string | null // 描述
-  dataValue: any // 赋值，因为value和vue的绑定冲突，所以改成dataValue
-  dividerValue?: string // 分割线文本
-  pagingValue?: string // 分页内容
-  defaultValue: string | null// 默认值
-  dataList?: any[] // 列表数据，包括单选，多选，下拉选择
-  dataOtherList?: any[] // 其他数据
-  useOtherDataList?: boolean // 是否使用其他数据
-  layoutType?: 'horizontal' | 'vertical' // 横向布局，纵向布局
-  isRequired?: boolean // 必填
-  placeholder?: string // 占位符
-  placeholderRange?: [string, string ] // 占位符-范围场景
-  isCustomErrorMessage?: boolean // 自定义报错
-  customErrorMessage?: string // 自定义报错
-  formValidationFormat?: string // 表单校验格式
-  formValidationFormatRegex?: string // 表单正则校验内容
-  classify?: ClassifyList[] // 分类
-
-  // 值
-  value?: string | string[] | null // 值
-
-  // NPS满意度
-  startValue?: number // 开始值
-  startValueList?: number[] // 开始值List
-
-  // 标题
+  name: string
+  type: string
+  title: string
+  description: string | null
+  dataValue: any
+  dividerValue?: string
+  pagingValue?: string
+  defaultValue: string | null
+  dataList?: any[]
+  dataOtherList?: any[]
+  useOtherDataList?: boolean
+  layoutType?: 'horizontal' | 'vertical'
+  isRequired?: boolean
+  placeholder?: string
+  placeholderRange?: [string, string]
+  isCustomErrorMessage?: boolean
+  customErrorMessage?: string
+  formValidationFormat?: string
+  formValidationFormatRegex?: string
+  classify?: string[]
+  value?: string | string[] | null
+  startValue?: number
+  startValueList?: number[]
   titleValue?: string
   titleSize?: string
   titleDescription?: string
   titleImageUrl?: string
-
-
-  // 按钮
-  buttonText?: string // 按钮文本
-  size?: 'large' | 'middle' | 'small' // 按钮大小
-  position?: 'left' | 'right' | 'center' // 按钮位置
-  buttonIconShowBool?: boolean // 按钮图标
-
-  // 地址
-  address?: string[] // 地址
-  address_detail?: string // 详细地址
-  address_default?: string[] // 默认地址
-  address_detail_default?: string // 默认详细地址
-  address_placeholder?: string // 地址占位符
-  address_detail_placeholder?: string // 详细地址占位符
-
-  // 电子签名
+  buttonText?: string
+  size?: 'large' | 'middle' | 'small'
+  position?: 'left' | 'right' | 'center'
+  buttonIconShowBool?: boolean
+  address?: string[]
+  address_detail?: string
+  address_default?: string[]
+  address_detail_default?: string
+  address_placeholder?: string
+  address_detail_placeholder?: string
   sign_create_type?: 'png' | 'jpg'
-
-  // 扩展字段
-  minValue?: number // 最小值
-  maxValue?: number // 最大值
-
-  // 布局组件
-  isLayoutComp?: boolean // 布局组件
-  
+  minValue?: number
+  maxValue?: number
+  isLayoutComp?: boolean
 }
 
 export const HasSettingTypeList = ['Radio', 'Checkout', 'Select']
 
-export const defaultConfig: CompConfig = {
+/** 组件基础默认值，用于兜底 */
+const defaultConfig: CompConfig = {
   name: '',
   type: '',
   description: null,
@@ -79,34 +58,22 @@ export const defaultConfig: CompConfig = {
   customErrorMessage: '',
   title: '',
 }
+
 export const isFormTitle: CompType[] = [CompType.formTitle]
-export const dataListType: CompType[] = [CompType.checkout, CompType.radio, CompType.select] // 数组列表
-export const isLayoutType: CompType[] = [CompType.paging, CompType.divider] 
-export const hasIgnoreRequireType: CompType[] = [CompType.paging, CompType.divider, CompType.button]  // 忽略类型
-export const hasPlaceholderType: CompType[] = [CompType.input, CompType.textarea, CompType.number, CompType.date, CompType.time,CompType.url, 
-  CompType.email,
-  CompType.phone, 
-  CompType.idCard, 
-  CompType.location,
-  CompType.wx,
-  CompType.telePhone,
-  CompType.phone,
-  CompType.name,
-  CompType.select,
+export const dataListType: CompType[] = [CompType.checkout, CompType.radio, CompType.select]
+export const isLayoutType: CompType[] = [CompType.paging, CompType.divider]
+export const hasIgnoreRequireType: CompType[] = [CompType.paging, CompType.divider, CompType.button]
+export const hasPlaceholderType: CompType[] = [
+  CompType.input, CompType.textarea, CompType.number, CompType.date, CompType.time,
+  CompType.url, CompType.email, CompType.phone, CompType.idCard, CompType.location,
+  CompType.wx, CompType.telePhone, CompType.name, CompType.select,
 ]
-export const isPersonalClassifyList = [  
-  CompType.email,
-  CompType.phone, 
-  CompType.idCard, 
-  CompType.location,
-  CompType.wx,
-  CompType.telePhone,
-  CompType.phone,
-  CompType.name,
-  CompType.gender
+export const isPersonalClassifyList = [
+  CompType.email, CompType.phone, CompType.idCard, CompType.location,
+  CompType.wx, CompType.telePhone, CompType.name, CompType.gender,
 ]
 export const isGender = [CompType.gender]
-export const isRangePlaceholderType: CompType[]  = [CompType.dateRange, CompType.timeRange]
+export const isRangePlaceholderType: CompType[] = [CompType.dateRange, CompType.timeRange]
 export const isNumberType: CompType[] = [CompType.number]
 export const isButton: CompType[] = [CompType.button]
 export const isRate: CompType[] = [CompType.rate]
@@ -114,125 +81,90 @@ export const isNPS: CompType[] = [CompType.nps, CompType.selectRate]
 export const isAddress: CompType[] = [CompType.address]
 export const isSign: CompType[] = [CompType.electronicSignature]
 
-export const getCompConfig = (type: CompType) => {
-  let compConfig: any = {}
-  if(dataListType.includes(type)) {
-    compConfig  = {
-      ...compConfig,
-      layoutType: 'vertical',
-      dataList: [{
-        label: '选项一',
-        value: '选项一',
-        _index: 0,
-      },{
-        label: '选项二',
-        value: '选项二',
-        _index: 1,
-      },{
-        label: '选项三',
-        value: '选项三',
-        _index: 2,
-      }]
+/**
+ * 获取组件默认配置
+ * 优先从 JSON 配置文件读取（registry），JSON 缺失时回退到代码内联配置
+ */
+export const getDefaultConfig = (type: CompType | CompType[], ignoreDefault = false): Record<string, any> => {
+  const base = ignoreDefault ? {} : { ...defaultConfig }
+
+  const resolveOne = (t: CompType): Record<string, any> => {
+    const pluginConfig = getComponentConfig(t)
+    return Object.keys(pluginConfig).length > 0 ? pluginConfig : getFallbackConfig(t)
+  }
+
+  if (Array.isArray(type)) {
+    return type.reduce((acc, t) => ({ ...acc, ...resolveOne(t) }), base)
+  }
+
+  return { ...base, ...resolveOne(type) }
+}
+
+/**
+ * 兜底配置生成（仅在 JSON 未覆盖时使用）
+ * 保留原有逻辑作为安全网
+ */
+const getFallbackConfig = (type: CompType): Record<string, any> => {
+  let config: Record<string, any> = {}
+
+  if (dataListType.includes(type)) {
+    config.layoutType = 'vertical'
+    config.dataList = [
+      { label: '选项一', value: '选项一', _index: 0 },
+      { label: '选项二', value: '选项二', _index: 1 },
+      { label: '选项三', value: '选项三', _index: 2 },
+    ]
+  }
+
+  if (isGender.includes(type)) {
+    config.layoutType = 'vertical'
+    config.dataList = [
+      { label: '男', value: '男', _index: 0 },
+      { label: '女', value: '女', _index: 1 },
+    ]
+    config.dataOtherList = [{ label: '暂不透露', value: '暂不透露', _index: 2 }]
+    config.useOtherDataList = true
+  }
+
+  if (isLayoutType.includes(type)) {
+    config.isLayoutComp = true
+    if (type === CompType.paging) {
+      Object.assign(config, { pagingValue: '分页', pageSubTitle: '', pageSubDescription: '' })
+    } else {
+      Object.assign(config, { dividerValue: '分割线', position: 'center' })
     }
   }
 
-  if(isGender.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      layoutType: 'vertical',
-      dataList: [{
-        label: '男',
-        value: '男',
-        _index: 0,
-      },{
-        label: '女',
-        value: '女',
-        _index: 1,
-      }],
-      dataOtherList:[ {
-        label: '暂不透露',
-        value: '暂不透露',
-        _index: 2,
-      }],
-      useOtherDataList: true,
-    }
+  if (!hasIgnoreRequireType.includes(type)) {
+    config.isRequired = true
+    config.isCustomErrorMessage = false
+    config.description = '描述'
   }
 
-  if(isLayoutType.includes(type)) {
-    const isPageBool = CompType.paging === type 
-    const data = isPageBool ? {
-      pagingValue: '分页',
-      pageSubTitle: '',
-      pageSubDescription: ''
-    } : {
-      dividerValue: '分割线',
-      position: 'center'
-    }
-    compConfig = {
-      ...compConfig,
-      ...data,
-      isLayoutComp: true
-    }
+  if (hasPlaceholderType.includes(type)) {
+    config.placeholder = getCompPlaceholderByType(type) || '请输入'
   }
 
-  if(!hasIgnoreRequireType.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      isRequired: true,
-      isCustomErrorMessage: false,
-      description: '描述',
-    }
+  if (isNumberType.includes(type)) {
+    config.minValue = 0
+    config.maxValue = 100
+    config.placeholder = '请输入数字'
   }
 
-  if(hasPlaceholderType.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      placeholder:  getCompPlaceHolderDataByType(type) || '请输入'
+  if (isRangePlaceholderType.includes(type)) {
+    const rangePlaceholder: Record<string, [string, string]> = {
+      [CompType.dateRange]: ['开始日期', '结束日期'],
+      [CompType.timeRange]: ['开始时间', '结束时间'],
     }
+    config.placeholderRange = rangePlaceholder[type] ?? ['开始', '结束']
   }
 
-  if(isNumberType.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      minValue: 0,
-      maxValue: 100,
-      placeholder: '请输入数字'
-    }
+  if (isRate.includes(type)) {
+    Object.assign(config, { rateCount: 5, rateCharacter: '⭐️', rateColor: '#ff9900', rateAllowHalf: false })
   }
 
-  if(isRangePlaceholderType.includes(type)) {
-    let rangePlaceholder = []
-    switch (type) {
-      case CompType.dateRange:
-        rangePlaceholder = ['开始日期', '结束日期']
-        break;
-      case CompType.timeRange:
-        rangePlaceholder = ['开始时间', '结束时间']
-        break;
-      default: 
-        rangePlaceholder = ['开始', '结束']
-        break;
-    }
-
-    compConfig = {
-      ...compConfig,
-      placeholderRange: rangePlaceholder
-    }
-  }
-
-  if(isRate.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      rateCount:5,
-      rateCharacter: '⭐️',
-      rateColor: '#ff9900',
-      rateAllowHalf: false,
-    }
-  }
-
-  // 标题
-  if(isFormTitle.includes(type)) {
-    compConfig = {
+  if (isFormTitle.includes(type)) {
+    return {
       type,
       titleValue: '标题名称',
       titleSize: 'middle',
@@ -240,71 +172,49 @@ export const getCompConfig = (type: CompType) => {
       titleImageUrl: 'bg.png',
       titleDescriptionShow: true,
       titleImageShow: true,
-      titleDescriptionPosition: 'center'
-    } 
-
-    return compConfig
+      titleDescriptionPosition: 'center',
+    }
   }
-  
-  // 按钮
-  if(isButton.includes(type)) {
-    compConfig = {
-      ...compConfig,
+
+  if (isButton.includes(type)) {
+    Object.assign(config, {
       type,
       title: '提交按钮',
       buttonText: '提交',
       size: 'large',
       position: 'center',
       buttonIconShowBool: true,
-    }
+    })
   }
 
-  // Personal类型
-  if(isPersonalClassifyList.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      classify: ['personal']
-    }
+  if (isPersonalClassifyList.includes(type)) {
+    config.classify = ['personal']
   }
 
-  // NPS组件
-  if(isNPS) {
-    compConfig = {
-      ...compConfig,
-      defaultValue: 0,
-      startValue: 0,
-      rateCount:10,
-      startValueList: [0,1]
-    }
+  if (isNPS.includes(type)) {
+    Object.assign(config, { defaultValue: 0, startValue: 0, rateCount: 10, startValueList: [0, 1] })
   }
 
-  // 地址
-  if(isAddress.includes(type)) {
-    compConfig = {
-      ...compConfig,
+  if (isAddress.includes(type)) {
+    Object.assign(config, {
       address: [],
       address_detail: '',
       address_default: [],
       address_detail_default: '',
       address_placeholder: '请选择省/市/区',
       address_detail_placeholder: '请输入详细地址',
-    }
+    })
   }
 
-  // 电子签名
-  if(isSign.includes(type)) {
-    compConfig = {
-      ...compConfig,
-      sign_create_type: 'png'
-    }
+  if (isSign.includes(type)) {
+    config.sign_create_type = 'png'
   }
 
-  return compConfig
-
+  return config
 }
 
-export const getCompPlaceHolderDataByType = (type: string) => {
-  const placeholderObject: any = {
+const getCompPlaceholderByType = (type: string): string => {
+  const placeholders: Record<string, string> = {
     Name: '请输入名称',
     Gender: '请选择性别',
     Phone: '请输入手机号',
@@ -314,53 +224,24 @@ export const getCompPlaceHolderDataByType = (type: string) => {
     WX: '请输入微信',
     Select: '请选择',
   }
-
-  return placeholderObject[type]
+  return placeholders[type] || ''
 }
 
-export const getDefaultConfig = (type: CompType | CompType[], ignoreDefault: boolean = false) => {
-  let configData = ignoreDefault ? {} :{
-    ...defaultConfig
-  }
+/** @deprecated 使用 getDefaultConfig 替代 */
+export const getCompConfig = getFallbackConfig
 
-  if(Array.isArray(type)) {
-    type.map((itemType) => {
-      // 优先使用插件化配置
-      const pluginConfig = getComponentConfig(itemType)
-      const compConfig = Object.keys(pluginConfig).length > 0 ? pluginConfig : getCompConfig(itemType)
-      configData = {
-        ...configData,
-        ...compConfig
-      }
-    })
-
-  } else {
-    // 优先使用插件化配置
-    const pluginConfig = getComponentConfig(type)
-    const compConfig = Object.keys(pluginConfig).length > 0 ? pluginConfig : getCompConfig(type)
-    configData = {
-      ...configData,
-      ...compConfig
-    }
-  }
-
-  return {...configData}
-
-}
+export const getCompPlaceHolderDataByType = getCompPlaceholderByType
 
 export const disableInputByDev = '编辑模式不支持输入'
-export const hasOwnPropertyFunction = (object: Object, key: string)=> {
-  return object && Object.prototype.hasOwnProperty.call(object, key)
-}
 
+export const hasOwnPropertyFunction = (object: object, key: string): boolean =>
+  object != null && Object.prototype.hasOwnProperty.call(object, key)
 
-export const verifyRegularityCompList = () => {
-  return [
-    CompType.input,
-    CompType.textarea,
-    CompType.url,
-    CompType.email,
-    CompType.phone,
-    CompType.idCard
-  ]
-}
+export const verifyRegularityCompList = (): CompType[] => [
+  CompType.input,
+  CompType.textarea,
+  CompType.url,
+  CompType.email,
+  CompType.phone,
+  CompType.idCard,
+]

@@ -1,52 +1,16 @@
-
 <template>
-  <div class="setting-item h-50">
-    <a-typography-text type="secondary" class="block-title2">位置</a-typography-text>
-    <a-select v-model:value="comp.position" style="width: 120px" class="abs-r" @change="handleChangePosition">
-      <a-select-option :value="item.value" v-for="item in orientationList">{{ item.name }}</a-select-option>
-    </a-select>
-  </div>
+  <SettingSelect :comp="comp" field="position" label="位置" :options="OPTIONS" />
 </template>
+
 <script lang="ts" setup>
-import { defineProps, defineEmits, ref }  from 'vue'
-import { useSelectCompStore  } from '@/stores/selectCompStore'
+import SettingSelect from './SettingSelect.vue'
 import { optionData } from '../setting-config-data'
 
-const compStore = useSelectCompStore()
-const orientationList = ref([...optionData])
-
-const handleChangeInput = (event: any) => {
-  const data = event.target.value 
-  compStore.updateCurrentComp({
-    dividerValue: data
-  })
+interface Props {
+  comp: Record<string, any>
 }
-
-
-
-const handleChangePosition = (event: any) => {
-  const data = event
-  compStore.updateCurrentComp({
-    position: data
-  })
-}
-
-interface Props{
-  comp: any
-}
-
 const props = defineProps<Props>()
-const comp = ref(props.comp)
+const comp = props.comp
 
+const OPTIONS = optionData.map(o => ({ label: o.name, value: o.value }))
 </script>
-<style lang="scss" scoped>
-
-.comp {
-  padding: 10px;
-  color: yellowgreen;
-}
-.comp {
-  margin-bottom: 10px;
-}
-
-</style>

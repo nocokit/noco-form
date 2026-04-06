@@ -1,5 +1,5 @@
 import { CompType } from '@/views/FormEditor/comp-data'
-import Icon from '@/views/FormEditor/comp-icon'
+import Icon, { type IconKey } from '@/views/FormEditor/comp-icon'
 
 interface ComponentConfig {
   type: string
@@ -51,7 +51,7 @@ export const getComponentsByCategory = (category: string) => {
       name: config.name,
       label: config.label,
       type: config.type as CompType,
-      icon: (Icon as any)[config.icon]
+      icon: Icon[config.icon as IconKey] ?? ''
     }))
 }
 

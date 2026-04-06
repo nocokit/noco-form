@@ -1,47 +1,36 @@
-
 <template>
   <div class="setting-item h-80 p-t-10">
     <a-typography-text type="secondary" class="secondary">布局方式</a-typography-text>
-    <a-space direction="vertical" class="abs-r ">
-      <a-radio-group v-model:value="comp.layoutType" @change="handleChangeInput">
-        <a-radio-button v-for="item in layoutTypeList" :value="item.value" >{{ item.label }}</a-radio-button>
+    <a-space direction="vertical" class="abs-r">
+      <a-radio-group v-model:value="comp.layoutType" @change="onChange">
+        <a-radio-button v-for="item in OPTIONS" :key="item.value" :value="item.value">
+          {{ item.label }}
+        </a-radio-button>
       </a-radio-group>
-    </a-space> 
+    </a-space>
   </div>
-
 </template>
+
 <script lang="ts" setup>
-import type { SizeType } from 'ant-design-vue/es/config-provider';
-import { defineProps, defineEmits, ref }  from 'vue'
-import { useSelectCompStore  } from '@/stores/selectCompStore'
+import { useSettingField } from '@/composables/useSettingField'
 
-const compStore = useSelectCompStore()
-
-const handleChangeInput = (event: any) => {
-  const data = event.target.value 
-  compStore.updateCurrentComp({
-    layoutType: data
-  })
+interface Props {
+  comp: Record<string, any>
 }
-
-interface Props{
-  comp: any
-}
-
 const props = defineProps<Props>()
-const comp = ref(props.comp)
+const comp = props.comp
+const { updateField } = useSettingField()
 
-const layoutTypeList = [{
-  label: '横向',
-  value: 'horizontal'
-}, {
-  label: '纵向',
-  value: 'vertical'
-}]
+const OPTIONS = [
+  { label: '横向', value: 'horizontal' },
+  { label: '纵向', value: 'vertical' },
+]
 
-</script>
-<style lang="scss" scoped>
-.secondary {
-  margin: 10px 0;
+const onChange = (event: Event) => {
+  updateField('layoutType', (event.target as HTMLInputElement).value)
 }
+</script>
+
+<style lang="scss" scoped>
+.secondary { margin: 10px 0; }
 </style>

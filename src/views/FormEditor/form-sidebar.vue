@@ -1,50 +1,39 @@
 <template>
-  <div class="sidebar" >
-    <div class="item" v-for="item in classifyList" @click="selectSideItemType(item.type)" :key="item.label" :class="{
-      active: item.type === props.currentSideItemType
-    }">
+  <div class="sidebar">
+    <div
+      v-for="item in classifyList"
+      :key="item.type"
+      class="item"
+      :class="{ active: item.type === props.currentSideItemType }"
+      @click="emit('selectSideItemType', item.type)"
+    >
       <img class="icon" :src="item.icon" alt="">
       <div class="label">{{ item.label }}</div>
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from 'vue'
 import Icon from './comp-icon'
 
-interface Props {
-  currentSideItemType?: 'questionBank' | 'theme' | 'logic' | 'outline' | string
-}
-
-interface ClassifyType {
+interface SideItem {
   label: string
-  icon: any
+  icon: string
   type: 'questionBank' | 'theme' | 'logic' | 'outline'
 }
-const emit = defineEmits(['selectSideItemType'])
-const props = defineProps<Props>()
 
-const classifyList = ref<ClassifyType[]>([{
-  label: '题库',
-  icon: Icon.Question,
-  type: 'questionBank'
-}, {
-  label: '主题',
-  icon: Icon.Theme,
-  type: 'theme'
-// }, {
-//   label: '逻辑',
-//   icon: Icon.Logic,
-//   type: 'logic',
-
-},])
-
-const selectSideItemType = (type: string) => {
-  emit('selectSideItemType', type)
+interface Props {
+  currentSideItemType?: string
 }
 
+const props = defineProps<Props>()
+const emit = defineEmits<{ (e: 'selectSideItemType', type: string): void }>()
 
-
+const classifyList: SideItem[] = [
+  { label: '题库', icon: Icon.Question, type: 'questionBank' },
+  { label: '主题', icon: Icon.Theme,    type: 'theme' },
+  { label: '逻辑', icon: Icon.Logic,    type: 'logic' },
+]
 </script>
 
 <style scoped lang="scss">
@@ -61,12 +50,12 @@ const selectSideItemType = (type: string) => {
   display: block;
   filter: grayscale(100%);
   cursor: pointer;
+
   &.active {
     filter: grayscale(0%);
-    .label {
-      color: #1677ff;
-    }
+    .label { color: #1677ff; }
   }
+
   .icon {
     width: 20px;
     display: inline-block;

@@ -4,7 +4,7 @@
       <a-typography-title class="title-val" :level="5">
         <img v-if="currCompIcon" :src="currCompIcon" class="compIcon" alt="">
         <span v-if="!currCompIcon" class="compIcon">🍋</span>
-        <span class="name">  {{ selectComp?.name || selectComp?.type === CompType.button && '提交按钮' || '表单配置' }} </span>
+        <span class="name">{{ compName }}</span>
       </a-typography-title>
     </div>
     <div class="setting-base">
@@ -40,15 +40,12 @@
         <NumberConfig v-if="showParams('maxValue')" :comp="selectComp"/>
         <Required v-if="showParams('isRequired')" :comp="selectComp"/>
         <ValidationSystem v-if="showRegParams()" :comp="selectComp"/>
-        <ValidationCustom v-if="showParams('isCustomErrorMessage')" :comp="selectComp" />
-        <CustomText v-if="selectComp?.isCustomErrorMessage" :comp="selectComp"/>
       </div>
       </template>
       <div class="category-name">
         全局表单配置
       </div>
       <div class="content" v-if="selectForm">
-        <!-- <DisplayTitle :form="selectForm"/> -->
         <DisplayBtn :form="selectForm"/>
         <DisplaySerialNumber :form="selectForm"/>
         <DisplayDescription :form="selectForm"/>
@@ -58,13 +55,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from 'vue'
+import { watch, reactive, computed } from 'vue'
 
-// 基础设置
 import Title from '@/components-form-setting/base/Title.vue'
 import FormTitle from '@/components-form-setting/show/FormTitle.vue'
-import Video from '@/components-form-setting/show/Video.vue'
-import Image from '@/components-form-setting/show/Image.vue'
 import Position from '@/components-form-setting/base/Position.vue'
 import Size from '@/components-form-setting/base/Size.vue'
 import ButtonText from '@/components-form-setting/base/ButtonText.vue'
@@ -81,29 +75,19 @@ import NPSConfig from '@/components-form-setting/base/NPSConfig.vue'
 import DividerBorderType from '@/components-form-setting/base/DividerBorderType.vue'
 import Required from '@/components-form-setting/form-validation/Required.vue'
 import ValidationSystem from '@/components-form-setting/form-validation/ValidationFormat.vue'
-import ValidationCustom from '@/components-form-setting/form-validation/ValidationCustom.vue'
-import CustomText from '@/components-form-setting/form-validation/CustomText.vue'
 import NumberConfig from '@/components-form-setting/form-validation/NumberConfig.vue'
 import SignCreateImgType from '@/components-form-setting/data/SignCreateImgType.vue'
-
-// 数据设置
 import UseOtherDataList from '@/components-form-setting/data/UseOtherDataList.vue'
 import DataList from '@/components-form-setting/data/DataList.vue'
-
-// 全局设置
 import DisplayWaterMark from '@/components-form-setting/common-global-configurations/DisplayWaterMark.vue'
 import DisplaySerialNumber from '@/components-form-setting/common-global-configurations/DisplaySerialNumber.vue'
 import DisplayDescription from '@/components-form-setting/common-global-configurations/DisplayDescription.vue'
-import DisplayTitle from '@/components-form-setting/common-global-configurations/DisplayTitle.vue'
 import DisplayBtn from '@/components-form-setting/common-global-configurations/DisplayBtn.vue'
 
 import { hasOwnPropertyFunction, verifyRegularityCompList } from '@/views/FormEditor/comp-config-data'
-import * as _ from 'lodash'
-import { JustShowCompType, CompType } from '@/views/FormEditor/comp-data'
-import { CompListData } from '@/views/FormEditor/comp-data'
+import { JustShowCompType, CompType, CompListData } from '@/views/FormEditor/comp-data'
 import Icon from './comp-icon'
 
-// 静态数据预计算，不在 computed 内重复展开
 const allCompList = CompListData.flatMap(item => item.children)
 
 interface Props {
@@ -121,55 +105,45 @@ const currCompIcon = computed(() => {
   return comp || (selectComp?.type === CompType.button && Icon.Button)
 })
 
-const showParams = (params: string) => {
-  const bool = hasOwnPropertyFunction(selectComp, params)
-  return bool
-}
+const compName = computed(() => {
+  if (selectComp?.name) return selectComp.name
+  if (selectComp?.type === CompType.button) return '提交按钮'
+  return '表单配置'
+})
 
-const showRegParams = () => {
-  const compList = verifyRegularityCompList()
-  return compList.includes(selectComp?.type)
-}
+const showParams = (params: string) => hasOwnPropertyFunction(selectComp, params)
 
-watch([() => props.selectComp, () => props.selectForm],
-([newValue,newFormConfig]) => {
-    if(!newValue) {
-      return
-    }
-    Object.assign(selectComp, newValue)
-    Object.assign(selectForm, newFormConfig)
-  },
-);
+const showRegParams = () => verifyRegularityCompList().includes(selectComp?.type)
 
-
+watch([() => props.selectComp, () => props.selectForm], ([newValue, newFormConfig]) => {
+  if (!newValue) return
+  Object.assign(selectComp, newValue)
+  Object.assign(selectForm, newFormConfig)
+})
 </script>
 
 <style>
 .comp-name {
+  padding: 10px 10px 0 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, .06);
+  top: 0;
+  position: sticky;
+  z-index: 10;
+  background: #fff;
+
   .compIcon {
     width: 18px;
   }
 
-.name {
-  color: rgba(0, 0, 0, 0.65);
-  padding: 0 8px;
+  .name {
+    color: rgba(0, 0, 0, 0.65);
+    padding: 0 8px;
+  }
 }
-
-}
-
 .setting {
   background: #fafafa;
   max-height: 100%;
   overflow-y: auto;
-}
-
-.comp-name {
-  padding: 10px 10px 0 15px;
-  border-bottom: 1px solid rgba(0, 0, 0, .06);
-  top:0;
-  position: sticky;
-  z-index: 10;
-  background: #fff;
 }
 .setting-base {
   padding: 5px 15px;

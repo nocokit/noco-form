@@ -1,22 +1,25 @@
 <template>
-  <a-checkbox-group :value="dataValue" :options="useOtherDataList ? [...dataList,...dataOtherList]: dataList"
+  <a-checkbox-group :value="_genderValue" :options="useOtherDataList ? [...dataList,...dataOtherList]: dataList"
     :disabled="isDev"
-    :style="layoutType === 'vertical' || isSelected ? radioVerticalStyle : radioStyle" 
+    :style="layoutType === 'vertical' || isSelected ? radioVerticalStyle : radioStyle"
     :class="{
       'group-item': true,
       'group-item-select': isSelected
     }"
-    :key="isSelected + _updateKey ">
+    :key="isSelected + _updateKey"
+    @change="onGenderChange">
     <template #label="{ label, subType, value, _index }" class="item list-item ">
       <div class="editor-item" contenteditable="true" @blur="changeValue($event, _index)">{{ label }}</div>
     </template>
   </a-checkbox-group>
 </template>
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { v4 as uuidv4  } from 'uuid'
+import { useFormValues } from '@/composables/useFormValues'
 
 interface Props {
+  id: string
   dataList: Array<any>
   useOtherDataList: boolean
   dataOtherList:  Array<any>
@@ -27,7 +30,14 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const formValues = useFormValues()
 const _updateKey = ref('')
+const _genderValue = ref(props.dataValue ?? [])
+
+const onGenderChange = (val: any[]) => {
+  _genderValue.value = val
+  if (formValues && props.id) formValues[props.id] = val?.[0] ?? ''
+}
 
 const updateKey = () => {
   _updateKey.value = uuidv4()

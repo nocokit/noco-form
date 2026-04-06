@@ -40,14 +40,14 @@ import ImgText from '/src/assets/form-editor/img.svg'
 import Video from '/src/assets/form-editor/video.svg'
 import Img from '/src/assets/form-editor/img.svg'
 
-export default {
+const Icon = {
   Checkout,
   Email,
   Select,
   Switch,
   Date,
   DateRange,
-  Input,  
+  Input,
   Radio,
   Text,
   TextArea,
@@ -74,10 +74,13 @@ export default {
   Question,
   Outline,
   Sign,
-  // 显示
   ImgText,
   Video,
   Img,
-  Title
+  Title,
+} as const
 
-}
+/** Icon key 类型，用于消除消费侧的 (Icon as any)[key] 强制转换 */
+export type IconKey = keyof typeof Icon
+
+export default Icon

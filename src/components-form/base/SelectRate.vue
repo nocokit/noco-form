@@ -12,23 +12,27 @@
       label: item + '分',
       value: item,
     }))"
+    @change="onSelectChange"
   ></a-select>
   </a-space>
 </template>
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, computed } from 'vue'
+import { useFormValues } from '@/composables/useFormValues'
 interface Props {
+  id?: string
   dataList: Array<any>
   dataValue: string
   layoutType: string
   placeholder: string
   isDev: boolean
   isSelected: boolean
-  isPreviewRender?: boolean 
+  isPreviewRender?: boolean
   startValue: number
   rateCount: number
 }
 const props = defineProps<Props>()
+const formValues = useFormValues()
 
 const _dataValue = ref(null)
 
@@ -37,10 +41,12 @@ const list = computed(() => {
   for (let i = props.startValue; i <= props.rateCount; i++) {
     _val.push(i)
   }
-  console.log('list', _val)
   return _val
 })
 
+const onSelectChange = (val: any) => {
+  if (formValues && props.id) formValues[props.id] = val
+}
 
 </script>
 <style lang="scss" scoped>

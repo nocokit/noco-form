@@ -1,74 +1,55 @@
-
 <template>
-  <div class="setting-item h-50">
-    <a-typography-text type="secondary" class="secondary">格式</a-typography-text>
-    <a-select v-model:value="comp.formValidationFormat" style="width: 120px" class="abs-r" @change="handleChangeInput">
-      <a-select-option :value="item.value" v-for="item in systemFormatList">{{ item.name }}</a-select-option>
-    </a-select>
+  <SettingSelect :comp="comp" field="formValidationFormat" label="格式校验" :options="FORMAT_OPTIONS" />
+
+  <div v-if="comp.formValidationFormat === 'regular'">
+    <SettingInput
+      :comp="comp"
+      field="formValidationFormatRegex"
+      label="正则表达式"
+      placeholder="请输入正则，如：^\d{6}$"
+      :maxlength="100"
+    />
   </div>
-  <div class="setting-item h-42" v-if="comp.formValidationFormat === 'regular'">
-    <a-input
-      v-model:value="comp.formValidationFormatRegex"
-      placeholder="请输入自定义正则表达式"
-      auto-size
-      allow-clear 
-      maxlength="40"
-      :autosize="autosize"
-      @Input="changeValidationFormatRegexInput"/>
+
+  <div v-if="comp.formValidationFormat">
+    <SettingSwitch :comp="comp" field="isCustomErrorMessage" label="自定义错误提示" />
+    <div v-if="comp.isCustomErrorMessage" class="setting-item h-42">
+      <a-textarea
+        v-model:value="comp.customErrorMessage"
+        placeholder="请输入自定义错误提示文字"
+        allow-clear
+        :maxlength="60"
+        :auto-size="{ minRows: 2, maxRows: 3 }"
+        @change="onCustomMessageChange"
+      />
+    </div>
   </div>
 </template>
+
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useSelectCompStore  } from '@/stores/selectCompStore'
-const val = ref(null)
-const formList = [{
-  name: '手机号',
-  value: 'phone'
-}, {
-  name: '数字',
-  value: 'number'
-},{
-  name: '网站',
-  value: 'website'
-},{
-  name: '身份证',
-  value: 'idCard'
-},{
-  name: '邮件',
-  value: 'email'
-},{
-  name: '自定义正则',
-  value: 'regular'
-}]
-const autosize = ref({
-  minRows:2,
-  maxRows:3,
-})
-const systemFormatList = ref(formList)
-interface Props{
-  comp: any
-}
+import SettingSelect from '../base/SettingSelect.vue'
+import SettingInput from '../base/SettingInput.vue'
+import SettingSwitch from '../base/SettingSwitch.vue'
+import { useSettingField } from '@/composables/useSettingField'
 
+interface Props {
+  comp: Record<string, any>
+}
 const props = defineProps<Props>()
-const comp = ref(props.comp)
+const comp = props.comp
 
-const compStore = useSelectCompStore()
+const { updateFieldFromEvent } = useSettingField()
 
-const handleChangeInput = (event: any) => {
-  const data = event
-  compStore.updateCurrentComp({
-    formValidationFormat: data
-  })
+const FORMAT_OPTIONS = [
+  { label: '手机号',     value: 'phone' },
+  { label: '数字',       value: 'number' },
+  { label: '网站',       value: 'website' },
+  { label: '身份证',     value: 'idCard' },
+  { label: '邮件',       value: 'email' },
+  { label: '自定义正则', value: 'regular' },
+]
+
+const onCustomMessageChange = (e: Event) => {
+  updateFieldFromEvent('customErrorMessage', e)
 }
-
-const changeValidationFormatRegexInput = (event: any) => {
-  const data = event.target.value 
-  compStore.updateCurrentComp({
-    formValidationFormatRegex: data
-  })
-}
-
 </script>
-<style lang="scss" scoped>
-
-</style>

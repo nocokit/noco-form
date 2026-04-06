@@ -1,127 +1,127 @@
 <template>
-  <div class="comp-item">
-    <div class="comp-item-title" v-if="!!displaySection">
+  <div class="comp-item" :id="`field-${compConfig.id}`" :class="{ 'has-error': !!fieldError }">
+    <div class="comp-item-title" v-if="displaySection">
       <a-typography-title :level="5" class="title-value">
-        <span class="number" v-bind:class="{ 'title-value-isRequired': component.isRequired, number: true }"
-          v-if="formConfig?.displayNumberSort">
+        <span
+          class="number"
+          :class="{ 'title-value-isRequired': component.isRequired }"
+          v-if="formConfig?.displayNumberSort"
+        >
           {{ component?.lineNumber }}.
         </span>
         <span class="title-value">
-          <a-textarea class="input-comp" v-if="isDev && component?.id === selectedComp?.id"
-            :auto-size="{ minRows: 1, maxRows: 5 }" maxlength="50" v-model:value="component.title"
-            :placeholder="'请输入标题'" @change="changeValue($event, 'title')" allow-clear>
-          </a-textarea>
-
+          <a-textarea
+            class="input-comp"
+            v-if="isDev && component?.id === selectedComp?.id"
+            :auto-size="{ minRows: 1, maxRows: 5 }"
+            maxlength="50"
+            v-model:value="component.title"
+            placeholder="请输入标题"
+            @change="changeValue($event, 'title')"
+            allow-clear
+          />
           <a-typography-text v-else type="secondary">
-            <div class="description input-comp">
-              {{ component.title }}
-            </div>
+            <div class="description input-comp">{{ component.title }}</div>
           </a-typography-text>
         </span>
       </a-typography-title>
     </div>
-    <div class="comp-item-description" v-if="displaySection && formConfig?.displayDescription">
-      <div type="secondary" v-if="component?.id !== selectedComp?.id && isDev || renderType">
-        <div class="description">
-          {{ component.description }}
-        </div>
-      </div>
-      <a-textarea v-else :auto-size="{ minRows: 1, maxRows: 5 }" v-model:value="component.description"
-        :placeholder="'请输入描述'" @change="changeValue($event, 'description')" allow-clear>
 
-      </a-textarea>
+    <div class="comp-item-description" v-if="displaySection && formConfig?.displayDescription">
+      <div v-if="(component?.id !== selectedComp?.id && isDev) || renderType">
+        <div class="description">{{ component.description }}</div>
+      </div>
+      <a-textarea
+        v-else
+        :auto-size="{ minRows: 1, maxRows: 5 }"
+        v-model:value="component.description"
+        placeholder="请输入描述"
+        @change="changeValue($event, 'description')"
+        allow-clear
+      />
     </div>
+
     <div class="component">
-      <component 
-        :key="currentComp" 
+      <component
+        :key="currentComp"
         :isSelected="component?.id === selectedComp?.id"
-        :isPreviewRender="renderType === 'preview'" 
+        :isPreviewRender="renderType === 'preview'"
         :isDev="isDev"
         :previewType="previewType"
-        :is="getCompConfig(props.type).comp" v-bind="component"></component>
+        :is="resolvedComp"
+        v-bind="component"
+      />
     </div>
-    <div class="active-comp-setting" v-if="compConfig.id === selectedComp?.id && !isIgnoreEditor()">
 
+    <div v-if="fieldError" class="field-error">
+      <ExclamationCircleOutlined class="error-icon" />
+      {{ fieldError }}
+    </div>
+
+    <div class="active-comp-setting" v-if="compConfig.id === selectedComp?.id && !isIgnoreEditor()">
       <div class="bottom-setting">
         <div class="data-list-setting" v-if="HasSettingTypeList.includes(compConfig.type)">
-
           <span class="add-item">
             <a-typography-text type="warning" @click="addItem('new')">
               <PlusCircleTwoTone class="icon" :style="{ fontSize: '16px', color: '#646a73' }" />
-              <span class="add-label">添加单项 </span>
+              <span class="add-label">添加单项</span>
             </a-typography-text>
           </span>
-
-          <!-- <span class="add-item">
-            <a-typography-text type="warning">模版</a-typography-text>
-            <span class="line"></span>
-          </span> -->
           <span class="add-item">
-            <a-typography-text type="warning" :class="{ disabled: checkAddOtherClass() }"
-              @click="!checkAddOtherClass() && addItem('other')">
+            <a-typography-text
+              type="warning"
+              :class="{ disabled: checkAddOtherClass() }"
+              @click="!checkAddOtherClass() && addItem('other')"
+            >
               <PlusCircleTwoTone class="icon" :style="{ fontSize: '16px', color: '#646a73' }" />
-              <span class="add-label">添加其他 </span>
+              <span class="add-label">添加其他</span>
             </a-typography-text>
           </span>
           <span class="add-item">
-            <a-typography-text type="warning"
-              @click="batchChangeData">
+            <a-typography-text type="warning" @click="batchChangeData">
               <ControlTwoTone class="icon" :style="{ fontSize: '16px', color: '#646a73' }" />
-              <span class="add-label">批量操作 </span>
+              <span class="add-label">批量操作</span>
             </a-typography-text>
           </span>
         </div>
-        <!-- <a-checkbox class="setting-item" v-model:checked="component.isRequired"
-          @click="component.isRequired = !component.isRequired">必填</a-checkbox> -->
         <span class="setting-item">
-          <a-switch class="switch" v-model:checked="component.isRequired" @change="handleChangeRequired"> </a-switch>
-          <label for=""> 必填</label>
+          <a-switch class="switch" v-model:checked="component.isRequired" @change="handleChangeRequired" />
+          <label>必填</label>
         </span>
-
       </div>
     </div>
+
     <div class="active-drag handle" v-if="compConfig.id === selectedComp?.id">
       <img src="/src/assets/form/drag.svg" alt="">
     </div>
+
     <div class="active-comp-setting-side-bar" v-if="compConfig.id === selectedComp?.id">
       <a-tooltip placement="left" @click="compControl($event, 'copy')">
-        <template #title>
-          <span>复制</span>
-        </template>
+        <template #title><span>复制</span></template>
         <CopyOutlined class="control" />
       </a-tooltip>
-      <a-tooltip placement="left" @click="compControl($event, 'logic')">
-        <template #title>
-          <span>逻辑</span>
-        </template>
-        <BranchesOutlined class="control" />
-      </a-tooltip>
       <a-tooltip placement="left" :color="'#f50'" @click="compControl($event, 'delete')">
-        <template #title>
-          <span>删除</span>
-        </template>
+        <template #title><span>删除</span></template>
         <DeleteOutlined class="control" />
       </a-tooltip>
     </div>
-    <BatchOperationData 
-    v-if="openBatchOperationDataBool"
-    :open="openBatchOperationDataBool"
-    :dataList="component.dataList"
-    @handleBatchOperation="handleBatchOperation"
-     />
+
+    <BatchOperationData
+      v-if="openBatchOperationDataBool"
+      :open="openBatchOperationDataBool"
+      :dataList="component.dataList"
+      @handleBatchOperation="handleBatchOperation"
+    />
   </div>
-
-
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, defineEmits } from 'vue'
-// 显示组件
+import { ref, computed, defineEmits, type Component } from 'vue'
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
+
 import ImageComponent from '@/components-form/show/Image.vue'
 import VideoComponent from '@/components-form/show/Video.vue'
 import FormTitleComponent from '@/components-form/show/FormTitle.vue'
-
-// 基础组件
 import RadioComponent from '@/components-form/base/Radio.vue'
 import SelectComponent from '@/components-form/base/Select.vue'
 import CheckoutComponent from '@/components-form/base/Checkout.vue'
@@ -140,8 +140,6 @@ import UploadComponent from '@/components-form/base/Upload.vue'
 import SwitchComponent from '@/components-form/base/Switch.vue'
 import NumberComponent from '@/components-form/base/Number.vue'
 import TimeRangeComponent from '@/components-form/base/TimeRange.vue'
-
-// 联系方式
 import NameComponent from '@/components-form/contact-information/Name.vue'
 import GenderComponent from '@/components-form/contact-information/Gender.vue'
 import PhoneComponent from '@/components-form/contact-information/Phone.vue'
@@ -150,69 +148,73 @@ import IdCardComponent from '@/components-form/contact-information/IdCard.vue'
 import EmailComponent from '@/components-form/contact-information/Email.vue'
 import WXComponent from '@/components-form/contact-information/WX.vue'
 import AddressComponent from '@/components-form/contact-information/Address.vue'
-
-// 组件
-import BatchOperationData from '@/components/form/BatchOperationData.vue'
-
-// 高级
 import SignComponent from '@/components-form/advanced/Sign.vue'
-
-import * as _ from 'lodash'
+import BatchOperationData from '@/components/form/BatchOperationData.vue'
 import { useSelectCompStore } from '@/stores/selectCompStore'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 import { HasSettingTypeList } from '@/views/FormEditor/comp-config-data'
 import { JustShowCompType } from '@/views/FormEditor/comp-data'
 
+const COMP_MAP: Record<string, Component> = {
+  Img: ImageComponent,
+  Video: VideoComponent,
+  FormTitle: FormTitleComponent,
+  Radio: RadioComponent,
+  Input: InputComponent,
+  Textarea: TextareaComponent,
+  Checkout: CheckoutComponent,
+  Date: DateComponent,
+  DateRange: DateRangeComponent,
+  Time: TimeComponent,
+  TimeRange: TimeRangeComponent,
+  Url: UrlComponent,
+  Number: NumberComponent,
+  Switch: SwitchComponent,
+  Upload: UploadComponent,
+  Divider: DividerComponent,
+  Paging: PagingComponent,
+  Select: SelectComponent,
+  Rate: RateComponent,
+  NPS: NPSComponent,
+  ElectronicSignature: SignComponent,
+  Name: NameComponent,
+  Gender: GenderComponent,
+  WX: WXComponent,
+  Email: EmailComponent,
+  IDCard: IdCardComponent,
+  Phone: PhoneComponent,
+  TelePhone: TelePhoneComponent,
+  Address: AddressComponent,
+  SelectRate: SelectRateComponent,
+}
 
 interface Props {
-  component: any,
-  type: string,
+  component: Record<string, any>
+  type: string
   lineNumber?: string
-  formConfig?: any
-  selectedComp?: any
+  formConfig?: Record<string, any>
+  selectedComp?: Record<string, any>
   isDev: boolean
   renderType?: 'preview'
   previewType?: 'Phone' | 'PC'
+  fieldError?: string
 }
-
-
 
 const compStore = useSelectCompStore()
 const props = defineProps<Props>()
-
-// 批量操作
-const openBatchOperationDataBool = ref(false)
-
-const compConfig = props.component // 组件配置
-const currentComp = getCompConfig(props.type)//组件
 const emit = defineEmits(['compControl', 'addItem'])
 
-function getCompConfig(type: any) {
-  const compType = { comp: getTypeToComponent(type) }
-  const comp = { ...compConfig, ...compType }
-  return comp
-}
+const openBatchOperationDataBool = ref(false)
+const compConfig = props.component
 
-const changeValue = (event: any, params: string) => {
-  const {
-    innerText,
-    value
-  } = event?.target
-  const isChangeParams = ['description', 'title'].includes(params)
-  if (isChangeParams) {
-    updateParams(params, value)
-    compConfig[params] = value
-  } else {
-    const hasDataBool = innerText !== null && innerText !== '\n'
-    const value = hasDataBool ? innerText : ''
-    compConfig[params] = value
-  }
-}
+const resolvedComp = computed(() => COMP_MAP[props.type])
 
-const updateParams = (params: string, value: any) => {
-  compStore.updateCurrentComp({
-    [params]: value
-  })
+const displaySection = computed(() => !['Divider', 'Paging', 'FormTitle'].includes(props.type))
+
+const changeValue = (event: Event, params: 'title' | 'description') => {
+  const value = (event.target as HTMLInputElement).value
+  compConfig[params] = value
+  compStore.updateCurrentComp({ [params]: value })
   compStore.updateCurrentCompKey(uuidv4())
 }
 
@@ -221,85 +223,31 @@ const handleChangeRequired = (value: boolean) => {
   compStore.updateCurrentCompKey(uuidv4())
 }
 
-// 批量操作
 const handleBatchOperation = (isOk: boolean, dataList: any[]) => {
   openBatchOperationDataBool.value = false
-  if(isOk) {
-    updateParams('dataList', dataList)
+  if (isOk) {
+    compStore.updateCurrentComp({ dataList })
+    compStore.updateCurrentCompKey(uuidv4())
   }
 }
 
-const displaySection = computed(() => !['Divider', 'Paging', 'FormTitle'].includes(props.type))
-
-function getTypeToComponent(type: string) {
-  const compsObject: any = {
-    // 显示组件
-    Img: ImageComponent,
-    Video: VideoComponent,
-    FormTitle: FormTitleComponent,
-    
-    // 基础组件
-    Radio: RadioComponent,
-    Input: InputComponent,
-    Textarea: TextareaComponent,
-    Checkout: CheckoutComponent,
-    Date: DateComponent,
-    DateRange: DateRangeComponent,
-    Time: TimeComponent,
-    TimeRange: TimeRangeComponent,
-    Url: UrlComponent,
-    Number: NumberComponent,
-    Switch: SwitchComponent,
-    Upload: UploadComponent,
-    Divider: DividerComponent,
-    Paging: PagingComponent,
-    Select: SelectComponent,
-
-    // 评分和满意度
-    Rate: RateComponent,
-    NPS: NPSComponent,
-    ElectronicSignature: SignComponent,
-
-    // 联系信息
-    Name: NameComponent,
-    Gender: GenderComponent,
-    WX: WXComponent,
-    Email: EmailComponent,
-    IDCard: IdCardComponent,
-    Phone: PhoneComponent,
-    TelePhone: TelePhoneComponent,
-    Address: AddressComponent,
-    SelectRate: SelectRateComponent,
-  }
-  const comp = compsObject[type]
-  return comp
-}
-
-const compControl = (event: any, type: string) => {
+const compControl = (event: Event, type: string) => {
   event.stopPropagation()
   emit('compControl', type, props.component)
 }
 
-const isIgnoreEditor = () => {
-  return JustShowCompType.includes(props.type)
-}
+const isIgnoreEditor = () => JustShowCompType.includes(props.type)
 
-const addItem = (type: string) => {
-  emit('addItem', type)
-}
+const addItem = (type: string) => emit('addItem', type)
 
-const batchChangeData = () => {
-  openBatchOperationDataBool.value =  true
-}
+const batchChangeData = () => { openBatchOperationDataBool.value = true }
 
-const checkAddOtherClass = () => {
-  return _.filter(props.component.dataList, { subType: 'other' }).length > 0
-}
-
+const checkAddOtherClass = () =>
+  props.component.dataList?.some((item: any) => item.subType === 'other') ?? false
 </script>
+
 <style lang="scss" scoped>
 ::v-deep {
-
   textarea.input-comp,
   .description.input-comp {
     background: transparent;
@@ -321,7 +269,6 @@ const checkAddOtherClass = () => {
   }
 }
 
-
 .description {
   width: 100%;
   padding: 6px 12px;
@@ -331,15 +278,8 @@ const checkAddOtherClass = () => {
   overflow-wrap: break-word;
   white-space: normal;
   font-weight: 400;
-
-
-  /* 不换行 */
   overflow: hidden;
-  /* 隐藏超出部分 */
   text-overflow: ellipsis;
-  /* 超出部分显示省略号 */
-  width: 100%;
-  /* 设置宽度 */
 }
 
 .data-list-setting {
@@ -375,68 +315,48 @@ const checkAddOtherClass = () => {
   font-size: 14px;
 }
 
-.line {
-  border-left: 1px solid #e0e0e0;
-  height: 10px;
-  margin: 0 12px;
-}
-
-::v-deep(input[disabled]) {
-  background: #ffffff !important;
-}
-
-::v-deep(textarea[disabled]) {
-  background: #ffffff !important;
-}
-
-::v-deep(.ant-picker-disabled) {
-  background: #ffffff !important;
-}
-
-::v-deep(.ant-time-disabled) {
-  background: #ffffff !important;
-}
-
-::v-deep(.ant-input-affix-wrapper-disabled) {
-  background: #ffffff !important;
-}
+::v-deep(input[disabled]) { background: #ffffff !important; }
+::v-deep(textarea[disabled]) { background: #ffffff !important; }
+::v-deep(.ant-picker-disabled) { background: #ffffff !important; }
+::v-deep(.ant-input-affix-wrapper-disabled) { background: #ffffff !important; }
 
 ::v-deep(.ant-select-disabled:where(.css-dev-only-do-not-override-17yhhjv).ant-select:not(.ant-select-customize-input) .ant-select-selector) {
   background: #fff;
 }
 
-::v-deep(.ant-divider-horizontal.ant-divider-with-text::before) {
-  transform: translateY(100%) !important;
-}
-
+::v-deep(.ant-divider-horizontal.ant-divider-with-text::before),
 ::v-deep(.ant-divider-horizontal.ant-divider-with-text::after) {
   transform: translateY(100%) !important;
 }
 
 .control {
+  &:active, &:hover { background: #ebebeb; }
+}
 
-  &:active,
-  &:hover {
-    background: #ebebeb;
+.form-item .comp-item { padding: 16px 60px 24px; }
+.form-item-active .comp-item { padding: 32px 60px 40px; }
+
+.field-error {
+  color: #ff4d4f;
+  font-size: 13px;
+  margin-top: 4px;
+  padding: 0 12px;
+  line-height: 1.6;
+
+  .error-icon {
+    margin-right: 4px;
+    font-size: 12px;
   }
 }
 
-.form-item {
-  .comp-item {
-    padding: 16px 60px 24px;
+.has-error {
+  .comp-item-title .title-value {
+    color: #ff4d4f;
   }
-}
-
-.form-item-active {
-  .comp-item {
-    padding: 32px 60px 40px;
-  }
-
 }
 
 .comp-item {
   position: relative;
-  // padding: 20px 30px;
 
   .title-value {
     position: relative;
@@ -471,11 +391,9 @@ const checkAddOtherClass = () => {
     content: "*";
   }
 
-
   .comp-item-title {
     min-height: 36px;
     line-height: 36px;
-
   }
 
   .comp-item-description {
@@ -488,8 +406,6 @@ const checkAddOtherClass = () => {
 .active-drag {
   position: absolute;
   left: 3px;
-  border-bottom-right-radius: 6px;
-  border-top-right-radius: 6px;
   width: 46px;
   top: 50%;
   transform: translateY(-50%);
@@ -521,9 +437,7 @@ const checkAddOtherClass = () => {
   border-top-right-radius: 6px;
   box-shadow: 1px 1px 3px silver;
 
-  .control {
-    padding: 10px 5px;
-  }
+  .control { padding: 10px 5px; }
 }
 
 .active-comp-setting {
@@ -538,10 +452,6 @@ const checkAddOtherClass = () => {
     display: grid;
     grid-template-columns: 1fr 100px;
   }
-}
-
-.item-comp {
-  width: 100%;
 }
 
 .setting-item {
@@ -564,30 +474,17 @@ const checkAddOtherClass = () => {
 
   .anticon-close-circle {
     display: none;
-
-    &:hover,
-    &:active,
-    &:focus {
-      display: block;
-    }
+    &:hover, &:active, &:focus { display: block; }
   }
-
-
 
   :where(.comp-item-description .css-dev-only-do-not-override-17yhhjv).ant-input {
     background: transparent !important;
     border-style: none;
     color: rgba(0, 0, 0, 0.45);
 
-    &:active,
-    &:hover,
-    &:focus {
-      // border-style: solid;
-      // border-color: #e0e0e0;
+    &:active, &:hover, &:focus {
       outline: none;
       box-shadow: none;
-
-
     }
   }
 }

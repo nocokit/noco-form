@@ -1,36 +1,13 @@
-
 <template>
-  <div class="setting-item h-42 comp">
-    <a-typography-text type="secondary" class="secondary">虚线
-    </a-typography-text>
-    <a-space direction="vertical" class="abs-r switch-r  ">
-      <a-switch v-model:checked="comp.dividerBorderType" @change="changeValue($event)" />
-    </a-space> 
-  </div>
-
+  <SettingSwitch :comp="comp" field="dividerBorderType" label="虚线" />
 </template>
+
 <script lang="ts" setup>
-import type { SizeType } from 'ant-design-vue/es/config-provider';
-import { ref, watch, defineProps } from 'vue';
-import { useSelectCompStore  } from '@/stores/selectCompStore'
+import SettingSwitch from './SettingSwitch.vue'
 
 interface Props {
-  comp: any
+  comp: Record<string, any>
 }
-
 const props = defineProps<Props>()
-
-const compStore = useSelectCompStore()
-
-const changeValue = (value: boolean) => {
-  compStore.updateGlobalFormConfig({
-    dividerBorderType: value
-  })
-}
-
+const comp = props.comp
 </script>
-<style lang="scss" scoped>
-.comp {
-  margin-bottom: 10px;
-}
-</style>

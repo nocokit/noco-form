@@ -1,11 +1,13 @@
 <template>
   <div class="body">
-    <a-drawer :title="formShowConfig.formTitle" class="drawer" :height="'calc(100% - 0px)'" :placement="placement"
-      :rootStyle="{
-      }" :bodyStyle="{
-        background: 'aliceblue',
-        phone: previewType === 'Phone',
-      }" :open="props.open" @close="onClose">
+    <a-drawer
+      :title="'表单预览'"
+      class="drawer"
+      :height="'calc(100% - 0px)'"
+      placement="bottom"
+      :open="props.open"
+      @close="onClose"
+    >
       <template #extra>
         <div class="controls">
           <a-radio-group v-model:value="previewType">
@@ -16,127 +18,126 @@
         <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
         <a-button type="primary" @click="onClose">保存</a-button>
       </template>
-      <div class="body-content" :class="{
-        phone: previewType === 'Phone',
-      }">
+
+      <div class="body-content" :class="{ phone: previewType === 'Phone' }">
         <a-watermark :content="selectForm?.displayWaterMark ? selectForm?.waterMarkText || '' : ''">
-          <a-alert class="alert" message="预览状态无法提交" type="warning" show-icon closable/>
+          <a-alert class="alert" message="预览状态无法提交" type="warning" show-icon closable />
+
           <div class="comps" v-if="pageCompList.length">
-            <div v-for="(item, index) in pageCompList" :key="item?.name" :class="{
-              'cursor-move': true,
-              'form-item': true,
-            }">
+            <div
+              v-for="item in pageCompList"
+              :key="item?.id"
+              class="form-item"
+              v-show="!hiddenIds.has(item.id)"
+            >
               <FormComponent
-                v-if="!['Paging'].includes(item.type) || (['Paging'].includes(item.type) && formShowConfig.displayPaging)"
-                :renderType="'preview'"
-                :key="item.id + previewType" 
-                :component="item" 
-                :type="item.type" 
+                v-if="!['Paging'].includes(item.type)"
+                renderType="preview"
+                :key="item.id + previewType"
+                :component="item"
+                :type="item.type"
                 :isDev="false"
                 :formConfig="selectForm"
-                :previewType="previewType">
-              </FormComponent>
+                :previewType="previewType"
+                :fieldError="fieldErrors[item.id]"
+              />
             </div>
-            <div class="form-footer" :class="{
-              'form-item': true
-            }"
-            :style="{
-              'text-align': pageFooter.position || 'left'
-            }">
-              <a-button 
-                :icon="pageFooter.buttonIconShowBool ? h(CheckOutlined): null"
-                class="submit" 
+
+            <div
+              class="form-footer form-item"
+              :style="{ 'text-align': pageFooter.position || 'left' }"
+            >
+              <a-button
+                :icon="pageFooter.buttonIconShowBool ? h(CheckOutlined) : null"
+                class="submit"
                 type="primary"
-                :size="pageFooter.size" :style="{ 'padding': getSize(), 'lineHeight': getLineheight() }">
+                :size="pageFooter.size"
+                :style="{ padding: footerPadding, lineHeight: footerLineHeight }"
+                @click="handleSubmit"
+              >
                 {{ pageFooter.buttonText || '提交' }}
               </a-button>
-
             </div>
           </div>
+
           <div v-else class="no-data">
             <img src="@/assets/form/no_data.svg" alt="">
             <div class="description">表单为空，请返回编辑器配置内容</div>
           </div>
-
-          <!-- <a-form :model="formState" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }"
-            autocomplete="off">
-            <a-form-item name="username" :rules="[{ required: true, message: 'Please input your username!' }]">
-              <a-input v-model:value="formState.username" />
-            </a-form-item>
-
-            <a-form-item name="password" :rules="[{ required: true, message: 'Please input your password!' }]">
-              <a-input-password v-model:value="formState.password" />
-            </a-form-item>
-
-            <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-              <a-button type="primary" html-type="submit">Submit</a-button>
-            </a-form-item>
-          </a-form> -->
-
         </a-watermark>
-
-
       </div>
-
-
-
     </a-drawer>
-
   </div>
-
 </template>
-<script setup lang="ts">
-type PreviewType = 'Phone' | 'PC'
-import { ref, h } from 'vue';
-import type { DrawerProps } from 'ant-design-vue';
-import { CheckOutlined } from '@ant-design/icons-vue';
-import FormComponent from '@/components-form/index.vue'
-const placement = ref<DrawerProps['placement']>('bottom');
-const formShowConfig = ref({
-  formTitle: '表单预览',
-  waterMarkBool: true,
-  displayPaging: true,
-})
 
-const previewType = ref<PreviewType>('Phone')
-const emit = defineEmits(['onClose'])
+<script setup lang="ts">
+import { ref, computed, h } from 'vue'
+import { CheckOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
+import FormComponent from '@/components-form/index.vue'
+import { validateForm } from '@/composables/useFormValidation'
+import { provideFormValues } from '@/composables/useFormValues'
+import { getHiddenIds } from '@/composables/useLogicEvaluator'
+
+type PreviewType = 'Phone' | 'PC'
 
 interface Props {
-  open: any
-  selectForm: any
-  pageFooter: any
+  open: boolean
+  selectForm: Record<string, any>
+  pageFooter: {
+    size?: 'large' | 'middle' | 'small'
+    position?: 'left' | 'right' | 'center'
+    buttonText?: string
+    buttonIconShowBool?: boolean
+  }
   pageCompList: any[]
 }
 
 const props = defineProps<Props>()
+const emit = defineEmits(['onClose'])
 
+const formValues = provideFormValues()
+const previewType = ref<PreviewType>('Phone')
+const fieldErrors = ref<Record<string, string>>({})
 
-const onClose = () => {
-  emit('onClose')
-};
+const hiddenIds = computed(() => getHiddenIds(props.pageCompList, formValues))
 
+const onClose = () => emit('onClose')
 
-const getSize = () => {
-  const data = props.pageFooter?.value
-  return data?.size == 'large' ? "0 26px" : (data?.size == "small" ? "0 10px" : "0 16px")
+const handleSubmit = () => {
+  const hidden = hiddenIds.value
+  const visibleComps = props.pageCompList.filter(c => !hidden.has(c.id))
+  const errors = validateForm(visibleComps)
+  fieldErrors.value = errors
+  if (Object.keys(errors).length > 0) {
+    message.error('请检查表单填写内容', 2)
+    // 滚动到第一个错误
+    const firstErrId = Object.keys(errors)[0]
+    document.getElementById(`field-${firstErrId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    return
+  }
+  message.success('校验通过！', 2)
 }
 
-const getLineheight = () => {
-  const data = props?.pageFooter?.value
-  return data?.size == 'large' ? "40px" : (data?.size == "small" ? "24px" : "32px")
-}
+const footerPadding = computed(() => {
+  const s = props.pageFooter?.size
+  return s === 'large' ? '0 26px' : s === 'small' ? '0 10px' : '0 16px'
+})
 
-
+const footerLineHeight = computed(() => {
+  const s = props.pageFooter?.size
+  return s === 'large' ? '40px' : s === 'small' ? '24px' : '32px'
+})
 </script>
 
 <style scoped lang="scss">
 .drawer {
   background-image: url(./bg.png);
-
 }
+
 .alert {
-    margin:0 10px;
-  }
+  margin: 0 10px;
+}
 
 .body-content {
   width: 686px;
@@ -151,20 +152,15 @@ const getLineheight = () => {
 
   &.phone {
     width: 390px;
+    background: snow;
 
-    .form-item .comp-item {
-      padding: 10px 20px 30px;
-    }
-    .form-footer {
-      padding: 0 20px;
-      margin-top: 15px;
-    }
-    ::v-deep(.comp-item .number) {
-      left: 5px;
-    }
-    ::v-deep(.description.input-comp) {
-      margin-left: 20px !important;
-    }
+    .form-item .comp-item { padding: 10px 20px 30px; }
+
+    .form-footer { padding: 0 20px; margin-top: 15px; }
+
+    ::v-deep(.comp-item .number) { left: 5px; }
+
+    ::v-deep(.description.input-comp) { margin-left: 20px !important; }
   }
 }
 
@@ -180,22 +176,15 @@ const getLineheight = () => {
   padding: 0 60px;
   width: 100%;
   margin-top: 30px;
-
 }
 
 ::v-deep(.form-footer) {
   .submit {
-
     max-width: 100%;
     white-space: nowrap;
-    /* 不换行 */
     overflow: hidden;
-    /* 隐藏超出部分 */
     text-overflow: ellipsis;
-    /* 显示省略号 */
   }
-
-
 }
 
 .no-data {
@@ -204,10 +193,7 @@ const getLineheight = () => {
   font-size: 16px;
   color: #666;
 
-  img {
-    width: 300px;
-    margin: 20px;
-  }
+  img { width: 300px; margin: 20px; }
 }
 
 .controls {
@@ -215,11 +201,5 @@ const getLineheight = () => {
   left: 50%;
   transform: translateX(-50%);
   top: 20px;
-
-  .cont-item {
-    padding: 2px 5px;
-  }
 }
-
-
 </style>

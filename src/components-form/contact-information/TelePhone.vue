@@ -1,13 +1,10 @@
 <template>
- <a-input v-model:value="value" :placeholder="placeholder" >
-  <template #prefix>
-      <img class="icon" :src="TelePhone" alt="">
-    </template>
- </a-input>
+  <ContactInput v-bind="props" :icon="TelePhoneIcon" />
 </template>
+
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import TelePhone from '/src/assets/form/telePhone.svg'
+import ContactInput from './ContactInput.vue'
+import TelePhoneIcon from '/src/assets/form/telePhone.svg'
 
 interface Props {
   id: string
@@ -17,10 +14,4 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const value = ref(props.value || null)
 </script>
-<style lang="scss" scoped>
-.icon {
-  height: 18px;
-}
-</style>

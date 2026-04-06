@@ -19,8 +19,9 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 3000, // 设置端口
-    open: true, // 自动打开浏览器
+    port: 3000,      // 首选端口，被占用时自动 +1
+    strictPort: false, // 端口占用时自动尝试下一个
+    open: true,
   },
 
 })

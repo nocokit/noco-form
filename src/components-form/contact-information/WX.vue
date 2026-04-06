@@ -1,26 +1,17 @@
 <template>
- <a-input v-model:value="value" :placeholder="placeholder" >
-  <template #prefix>
-        <img class="icon" :src="WX" alt="">
-      </template>
- </a-input>
+  <ContactInput v-bind="props" :icon="WXIcon" />
 </template>
+
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import WX from '/src/assets/form/wx.svg'
+import ContactInput from './ContactInput.vue'
+import WXIcon from '/src/assets/form/wx.svg'
 
 interface Props {
   id: string
   placeholder: string
-  value: string
+  value: string | null
   isDev: boolean
 }
 
 const props = defineProps<Props>()
-  const value = ref(props.value || null)
 </script>
-<style lang="scss" scoped>
-.icon {
-  height: 18px;
-}
-</style>

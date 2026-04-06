@@ -3,43 +3,38 @@
     <div class="nav-data">
       <div class="header">
         <div class="logo-title">
-          <img class="logo" src="http://localhost:5174/logo.png" alt="logo">
+          <img class="logo" src="@/assets/logo.png" alt="logo">
           <div class="title-data">
             <span class="name">Noco-Form</span>
-            <a-typography-text type="secondary" class='time'>by nocokit</a-typography-text>
+            <a-typography-text type="secondary" class="time">by nocokit</a-typography-text>
           </div>
         </div>
         <div class="control">
           <div class="cont-item">
             <a-button type="default" @click="toGithub">
               <img class="btn-icon" src="@/assets/form-editor/github.svg" alt="">
-              <span class="name">
-                GitHub
-              </span>
+              <span class="name">GitHub</span>
             </a-button>
           </div>
           <div class="cont-item">
             <a-button type="default" @click="handleSave">
               <img class="btn-icon" src="@/assets/form-editor/save.svg" alt="">
-              <span class="name">
-                保存
-              </span>
+              <span class="name">保存</span>
             </a-button>
           </div>
           <div class="cont-item">
             <a-button type="primary">
               <img class="btn-icon" src="@/assets/form-editor/publish.svg" alt="">
-              <span class="name">
-                发布
-              </span>
+              <span class="name">发布</span>
             </a-button>
           </div>
-
         </div>
       </div>
     </div>
+
     <div class="content editor-content">
-      <SidebarComp @selectSideItemType="selectSideItemType" :currentSideItemType="currentSideItemType" />
+      <SidebarComp @selectSideItemType="onSideItemSelect" :currentSideItemType="currentSideItemType" />
+
       <div class="comps">
         <template v-if="currentSideItemType === 'theme'">
           <div class="theme">
@@ -48,213 +43,208 @@
             </div>
           </div>
         </template>
+
         <template v-if="currentSideItemType === 'questionBank'">
-        <div class="comp-category-item" v-for="compCategory in compList">
-          <div class="category-title">
-            {{ compCategory.name }}
-            <a-tooltip placement="top" v-if="compCategory.tooltip">
-              <template #title>
-                <span>{{ compCategory.tooltip }}</span>
-              </template>
-              <QuestionCircleOutlined />
-            </a-tooltip>
-          </div>
-          <VueDraggable v-model="compCategory.children" :animation="0"
-            :group="{ name: 'sevenBotForm', pull: 'clone', put: false }" :sort="false" :clone="onClone"
-            class="flex flex-col gap-2 p-4 w-300px bg-gray-500/5 rounded compList">
-            <div v-for="item in compCategory.children" class="cursor-move h-50px bg-gray-500/5 item" v-bind:class="{
-              'person': compCategory.type === 'Personal Component',
-              'advanced': compCategory.type === 'Advanced Component',
-              'layout': compCategory.type === 'Layout Component'
-            }" @click="createCompByClick(item)">
-              <img class="icon" :src="item.icon" alt="" v-if="item.icon">
-              {{ item.label }}
+          <div class="comp-category-item" v-for="compCategory in compList" :key="compCategory.name">
+            <div class="category-title">
+              {{ compCategory.name }}
+              <a-tooltip placement="top" v-if="compCategory.tooltip">
+                <template #title><span>{{ compCategory.tooltip }}</span></template>
+                <QuestionCircleOutlined />
+              </a-tooltip>
             </div>
-          </VueDraggable>
-        </div>
+            <VueDraggable
+              v-model="compCategory.children"
+              :animation="0"
+              :group="{ name: 'sevenBotForm', pull: 'clone', put: false }"
+              :sort="false"
+              :clone="onClone"
+              class="flex flex-col gap-2 p-4 w-300px bg-gray-500/5 rounded compList"
+            >
+              <div
+                v-for="item in compCategory.children"
+                :key="item.type"
+                class="cursor-move h-50px bg-gray-500/5 item"
+                :class="{
+                  person: compCategory.type === 'Personal Component',
+                  advanced: compCategory.type === 'Advanced Component',
+                  layout: compCategory.type === 'Layout Component',
+                }"
+                @click="createCompByClick(item)"
+              >
+                <img class="icon" :src="item.icon" alt="" v-if="item.icon">
+                {{ item.label }}
+              </div>
+            </VueDraggable>
+          </div>
         </template>
       </div>
+
       <div class="editor" :style="{ 'background-image': `url(${getImageUrl(selectForm?.bgImgUrl)})` }">
         <div class="preview-control" title="预览" @click="preview">
           <img :src="Icon.Preview" alt="">
-          <div class="label">
-            预览
-          </div>
-
+          <div class="label">预览</div>
         </div>
-        <div class="form" v-bind:class="{
-          'no-data': !pageCompList?.length
-        }">
+
+        <div class="form" :class="{ 'no-data': !pageCompList?.length }">
           <div class="body">
             <a-watermark :content="selectForm?.displayWaterMark ? selectForm?.waterMarkText : ''">
               <div class="form-body form-body-content">
                 <div class="comp-list-content">
-                  <VueDraggable v-model="pageCompList" :animation="150" group="sevenBotForm" ghostClass="ghost"
+                  <VueDraggable
+                    v-model="pageCompList"
+                    :animation="150"
+                    group="sevenBotForm"
+                    ghostClass="ghost"
                     handle=".handle"
-                    class="flex flex-col gap-2 p-4 w-300px max-h-350px m-auto bg-gray-500/5 rounded overflow-auto form-body">
+                    class="flex flex-col gap-2 p-4 w-300px max-h-350px m-auto bg-gray-500/5 rounded overflow-auto form-body"
+                  >
                     <template v-if="!pageCompList?.length">
-                      <div v-if="!pageCompList?.length" @dragenter="handleDragHandle" @mouseleave="handleDragHandle"
-                        @dragleave="handleDragHandle">
-                        <div class="no-data-content" :class="[{
-                          'dragenter': noDataContentRef === 'dragenter',
-                        }]">
-                          <span class="text" :class="{
-                            'has-data': pageCompList.length
-                          }">
-                            点击左侧题目 / 拖拽题目到此区域
-                          </span>
-
+                      <div @dragenter="handleDragEnter" @mouseleave="resetDragState" @dragleave="resetDragState">
+                        <div class="no-data-content" :class="{ dragenter: isDragEnter }">
+                          <span class="text">点击左侧题目 / 拖拽题目到此区域</span>
                         </div>
                       </div>
                     </template>
 
                     <template v-else>
-                      <div v-for="(item, index) in pageCompList" :key="item?.name" :class="{
-                        'cursor-move': true,
-                        'form-item': true,
-                        'active-comp': activeComp.id == item?.id
-                      }" @click="selectComp(item)">
-                        <FormComponent :key="item?.id" @compControl="compControl"
-                          @addItem="addItem($event, item, index)" :component="item" :formConfig="selectForm"
-                          :type="item?.type" :isDev="isFormEditorDevBool" :selectedComp="getActiveComp()">
-                        </FormComponent>
+                      <div
+                        v-for="(item, index) in pageCompList"
+                        :key="item?.id"
+                        class="cursor-move form-item"
+                        :class="{ 'active-comp': activeCompId === item?.id }"
+                        @click="selectComp(item)"
+                      >
+                        <FormComponent
+                          :key="item?.id"
+                          @compControl="onCompControl"
+                          @addItem="addItem($event, item, index)"
+                          :component="item"
+                          :formConfig="selectForm"
+                          :type="item?.type"
+                          :isDev="isFormEditorDev"
+                          :selectedComp="activeComp"
+                        />
                       </div>
                     </template>
                   </VueDraggable>
                 </div>
               </div>
-              <div class="form-footer" @click="selectComp(pageFooter)"
-              v-if="globalData && globalData.displayBtn"
-               :class="{
-                'form-item': true,
-                'active-comp': activeComp.id === pageFooter.id
-              }" :style="{
-                'text-align': pageFooter.position || 'left'
-              }">
-                <a-button class="submit" type="primary" :icon="pageFooter.buttonIconShowBool ? h(CheckOutlined) : null"
-                  :size="pageFooter.size" :style="{ 'padding': getSize, 'lineHeight': getLineHeight }">
+
+              <div
+                v-if="globalData?.displayBtn"
+                class="form-footer form-item"
+                :class="{ 'active-comp': activeCompId === pageFooter.id }"
+                :style="{ 'text-align': pageFooter.position || 'left' }"
+                @click="selectComp(pageFooter)"
+              >
+                <a-button
+                  class="submit"
+                  type="primary"
+                  :icon="pageFooter.buttonIconShowBool ? h(CheckOutlined) : null"
+                  :size="pageFooter.size"
+                  :style="{ padding: footerPadding, lineHeight: footerLineHeight }"
+                >
                   {{ pageFooter.buttonText || '提交' }}
                 </a-button>
               </div>
             </a-watermark>
           </div>
-
         </div>
-
       </div>
-      <SettingComp v-if="selectForm" :currentCompId="activeComp.id" :key="activeComp.id + updateCompKey"
-        :selectForm="selectForm" :selectComp="getActiveComp()"></SettingComp>
+
+      <SettingComp
+        v-if="selectForm"
+        :currentCompId="activeCompId"
+        :key="activeCompId + updateCompKey"
+        :selectForm="selectForm"
+        :selectComp="activeComp"
+      />
     </div>
   </div>
-  <PreviewPage v-if="openDraw" :selectForm="selectForm" :open="openDraw" :pageCompList="pageCompList"
-    :pageFooter="pageFooter" @onClose="onClose"></PreviewPage>
 
+  <PreviewPage
+    v-if="openPreview && selectForm"
+    :selectForm="selectForm!"
+    :open="openPreview"
+    :pageCompList="pageCompList"
+    :pageFooter="pageFooter"
+    @onClose="openPreview = false"
+  />
+
+  <a-drawer
+    title="逻辑配置"
+    placement="right"
+    :width="760"
+    :open="logicDrawerOpen"
+    @close="logicDrawerOpen = false"
+    :destroyOnClose="false"
+  >
+    <LogicPanel :pageCompList="pageCompList" />
+  </a-drawer>
+
+  <JsonPreviewModal v-model:open="jsonModalOpen" :data="jsonSnapshot" />
 </template>
+
 <script setup lang="ts">
-import { VueDraggable } from 'vue-draggable-plus'
-import { computed, h, onMounted, ref, watch, } from 'vue'
+import { computed, h, onMounted, ref, watch } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
-import { CompListData, CompType, IgnoreLineNumberTypeList } from './comp-data'
+import { VueDraggable } from 'vue-draggable-plus'
+import { CheckOutlined, QuestionCircleOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
+import { useRoute } from 'vue-router'
+
+import { CompListData, CompType } from './comp-data'
 import { generateCompListData } from './comp-list-generator'
-import SidebarComp from '@/views/FormEditor/form-sidebar.vue'
-import SettingComp from '@/views/FormEditor/form-setting.vue'
-import PreviewPage from '@/views/Preview/index.vue'
-import FormComponent from '@/components-form/index.vue'
-import { getDefaultConfig } from '@/views/FormEditor/comp-config-data';
-import { useSelectCompStore } from '@/stores/selectCompStore'
-import { useRoute } from 'vue-router';
-import { toGithub } from '@/utils/toGithub'
-import { CheckOutlined } from '@ant-design/icons-vue';
-import { message } from 'ant-design-vue';
+import { getDefaultConfig } from './comp-config-data'
 import Icon from './comp-icon'
-import { indexedDB } from '@/utils/indexedDB'
+import SidebarComp from './form-sidebar.vue'
+import SettingComp from './form-setting.vue'
+import LogicPanel from './LogicPanel.vue'
+import JsonPreviewModal from './JsonPreviewModal.vue'
 
-
-interface ActiveCompType {
-  type: 'component' | 'header'
-  id: string
-}
+import FormComponent from '@/components-form/index.vue'
+import PreviewPage from '@/views/Preview/index.vue'
+import { useSelectCompStore } from '@/stores/selectCompStore'
+import { useFormPersistence } from '@/composables/useFormPersistence'
+import { useCompList } from '@/composables/useCompList'
+import { toGithub } from '@/utils/toGithub'
 
 interface HeaderType {
-  type: string,
   id: string
+  type: string
   titleValue: string
   titleSize: string
   titleDescription: string
   titleImageUrl: string
+  defUrl: string
   titleDescriptionShow: boolean
   titleImageShow: boolean
-  defUrl: string
   titleDescriptionPosition: 'left' | 'right' | 'center'
 }
 
-
 interface FooterType {
   id: string
-  size: string
+  size: 'large' | 'middle' | 'small'
   buttonText: string
   position: 'left' | 'right' | 'center'
   buttonIconShowBool: boolean
 }
 
-const currentSideItemType = ref('questionBank') // 当前侧边栏选中类型
+const compStore = useSelectCompStore()
 
-const openDraw = ref(false)
-// 优先使用动态生成的组件列表，回退到静态配置
-const compList = generateCompListData().length > 0 ? generateCompListData() : CompListData
-const globalData = ref()
+const currentSideItemType = ref('questionBank')
+const openPreview = ref(false)
+const logicDrawerOpen = ref(false)
+const jsonModalOpen = ref(false)
+const jsonSnapshot = ref<unknown>(null)
+const isDragEnter = ref(false)
+const updateCompKey = ref('')
+const activeCompId = ref('')
+const selectForm = ref<Record<string, any>>()
+const globalData = ref<Record<string, any>>()
 
-const themeList = ref([{
-  url: 'bg0.png',
-},{
-  url: 'bg1.png',
-},{
-  url: 'bg2.png',
-},{
-  url: 'bg3.png',
-},{
-  url: 'bg4.png',
-},{
-  url: 'bg5.png',
-}])
-
-const selectThemeImg = (url: string) => {
-  useCompStore.updateGlobalFormConfig({
-    bgImgUrl: url
-  })
-}
-
-const getImageUrl = (imgUrl: string) => {
-  try {
-    return new URL(`/src/assets/background/${imgUrl}`, import.meta.url).href
-  } catch (e) {
-    const defaultUrl = 'bg0.png'
-    return new URL(`/src/assets/background/${defaultUrl}`, import.meta.url).href
-  }
-}
-
-const selectSideItemType = (item: string) => {
-  currentSideItemType.value = item
-}
-
-/**
- * 编辑器编辑内容
- * 1. pageHeader // 底部配置
- * 2. pageCompList // 页面组件
- * 3. pageFooter // 底部提交按钮配置
- */
-
-const footerSize = computed(() => pageFooter.value?.size)
-
-const getSize = computed(() => {
-  return footerSize.value === 'large' ? '0 26px' : (footerSize.value === 'small' ? '0 10px' : '0 16px')
-})
-
-const getLineHeight = computed(() => {
-  return footerSize.value === 'large' ? '40px' : (footerSize.value === 'small' ? '24px' : '32px')
-})
-
-const pageCompList = ref<any[]>([]) // 页面组件内容
+const pageCompList = ref<any[]>([])
 const pageHeader = ref<HeaderType>({
   id: '',
   titleValue: '标题名称',
@@ -265,270 +255,130 @@ const pageHeader = ref<HeaderType>({
   type: '',
   titleDescriptionShow: true,
   titleImageShow: true,
-  titleDescriptionPosition: 'center'
+  titleDescriptionPosition: 'center',
 })
-
 const pageFooter = ref<FooterType>({
   id: '',
   size: 'large',
   position: 'left',
   buttonText: '提交',
   buttonIconShowBool: true,
-}) // 底部
+})
 
-const currentComp = ref()
-const updateCompKey = ref()
-const noDataContentRef = ref()
-const activeComp = ref<ActiveCompType>({
-  type: 'component',
-  id: '',
-}) // 当前选中组件
+const compList = generateCompListData().length > 0 ? generateCompListData() : CompListData
+const themeList = [
+  { url: 'bg0.png' }, { url: 'bg1.png' }, { url: 'bg2.png' },
+  { url: 'bg3.png' }, { url: 'bg4.png' }, { url: 'bg5.png' },
+]
 
-const selectForm = ref()
+const { loadFormData, saveFormData } = useFormPersistence(pageCompList, pageHeader, pageFooter)
+const { createCompByClick, onClone, addItem, compControl, updateCompLineNumber } = useCompList(pageCompList)
 
-const defaultFormConfig = {
-  displayNumberSort: true,
-  displayDescription: true,
-  displayTitle: true,
-  displayBtn: true,
-  displayWaterMark: false,
-  waterMarkText: 'Noco-Form',
-}
+const isFormEditorDev = computed(() => useRoute().path.includes('form-editor'))
 
-const useCompStore = useSelectCompStore()
+const footerPadding = computed(() => {
+  const s = pageFooter.value.size
+  return s === 'large' ? '0 26px' : s === 'small' ? '0 10px' : '0 16px'
+})
 
-// 从 IndexedDB 加载表单数据
-const loadFormData = async () => {
+const footerLineHeight = computed(() => {
+  const s = pageFooter.value.size
+  return s === 'large' ? '40px' : s === 'small' ? '24px' : '32px'
+})
+
+const activeComp = computed(() => {
+  const inList = pageCompList.value.find(item => item.id === activeCompId.value)
+  if (inList) return inList
+  if (activeCompId.value === pageFooter.value.id) return pageFooter.value
+  if (activeCompId.value === pageHeader.value.id) return pageHeader.value
+  return undefined
+})
+
+const getImageUrl = (imgUrl?: string) => {
   try {
-    const savedData = await indexedDB.getForm()
-    if (savedData) {
-      pageCompList.value = savedData.pageCompList || []
-      if (savedData.pageHeader) {
-        pageHeader.value = savedData.pageHeader
-      }
-      if (savedData.pageFooter) {
-        pageFooter.value = savedData.pageFooter
-      }
-      if (savedData.globalConfig) {
-        useCompStore.initGlobalFormConfig(savedData.globalConfig)
-      }
-    }
-  } catch (error) {
-    console.error('加载表单数据失败:', error)
+    return new URL(`/src/assets/background/${imgUrl || 'bg0.png'}`, import.meta.url).href
+  } catch {
+    return new URL('/src/assets/background/bg0.png', import.meta.url).href
   }
 }
 
-// 保存表单数据到 IndexedDB
-const saveFormData = async () => {
-  try {
-    await indexedDB.saveForm({
-      pageCompList: pageCompList.value,
-      pageHeader: pageHeader.value,
-      pageFooter: pageFooter.value,
-      globalConfig: useCompStore.currentGlobalFormConfig
-    })
-  } catch (error) {
-    console.error('保存表单数据失败:', error)
-  }
-}
-
-onMounted(async () => {
-  useCompStore.initGlobalFormConfig({ ...defaultFormConfig })
-  globalData.value = useCompStore.currentGlobalFormConfig
-  // 组件初始化
-  // @ts-ignore
-  pageHeader.value = getDefaultConfig(CompType.formTitle, true)
-  pageHeader.value.id = uuidv4()
-  // @ts-ignore
-  pageFooter.value = getDefaultConfig(CompType.button)
-  pageFooter.value.id = uuidv4()
-
-  // 加载保存的数据
-  await loadFormData()
-})
-
-const isFormEditorDevBool = computed(() => {
-  const bool = useRoute().path.includes('form-editor')
-  return bool
-})
-
-
-const initDataState = () => {
-  noDataContentRef.value = ''
-}
-
-// 更新选中组件数据
-const updateCompByChange = (compConfig: any) => {
-  currentComp.value = compConfig
-  const index = getActiveCompIndex()
-  if (index > -1 && pageCompList.value.length) {
-    pageCompList.value[index] = { ...pageCompList.value[index], ...compConfig }
-  }
-}
-watch(() => useCompStore.currentCompKey, (newValue) => {
-  updateCompKey.value = newValue
-})
-
-
-watch([() => useCompStore.compConfig, () => useCompStore.currentGlobalFormConfig], ([compConfig, currentGlobalFormConfig]) => {
-  updateCompByChange({
-    ...compConfig,
-  })
-  selectForm.value = currentGlobalFormConfig
-})
-
-
-const updateCompLineNumber = () => {
-  if (!Array.isArray(pageCompList.value)) return
-  const pageCount = pageCompList.value.filter(item => item.type === CompType.paging).length
-  let lineNumber = 0
-  let pageNumber = 0
-  for (const item of pageCompList.value) {
-    if (!IgnoreLineNumberTypeList.includes(item.type)) {
-      lineNumber++
-      item.lineNumber = lineNumber < 10 ? '0' + lineNumber : lineNumber
-    }
-    if (item.type === CompType.paging) {
-      pageNumber++
-      item.pagingValue = `第 ${pageNumber} 页 / 共 ${pageCount} 页`
-    }
-  }
-}
-
-watch(pageCompList, () => {
-  updateCompLineNumber()
-  saveFormData()
-}, { deep: true })
-
-// 监听全局配置变化，自动保存
-watch(() => useCompStore.currentGlobalFormConfig, () => {
-  saveFormData()
-}, { deep: true })
-
-const createByClickOrClone = (element: any) => {
-  const defaultComp: any = getDefaultConfig(element.type)
-  return {
-    ...defaultComp,
-    ...element.value,
-    id: element.id || uuidv4(),
-    title: element.name,
-    type: element.type,
-    name: element.name
-  }
-}
-
-const onClone = (element: any) => {
-  return createByClickOrClone(element)
-}
-
-const createCompByClick = (item: any) => {
-  const createElement = createByClickOrClone(item)
-  pageCompList.value.splice(pageCompList.value.length, 0, { ...createElement })
-  updateCompLineNumber()
-}
-
-
+const selectThemeImg = (url: string) => compStore.updateGlobalFormConfig({ bgImgUrl: url })
 
 const selectComp = (item: any) => {
-  useCompStore.initCurrentComp(item)
-  activeComp.value.id = item.id
+  compStore.initCurrentComp(item)
+  activeCompId.value = item.id
 }
 
-const updateDataListIndex = (index: number) => {
-  if (index > -1 && Array.isArray(pageCompList.value[index]?.dataList)) {
-    pageCompList.value[index].dataList.forEach((item: any, i: number) => {
-      item._index = i
-    })
-  }
-}
-
-const addItem = (type: 'new' | 'other', _item: any, index: number) => {
-  const isNewBool = type === 'new'
-  const newDataItem = isNewBool ? {
-    label: '选项',
-    value: '选项',
-  } : {
-    subType: 'other',
-    label: '其他',
-    value: '',
-  }
-  if (['new', 'other'].includes(type)) {
-    pageCompList.value[index].dataList.push(newDataItem)
-  }
-
-  updateDataListIndex(index)
-  initDataState()
-}
-
-
-
-const deleteSuccess = (compName = '') => {
-  message.success(`【${compName}】删除成功！`, 1);
-};
-
-const compControl = (controlType: string, value: any) => {
-  const index = pageCompList.value.findIndex((item: any) => item.id === value.id)
-  if (index === -1) {
-    console.log("没有查询到组件！！！")
-    return
-  }
-  if (controlType === 'copy') {
-    const newComp: any = {
-      ...value,
-      id: uuidv4()
-    }
-    pageCompList.value.splice(index + 1, 0, { ...newComp })
-  }
-  if (controlType === 'delete') {
-    const deleteComp = pageCompList.value.splice(index, 1)
-    activeComp.value.id = pageCompList.value[index]?.id || pageCompList.value[index - 1]?.id || ''
-    deleteSuccess(deleteComp?.[0]?.name)
-  }
-  initDataState()
-  updateCompLineNumber()
-}
-
-
-const getActiveComp = () => {
-  // 组件列表
-  const item = pageCompList.value.find((item: any) => item.id === activeComp.value.id)
-  if (item) {
-    return item
-  }
-  if (activeComp.value.id === pageFooter.value.id) {
-    return pageFooter.value
-  }
-  if (activeComp.value.id === pageHeader.value.id) {
-    return pageHeader.value
+const onCompControl = (type: string, compData: any) => {
+  compControl(type as 'copy' | 'delete', compData, activeCompId)
+  if (type === 'delete' && activeCompId.value === '') {
+    compStore.initCurrentComp({})
   }
 }
 
-const getActiveCompIndex = () => {
-  return pageCompList.value.findIndex((item: any) => item.id === activeComp.value.id)
-}
+const handleDragEnter = () => { isDragEnter.value = true }
+const resetDragState = () => { isDragEnter.value = false }
 
-const handleDragHandle = (e: any) => {
-  e.preventDefault()
-  const { type } = e
-  noDataContentRef.value = type
+const onSideItemSelect = (type: string) => {
+  if (type === 'logic') {
+    logicDrawerOpen.value = true
+  } else {
+    currentSideItemType.value = type
+  }
 }
 
 const handleSave = async () => {
   try {
     await saveFormData()
-    message.success('保存成功！', 1)
-  } catch (error) {
+    jsonSnapshot.value = {
+      pageCompList: pageCompList.value,
+      pageHeader: pageHeader.value,
+      pageFooter: pageFooter.value,
+      globalConfig: compStore.currentGlobalFormConfig,
+    }
+    jsonModalOpen.value = true
+  } catch {
     message.error('保存失败，请重试', 1)
   }
 }
 
-const preview = () => {
-  openDraw.value = true
-}
+const preview = () => { openPreview.value = true }
 
-const onClose = () => {
-  openDraw.value = false
-}
+watch(() => compStore.currentCompKey, val => { updateCompKey.value = val })
+
+watch(
+  [() => compStore.compConfig, () => compStore.currentGlobalFormConfig],
+  ([compConfig, globalConfig]) => {
+    const index = pageCompList.value.findIndex(item => item.id === (compConfig as any).id)
+    if (index > -1) {
+      pageCompList.value[index] = { ...pageCompList.value[index], ...compConfig }
+    }
+    selectForm.value = globalConfig as Record<string, any>
+  },
+)
+
+watch(pageCompList, updateCompLineNumber, { deep: true })
+
+onMounted(async () => {
+  const defaultFormConfig = {
+    displayNumberSort: true,
+    displayDescription: true,
+    displayTitle: true,
+    displayBtn: true,
+    displayWaterMark: false,
+    waterMarkText: 'Noco-Form',
+  }
+  compStore.initGlobalFormConfig({ ...defaultFormConfig })
+  globalData.value = compStore.currentGlobalFormConfig as Record<string, any>
+  selectForm.value = compStore.currentGlobalFormConfig as Record<string, any>
+
+  // @ts-ignore
+  pageHeader.value = { ...getDefaultConfig(CompType.formTitle, true), id: uuidv4() }
+  // @ts-ignore
+  pageFooter.value = { ...getDefaultConfig(CompType.button), id: uuidv4() }
+
+  await loadFormData()
+})
 </script>
 
 <style scoped lang="scss">
@@ -589,37 +439,31 @@ const onClose = () => {
 .editor-content {
   display: grid;
   grid-template-columns: 56px 270px 1fr 260px;
-  padding: 0 0 0 0px;
   height: calc(100% - 86px);
 
-  @media(max-width: 1400px) {
+  @media (max-width: 1400px) {
     grid-template-columns: 56px 260px 1fr 250px;
     overflow-x: auto;
 
-    .form {
-      width: auto;
-    }
+    .form { width: auto; }
   }
 
-      ::v-deep(.content .compList .item) {
-      font-size: 14px;
-    }
+  ::v-deep(.content .compList .item) {
+    font-size: 14px;
+  }
 }
 
 .content {
-
-  /* background-image: url(/src/assets/form-editor/bg-body.png); */
-
   .category-title {
     font-weight: 600;
     color: rgba(0, 0, 0, .65);
-    padding: 15px 0px 15px;
+    padding: 15px 0;
     font-size: 14px;
     user-select: none;
   }
 
   .comps {
-    padding: 0 20px 0 20px;
+    padding: 0 20px;
     background: #fafafa;
     max-height: 100%;
     overflow-y: auto;
@@ -633,44 +477,27 @@ const onClose = () => {
     user-select: none;
 
     .item {
-      /* border: 1px solid #D7D9DC; */
-      /* background: rgba(0, 102, 255, .08); */
       cursor: pointer;
       height: 38px;
       line-height: 38px;
       text-align: left;
-      padding: 0px 2px 0 10px;
+      padding: 0 2px 0 10px;
       border-radius: 5px;
-      /* color: #141E31; */
       color: rgba(0, 0, 0, 0.45);
       font-size: 15px;
       font-weight: 400;
       border: 1px solid #dcdcdcc4;
       background: #fff;
-      // box-shadow: 0 0px 2px #4096ff6e;
-      &:hover {
-        border-color: royalblue;
-      }
 
-        @media(max-width: 1400px) {
-          font-size: 14px;
-        }
+      &:hover { border-color: royalblue; }
+
+      @media (max-width: 1400px) { font-size: 14px; }
     }
-
-    &.hover {
-      .item {
-        color: #151b26 !important;
-      }
-    }
-
   }
 
   .editor {
     position: relative;
-    /* background: lavender; */
     height: 100%;
-    margin: 0;
-    padding: 0;
     overflow-y: auto;
     background-image: url(./bg.png);
     background-repeat: round;
@@ -679,14 +506,13 @@ const onClose = () => {
   .theme {
     display: flex;
     flex-wrap: wrap;
-    flex-direction: row;
     gap: 10px;
     padding: 20px 2px;
 
     .theme-item {
-      display: flex;
       flex: 0 0 100%;
       cursor: pointer;
+
       img {
         height: 120px;
         width: 100%;
@@ -696,47 +522,16 @@ const onClose = () => {
   }
 
   .body {
-    /* background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
-    background-image: linear-gradient(rgba(200,205,208,.2) 1px,transparent 0),linear-gradient(90deg,rgba(200,205,208,.1),1px,transparent 0),linear-gradient(rgba(200,205,208,.1) 1px,transparent 0),linear-gradient(90deg,rgba(200,205,208,.1) 1px,transparent 0); */
     height: 100%;
     border-radius: 6px;
     padding: 20px;
     background: #ffffff;
-
-
-
-    .form-header {
-      padding: 0;
-      margin-bottom: 10px;
-      img {
-        width: 100%;
-        height: 220px;
-        border-top-left-radius: 6px;
-        border-top-right-radius: 6px;
-      }
-
-      .title {
-        text-align: center;
-        font-size: 18px;
-        color: rgba(0, 0, 0, 0.8);
-        font-weight: 600;
-        margin-bottom: 10px;
-      }
-
-      .description {
-        font-size: 14px;
-        text-align: center;
-        color: rgba(0, 0, 0, 0.8);
-        margin: 10px;
-      }
-    }
   }
 
   .form {
     margin: 10px 30px;
-    /* background: #fff; */
     min-height: calc(100% - 10px);
-    border-radius: 0px;
+    border-radius: 0;
     width: 686px;
     position: absolute;
     transform: translateX(-50%);
@@ -748,7 +543,7 @@ const onClose = () => {
       background: aliceblue;
       border-radius: 4px;
       border: 1px dashed #94b4ff;
-      width: calc(100% - 0px);
+      width: 100%;
       padding: 48px 50px;
       height: 116px;
       text-align: center;
@@ -756,13 +551,10 @@ const onClose = () => {
       z-index: 0;
     }
 
-    &.no-data {
-      .sortable-chosen {
-        margin: 2px;
-        width: calc(100% - 4px);
-      }
+    &.no-data .sortable-chosen {
+      margin: 2px;
+      width: calc(100% - 4px);
     }
-
   }
 
   .form-item {
@@ -770,33 +562,19 @@ const onClose = () => {
     background: #fff;
   }
 
-
-
   .active-comp {
-    /* background: mintcream; */
-    /* border-left: 6px solid red;
-    border-color: teal; */
-    /* background: aliceblue; */
-    /* border-bottom: 1px dashed #ccc;
-    border-top: 1px dashed #ccc; */
-    /* border: 1px dashed #1677ff; */
-    /* background: lightyellow; */
     background: aliceblue;
-    /* darkseagreen; */
     border-radius: 5px;
     position: relative;
-    box-shadow: 0px 4px 16px 4px rgba(31, 35, 41, 0.03), 0px 4px 8px 0px rgba(31, 35, 41, 0.02), 0px 2px 4px -4px rgba(31, 35, 41, 0.02);
+    box-shadow: 0 4px 16px 4px rgba(31, 35, 41, 0.03), 0 4px 8px rgba(31, 35, 41, 0.02),
+      0 2px 4px -4px rgba(31, 35, 41, 0.02);
     border: 1px dashed #94b4ff;
 
     &::before {
       content: '';
-      /* border: 4px solid teal; */
       height: 100%;
       display: block;
       width: 4px;
-      /* background: teal; */
-      /* background: cornflowerblue; */
-      /* background: #1677ff; */
       height: 100%;
       position: absolute;
     }
@@ -810,8 +588,7 @@ const onClose = () => {
     padding: 50px 100px;
     position: absolute;
     top: -2px;
-    width: calc(100% - 0px);
-
+    width: 100%;
 
     &:hover,
     &.dragenter {
@@ -819,7 +596,6 @@ const onClose = () => {
       color: #1677ff;
       z-index: 1000;
     }
-
   }
 
   .form-body-content {
@@ -832,19 +608,14 @@ const onClose = () => {
     padding: 0 60px;
     width: 100%;
     margin-top: 20px;
-
   }
 
   ::v-deep(.form-footer) {
     .submit {
-
       max-width: 100%;
       white-space: nowrap;
-      /* 不换行 */
       overflow: hidden;
-      /* 隐藏超出部分 */
       text-overflow: ellipsis;
-      /* 显示省略号 */
     }
   }
 }
@@ -855,7 +626,6 @@ const onClose = () => {
   color: #666;
   width: 50px;
   height: 55px;
-  top: 0;
   text-align: center;
   font-size: 14px;
   padding: 5px 4px;
@@ -883,9 +653,8 @@ const onClose = () => {
   }
 }
 
-::v-deep(.ant-drawer-bottom>.ant-drawer-content-wrapper) {
+::v-deep(.ant-drawer-bottom > .ant-drawer-content-wrapper) {
   height: calc(100% - 50px) !important;
-
 }
 
 .control {
@@ -898,42 +667,21 @@ const onClose = () => {
   .cont-item {
     cursor: pointer;
     margin-right: 10px;
-
   }
 
   .btn-icon {
     width: 18px;
-    padding: 0px;
+    padding: 0;
     margin-top: -2px;
     filter: grayscale(1);
   }
 
-  &:hover {
-    .btn-icon {
-      filter: grayscale(0);
-    }
+  &:hover .btn-icon {
+    filter: grayscale(0);
   }
 
   .name {
     padding: 0 4px;
-  }
-}
-
-.form-header {
-  margin: 0;
-
-  .title {
-    height: 42px;
-    line-height: 42px;
-
-    .title-val {
-      font-size: 20px;
-    }
-  }
-
-  .description-value {
-    color: rgba(0, 0, 0, 0.45);
-    margin: 8px 0 30px 0;
   }
 }
 

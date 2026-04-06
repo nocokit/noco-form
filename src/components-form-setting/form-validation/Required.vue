@@ -1,39 +1,13 @@
-
 <template>
-  <div class="setting-item h-42">
-    <a-typography-text type="secondary" class="secondary">必填</a-typography-text>
-    <a-space direction="vertical" class="abs-r switch-r ">
-      <a-switch  v-model:checked="comp.isRequired" :size="size" @change="handleChangeInput"/>
-    </a-space> 
-  </div>
-
+  <SettingSwitch :comp="comp" field="isRequired" label="必填" />
 </template>
+
 <script lang="ts" setup>
-import type { SizeType } from 'ant-design-vue/es/config-provider';
-import { ref } from 'vue';
-import { useSelectCompStore  } from '@/stores/selectCompStore'
+import SettingSwitch from '../base/SettingSwitch.vue'
 
-const size = ref<SizeType>('large');
-
-interface Props{
-  comp: any
+interface Props {
+  comp: Record<string, any>
 }
-
 const props = defineProps<Props>()
-const comp = ref(props.comp)
-
-const compStore = useSelectCompStore()
-
-const handleChangeInput = (event: any) => {
-  const data = event
-  compStore.updateCurrentComp({
-    isRequired: data
-  })
-}
-
-
-
+const comp = props.comp
 </script>
-<style lang="scss" scoped>
-
-</style>

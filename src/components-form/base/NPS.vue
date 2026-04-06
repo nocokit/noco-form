@@ -17,6 +17,7 @@
 import { ref,watch, reactive, onMounted, computed } from 'vue'
 import { disableInputByDev } from '@/views/FormEditor/comp-config-data'
 import { useSelectCompStore } from '@/stores/selectCompStore'
+import { useFormValues } from '@/composables/useFormValues'
 
 interface Props {
   id: string
@@ -27,6 +28,7 @@ interface Props {
 }
 const compStore = useSelectCompStore()
 const props = defineProps<Props>()
+const formValues = useFormValues()
 const hoverIndex = ref(-1)
 const list = computed(() => {
   let _val = []
@@ -45,6 +47,7 @@ const selectValue = (item: any) => {
   compStore.updateCurrentComp({
     value: item
   })
+  if (formValues && props.id) formValues[props.id] = item
 }
 
 onMounted(() => {

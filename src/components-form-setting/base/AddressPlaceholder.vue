@@ -1,55 +1,24 @@
-
 <template>
-  <a-typography-text type="secondary" class="block-title">选择框省/市/区提示</a-typography-text>
-  <a-input 
-    v-if="compStore.currentCompConfig"
-    placeholder="输入框提示" 
-    allow-clear 
-    v-model:value="comp.address_placeholder"
-    @Input="handleChangeInput($event,'address_placeholder')"
-  ></a-input>
-
-  <a-typography-text type="secondary" class="block-title">详细地址输入框提示</a-typography-text>
-  <a-input 
-    v-if="compStore.currentCompConfig"
-    placeholder="输入框提示" 
-    allow-clear 
-    v-model:value="comp.address_detail_placeholder"
-    @Input="handleChangeInput($event, 'address_detail_placeholder')"
-  ></a-input>
-
-
-
+  <SettingInput
+    :comp="comp"
+    field="address_placeholder"
+    label="选择框省/市/区提示"
+    placeholder="输入框提示"
+  />
+  <SettingInput
+    :comp="comp"
+    field="address_detail_placeholder"
+    label="详细地址输入框提示"
+    placeholder="输入框提示"
+  />
 </template>
+
 <script lang="ts" setup>
-import { defineProps, defineEmits, ref }  from 'vue'
-import { useSelectCompStore  } from '@/stores/selectCompStore'
+import SettingInput from './SettingInput.vue'
 
-
-const compStore = useSelectCompStore()
-
-const handleChangeInput = (event: any, key: string) => {
-  const data = event.target.value 
-  compStore.updateCurrentComp({
-    [key]: data
-  })
+interface Props {
+  comp: Record<string, any>
 }
-
-interface Props{
-  comp: any
-}
-
 const props = defineProps<Props>()
-const comp = ref(props.comp)
-
+const comp = props.comp
 </script>
-<style lang="scss" scoped>
-.block-title {
-  margin-top: 10px;
-}
-.comp {
-  padding: 10px;
-  color: yellowgreen;
-}
-
-</style>

@@ -25,24 +25,24 @@
   </a-space>
 </template>
 <script setup lang="ts">
-import { Layout } from 'ant-design-vue';
 import { ref, watch } from 'vue'
 import { v4 as uuidv4  } from 'uuid'
+import { useFormValues } from '@/composables/useFormValues'
 
 interface Props {
+  id: string
   dataList: Array<any>
   dataValue: string
   layoutType: string
   placeholder: string
   isDev: boolean
   isSelected: boolean
-  isPreviewRender?: boolean 
+  isPreviewRender?: boolean
 }
 
 
 const radioVerticalStyle = ref({
   display: 'flex',
-  // height: '40px',
   lineHeight: '40px',
 });
 
@@ -51,11 +51,16 @@ const radioStyle = ref({
   lineHeight: '40px',
 });
 const props = defineProps<Props>()
+const formValues = useFormValues()
 const _dataValue = ref(props.dataValue ?? null)
 const _updateKey = ref('')
 
 watch(() => props.dataValue, (val) => {
   _dataValue.value = val ?? null
+})
+
+watch(_dataValue, (val) => {
+  if (formValues && props.id) formValues[props.id] = val
 })
 
 

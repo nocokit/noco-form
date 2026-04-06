@@ -1,47 +1,21 @@
-
 <template>
-  <a-typography-text type="secondary" class="block-title">分页标题</a-typography-text>
-  <a-textarea 
-    v-if="compStore.currentCompConfig"
-    placeholder="请输入分页标题" 
-    allow-clear 
-    show-count
-    v-model:value="comp.pageSubTitle"
-    @Input="handleChangeInput"
-    :auto-size="{ minRows: 2, maxRows: 5 }"
+  <SettingInput
+    :comp="comp"
+    field="pageSubTitle"
+    label="分页标题"
+    placeholder="请输入分页标题"
+    textarea
     :maxlength="50"
-  ></a-textarea>
+    show-count
+  />
 </template>
+
 <script lang="ts" setup>
-import { defineProps,watch, computed, defineEmits, ref, onMounted }  from 'vue'
-import { useSelectCompStore  } from '@/stores/selectCompStore'
+import SettingInput from './SettingInput.vue'
 
-const compStore: any = useSelectCompStore()
-
-const handleChangeInput = (event: any) => {
-  const data = event.target.value 
-  compStore.updateCurrentComp({
-    pageSubTitle: data
-  })
+interface Props {
+  comp: Record<string, any>
 }
-
-
-interface Props{
-  comp: any
-}
-
 const props = defineProps<Props>()
-
+const comp = props.comp
 </script>
-<style lang="scss" scoped>
-
-.comp {
-  padding: 10px;
-  color: yellowgreen;
-}
-
-.block-title {
-  margin-top: 15px;
-}
-
-</style>
