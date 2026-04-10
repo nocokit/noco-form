@@ -17,17 +17,17 @@
             </a-button>
           </div>
           <div class="cont-item">
-            <a-button type="default" @click="handleSave">
-              <img class="btn-icon" src="@/assets/form-editor/save.svg" alt="">
+            <a-button type="primary" @click="handleSave">
+              <img class="btn-icon" src="@/assets/form-editor/publish.svg" alt="">
               <span class="name">保存</span>
             </a-button>
           </div>
-          <div class="cont-item">
+          <!-- <div class="cont-item">
             <a-button type="primary">
               <img class="btn-icon" src="@/assets/form-editor/publish.svg" alt="">
               <span class="name">发布</span>
             </a-button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
