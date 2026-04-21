@@ -1,0 +1,11 @@
+{
+  "type": "Img",
+  "name": "图片",
+  "label": "图片",
+  "icon": "Img",
+  "category": "show",
+  "order": 1,
+  "sidebar": { "group": "展示", "sort": 1 },
+  "skipValidation": true,
+  "defaultConfig": {}
+}

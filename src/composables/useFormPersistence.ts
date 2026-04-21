@@ -1,4 +1,4 @@
-import { type Ref, watch } from 'vue'
+import { type Ref, watch, toRaw } from 'vue'
 import { indexedDB } from '@/utils/indexedDB'
 import { useSelectCompStore } from '@/stores/selectCompStore'
 
@@ -27,13 +27,15 @@ export function useFormPersistence(
     }
   }
 
+  const deepClone = (obj: any) => JSON.parse(JSON.stringify(toRaw(obj)))
+
   const saveFormData = async () => {
     try {
       await indexedDB.saveForm({
-        pageCompList: pageCompList.value,
-        pageHeader: pageHeader.value,
-        pageFooter: pageFooter.value,
-        globalConfig: compStore.currentGlobalFormConfig,
+        pageCompList: deepClone(pageCompList.value),
+        pageHeader: deepClone(pageHeader.value),
+        pageFooter: deepClone(pageFooter.value),
+        globalConfig: deepClone(compStore.currentGlobalFormConfig),
       })
     } catch (error) {
       console.error('保存表单数据失败:', error)

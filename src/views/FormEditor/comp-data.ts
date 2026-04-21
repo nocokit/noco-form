@@ -56,10 +56,6 @@ export enum CompType {
   title = 'Title', // 表单标题
 }
 
-export const IgnoreLineNumberTypeList = [
-  CompType.divider,
-  CompType.paging
-]
 
 // 组件元素类型
 export interface CompItemType {
@@ -89,12 +85,6 @@ interface CompCategoryType {
   children: CompItemType[]
 }
 
-export const JustShowCompType: string[] = [
-  CompType.formTitle,
-  CompType.divider,
-  CompType.paging,
-  CompType.button,
-]
 
 // 显示组件
 const ShowComponentList: CompItemType[] = [

@@ -1,4 +1,9 @@
-import { CompType } from '@/views/FormEditor/comp-data'
+import {
+  getComponentDef,
+  getPluginDefaultConfig,
+  getAllComponentDefs,
+  getComponentDefsByCategory,
+} from '@/plugins/pluginManager'
 import Icon, { type IconKey } from '@/views/FormEditor/comp-icon'
 
 interface ComponentConfig {
@@ -10,54 +15,39 @@ interface ComponentConfig {
   defaultConfig: Record<string, any>
 }
 
-// 组件配置映射
-const componentConfigs = new Map<string, ComponentConfig>()
-
-// 自动导入所有组件配置
-const configModules = import.meta.glob('./*.json', { eager: true })
-
-Object.entries(configModules).forEach(([path, module]: [string, any]) => {
-  const config = module.default || module
-  componentConfigs.set(config.type, config)
-})
-
-// 获取组件默认配置
-export const getComponentConfig = (type: CompType): Record<string, any> => {
-  const config = componentConfigs.get(type)
-  if (!config) return {}
-
-  return {
-    name: config.name,
-    type: config.type,
-    title: config.label,
-    description: null,
-    dataValue: null,
-    defaultValue: null,
-    customErrorMessage: '',
-    ...config.defaultConfig
-  }
+// 获取组件默认配置（兼容旧 API）
+export const getComponentConfig = (type: string): Record<string, any> => {
+  return getPluginDefaultConfig(type)
 }
 
-// 获取组件元数据
-export const getComponentMeta = (type: CompType) => {
-  return componentConfigs.get(type)
+// 获取组件元数据（兼容旧 API）
+export const getComponentMeta = (type: string) => {
+  return getComponentDef(type)
 }
 
-// 按分类获取组件列表
+// 按分类获取组件列表（兼容旧 API）
 export const getComponentsByCategory = (category: string) => {
-  return Array.from(componentConfigs.values())
-    .filter(config => config.category === category)
-    .map(config => ({
-      name: config.name,
-      label: config.label,
-      type: config.type as CompType,
-      icon: Icon[config.icon as IconKey] ?? ''
+  return getComponentDefsByCategory(category)
+    .map(def => ({
+      name: def.name,
+      label: def.label,
+      type: def.type,
+      icon: def.icon ? (Icon[def.icon as IconKey] ?? '') : '',
     }))
 }
 
-// 获取所有组件
+// 获取所有组件（兼容旧 API）
 export const getAllComponents = () => {
-  return Array.from(componentConfigs.values())
+  return getAllComponentDefs().map(def => ({
+    type: def.type,
+    name: def.name,
+    label: def.label,
+    icon: def.icon || '',
+    category: def.category,
+    defaultConfig: def.defaultConfig,
+  }))
 }
 
+// 兼容默认导出
+const componentConfigs = new Map<string, ComponentConfig>()
 export default componentConfigs

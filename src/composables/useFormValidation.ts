@@ -3,32 +3,32 @@
  * 支持：必填、格式校验（手机/邮件/身份证/网址/数字/自定义正则）、数字范围
  */
 
+import { getComponentDef } from '@/plugins/pluginManager'
+
 export type ValidationFormat = 'phone' | 'number' | 'website' | 'idCard' | 'email' | 'regular'
 
 const PATTERNS: Record<string, RegExp> = {
-  phone:   /^1[3-9]\d{9}$/,
-  number:  /^-?\d+(\.\d+)?$/,
-  website: /^(https?:\/\/)[\w-]+(\.[\w-]+)+([\w\-._~:/?#[\]@!$&'()*+,;=]+)?$/i,
-  idCard:  /^\d{17}[\dXx]$/,
-  email:   /^[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}$/,
+  phone:     /^1[3-9]\d{9}$/,
+  number:    /^-?\d+(\.\d+)?$/,
+  website:   /^(https?:\/\/)[\w-]+(\.[\w-]+)+([\w\-._~:/?#[\]@!$&'()*+,;=]+)?$/i,
+  idCard:    /^\d{17}[\dXx]$/,
+  email:     /^[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}$/,
+  url:       /^(https?:\/\/)[\w-]+(\.[\w-]+)+([\w\-._~:/?#[\]@!$&'()*+,;=]+)?$/i,
+  idcard:    /^\d{17}[\dXx]$/,
+  telephone: /^(\d{3,4}-)?\d{7,8}$/,
 }
 
 /** 内置格式验证规则对应的默认错误提示 */
 const FORMAT_MESSAGES: Record<string, string> = {
-  phone:   '请输入正确的手机号',
-  number:  '请输入有效的数字',
-  website: '请输入正确的网址',
-  idCard:  '请输入正确的身份证号',
-  email:   '请输入正确的邮件地址',
-  regular: '格式不正确',
-}
-
-/** 个人信息组件内置格式规则 */
-const PERSONAL_BUILTIN: Record<string, ValidationFormat> = {
-  Phone:     'phone',
-  Email:     'email',
-  IDCard:    'idCard',
-  TelePhone: 'phone',
+  phone:     '请输入正确的手机号',
+  number:    '请输入有效的数字',
+  website:   '请输入正确的网址',
+  idCard:    '请输入正确的身份证号',
+  email:     '请输入正确的邮件地址',
+  regular:   '格式不正确',
+  url:       '请输入正确的网址',
+  idcard:    '请输入正确的身份证号',
+  telephone: '请输入正确的固定电话',
 }
 
 export interface FieldComp {
@@ -62,6 +62,13 @@ const isEmpty = (val: any): boolean => {
   return false
 }
 
+/** 构建自定义错误信息或使用默认 */
+const buildErrorMsg = (comp: FieldComp, defaultMsg: string): string => {
+  return comp.isCustomErrorMessage && comp.customErrorMessage
+    ? comp.customErrorMessage
+    : defaultMsg
+}
+
 /** 校验单个组件，返回错误信息（null = 通过） */
 export const validateComp = (comp: FieldComp): string | null => {
   const val = getValue(comp)
@@ -69,18 +76,17 @@ export const validateComp = (comp: FieldComp): string | null => {
 
   // 必填校验
   if (comp.isRequired && empty) {
-    return comp.isCustomErrorMessage && comp.customErrorMessage
-      ? comp.customErrorMessage
-      : `${comp.title || '该项'} 为必填项`
+    return buildErrorMsg(comp, `${comp.title || '该项'} 为必填项`)
   }
 
   // 值为空时后续格式校验跳过
   if (empty) return null
 
   const strVal = String(val).trim()
+  const def = getComponentDef(comp.type)
 
-  // 数字范围校验
-  if (comp.type === 'Number') {
+  // 数字范围校验（通过 meta.hasNumberRange 驱动）
+  if (def?.meta?.hasNumberRange) {
     const num = Number(strVal)
     if (!isNaN(num)) {
       if (comp.minValue !== undefined && num < comp.minValue) {
@@ -92,15 +98,12 @@ export const validateComp = (comp: FieldComp): string | null => {
     }
   }
 
-  // 个人信息内置格式
-  const builtinFormat = PERSONAL_BUILTIN[comp.type]
+  // 内置格式验证（通过 meta.builtinFormat 驱动）
+  const builtinFormat = def?.meta?.builtinFormat
   if (builtinFormat) {
     const regex = PATTERNS[builtinFormat]
-    if (!regex.test(strVal)) {
-      const msg = comp.isCustomErrorMessage && comp.customErrorMessage
-        ? comp.customErrorMessage
-        : FORMAT_MESSAGES[builtinFormat]
-      return msg
+    if (regex && !regex.test(strVal)) {
+      return buildErrorMsg(comp, FORMAT_MESSAGES[builtinFormat] || '格式不正确')
     }
   }
 
@@ -109,10 +112,7 @@ export const validateComp = (comp: FieldComp): string | null => {
   if (fmt && fmt !== 'regular') {
     const regex = PATTERNS[fmt]
     if (regex && !regex.test(strVal)) {
-      const msg = comp.isCustomErrorMessage && comp.customErrorMessage
-        ? comp.customErrorMessage
-        : FORMAT_MESSAGES[fmt]
-      return msg
+      return buildErrorMsg(comp, FORMAT_MESSAGES[fmt] || '格式不正确')
     }
   }
 
@@ -121,9 +121,7 @@ export const validateComp = (comp: FieldComp): string | null => {
     try {
       const regex = new RegExp(comp.formValidationFormatRegex)
       if (!regex.test(strVal)) {
-        return comp.isCustomErrorMessage && comp.customErrorMessage
-          ? comp.customErrorMessage
-          : '格式不正确'
+        return buildErrorMsg(comp, '格式不正确')
       }
     } catch {
       // 正则无效时跳过
@@ -136,11 +134,12 @@ export const validateComp = (comp: FieldComp): string | null => {
 /** 校验整个表单，返回 { id → errorMsg } 映射 */
 export const validateForm = (
   compList: FieldComp[],
-  skipTypes = ['Divider', 'Paging', 'FormTitle', 'Button']
 ): Record<string, string> => {
   const errors: Record<string, string> = {}
   for (const comp of compList) {
-    if (skipTypes.includes(comp.type)) continue
+    // 通过 meta 判断是否跳过验证
+    const def = getComponentDef(comp.type)
+    if (def?.meta?.justShow || def?.meta?.isLayoutComp || def?.meta?.ignoreRequired) continue
     const err = validateComp(comp)
     if (err) errors[comp.id] = err
   }

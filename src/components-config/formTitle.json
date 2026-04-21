@@ -1,0 +1,19 @@
+{
+  "type": "FormTitle",
+  "name": "标题",
+  "label": "标题",
+  "icon": "Title",
+  "category": "show",
+  "order": 0,
+  "sidebar": { "group": "展示", "sort": 0 },
+  "skipValidation": true,
+  "defaultConfig": {
+    "titleValue": "标题名称",
+    "titleSize": "middle",
+    "titleDescription": "Noco-Form，Github仓库已免费开源，感谢你的使用！",
+    "titleImageUrl": "bg.png",
+    "titleDescriptionShow": true,
+    "titleImageShow": true,
+    "titleDescriptionPosition": "center"
+  }
+}

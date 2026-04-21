@@ -194,7 +194,7 @@ import { CheckOutlined, QuestionCircleOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { useRoute } from 'vue-router'
 
-import { CompListData, CompType } from './comp-data'
+import { CompType } from './comp-data'
 import { generateCompListData } from './comp-list-generator'
 import { getDefaultConfig } from './comp-config-data'
 import Icon from './comp-icon'
@@ -265,7 +265,7 @@ const pageFooter = ref<FooterType>({
   buttonIconShowBool: true,
 })
 
-const compList = generateCompListData().length > 0 ? generateCompListData() : CompListData
+const compList = generateCompListData()
 const themeList = [
   { url: 'bg0.png' }, { url: 'bg1.png' }, { url: 'bg2.png' },
   { url: 'bg3.png' }, { url: 'bg4.png' }, { url: 'bg5.png' },

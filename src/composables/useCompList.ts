@@ -1,13 +1,12 @@
 import { type Ref } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
-import { CompType, IgnoreLineNumberTypeList } from '@/views/FormEditor/comp-data'
-import { getDefaultConfig } from '@/views/FormEditor/comp-config-data'
+import { isLayoutCompType, getComponentDef, getPluginDefaultConfig } from '@/plugins/pluginManager'
 import { message } from 'ant-design-vue'
 
 export function useCompList(pageCompList: Ref<any[]>) {
 
   const createCompInstance = (element: any): any => {
-    const defaultComp = getDefaultConfig(element.type)
+    const defaultComp = getPluginDefaultConfig(element.type)
     return {
       ...defaultComp,
       ...element.value,
@@ -20,15 +19,19 @@ export function useCompList(pageCompList: Ref<any[]>) {
 
   const updateCompLineNumber = () => {
     if (!Array.isArray(pageCompList.value)) return
-    const pageCount = pageCompList.value.filter(item => item.type === CompType.paging).length
+    const pageCount = pageCompList.value.filter(item => {
+      const def = getComponentDef(item.type)
+      return def?.meta?.isPagingComponent === true
+    }).length
     let lineNumber = 0
     let pageNumber = 0
     for (const item of pageCompList.value) {
-      if (!IgnoreLineNumberTypeList.includes(item.type)) {
+      if (!isLayoutCompType(item.type)) {
         lineNumber++
         item.lineNumber = String(lineNumber).padStart(2, '0')
       }
-      if (item.type === CompType.paging) {
+      const def = getComponentDef(item.type)
+      if (def?.meta?.isPagingComponent) {
         pageNumber++
         item.pagingValue = `第 ${pageNumber} 页 / 共 ${pageCount} 页`
       }

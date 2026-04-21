@@ -46,7 +46,6 @@ interface CompConfig {
   isLayoutComp?: boolean
 }
 
-export const HasSettingTypeList = ['Radio', 'Checkout', 'Select']
 
 /** 组件基础默认值，用于兜底 */
 const defaultConfig: CompConfig = {

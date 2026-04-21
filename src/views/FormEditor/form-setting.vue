@@ -8,38 +8,34 @@
       </a-typography-title>
     </div>
     <div class="setting-base">
-      <template v-if="currentCompId">  
+      <template v-if="currentCompId">
         <div class="category-name">
-        基础设置 
+        基础设置
       </div>
       <div class="content m-b-0">
-        <FormTitle v-if="selectComp.type === CompType.formTitle" :comp="selectComp" :key="selectComp._selectedId "/>
-        <Title v-if="showParams('name') && !showParams('isLayoutComp') && selectComp.type !== CompType.formTitle" :comp="selectComp" :key="selectComp._selectedId "/>
-        <ButtonText v-if="showParams('buttonText')" :comp="selectComp" :key="selectComp._selectedId "/>
-        <Description v-if="showParams('description') && selectComp.type !== CompType.formTitle"s :comp="selectComp" :key="selectComp._selectedId "/>
-        <PageSubTitle v-if="showParams('pageSubTitle')"  :comp="selectComp" :key="selectComp._selectedId "/>
-        <PageSubDescription v-if="showParams('pageSubTitle')" :comp="selectComp" :key="selectComp._selectedId "/>
-        <Placeholder v-if="showParams('placeholder')" :comp="selectComp" :key="selectComp._selectedId "/>
-        <AddressPlaceholder v-if="showParams('address_placeholder')" :comp="selectComp" :key="selectComp._selectedId "/>
-        <RangePlaceholder v-if="showParams('placeholderRange')" :comp="selectComp" :key="selectComp._selectedId "/>
-        <LayoutType v-if="showParams('layoutType')" :comp="selectComp"/>
-        <DividerText v-if="showParams('dividerValue')" :comp="selectComp" ></DividerText>
-        <DividerBorderType v-if="showParams('dividerValue')" :comp="selectComp"></DividerBorderType>
-        <Position v-if="showParams('position')" :comp="selectComp"/>
-        <Size v-if="showParams('size')" :comp="selectComp"/>
-        <RateConfig v-if="selectComp?.type === CompType.rate" :comp="selectComp" />
-        <NPSConfig v-if="[CompType.nps, CompType.selectRate].includes(selectComp?.type)" :comp="selectComp" />
-        <DataList v-if="showParams('dataList')" :comp="selectComp" />
-        <UseOtherDataList v-if="showParams('useOtherDataList')" :comp="selectComp"/>
-        <SignCreateImgType v-if="showParams('sign_create_type')" :comp="selectComp"/>
+        <!-- 插件自定义设置面板（优先级最高） -->
+        <component v-if="customSettingComp" :is="customSettingComp" :comp="selectComp" :key="selectComp._selectedId" />
+
+        <!-- 自动匹配的内置设置项 -->
+        <template v-else>
+          <component
+            v-for="item in matchedBasicSettings"
+            :key="item.name"
+            :is="item.component"
+            :comp="selectComp"
+          />
+        </template>
       </div>
-      <div class="category-name" v-if="selectComp?.type && !JustShowCompType.includes(selectComp?.type)">
-        表单验证 
+      <div class="category-name" v-if="selectComp?.type && !isJustShowType(selectComp?.type) && matchedValidationSettings.length > 0">
+        表单验证
       </div>
-      <div class="content">
-        <NumberConfig v-if="showParams('maxValue')" :comp="selectComp"/>
-        <Required v-if="showParams('isRequired')" :comp="selectComp"/>
-        <ValidationSystem v-if="showRegParams()" :comp="selectComp"/>
+      <div class="content" v-if="!customSettingComp">
+        <component
+          v-for="item in matchedValidationSettings"
+          :key="item.name"
+          :is="item.component"
+          :comp="selectComp"
+        />
       </div>
       </template>
       <div class="category-name">
@@ -57,38 +53,13 @@
 <script setup lang="ts">
 import { watch, reactive, computed } from 'vue'
 
-import Title from '@/components-form-setting/base/Title.vue'
-import FormTitle from '@/components-form-setting/show/FormTitle.vue'
-import Position from '@/components-form-setting/base/Position.vue'
-import Size from '@/components-form-setting/base/Size.vue'
-import ButtonText from '@/components-form-setting/base/ButtonText.vue'
-import Description from '@/components-form-setting/base/Description.vue'
-import Placeholder from '@/components-form-setting/base/Placeholder.vue'
-import AddressPlaceholder from '@/components-form-setting/base/AddressPlaceholder.vue'
-import RangePlaceholder from '@/components-form-setting/base/RangePlaceholder.vue'
-import PageSubTitle from '@/components-form-setting/base/PageSubTitle.vue'
-import PageSubDescription from '@/components-form-setting/base/PageSubDescription.vue'
-import DividerText from '@/components-form-setting/base/DividerText.vue'
-import LayoutType from '@/components-form-setting/base/LayoutType.vue'
-import RateConfig from '@/components-form-setting/base/RateConfig.vue'
-import NPSConfig from '@/components-form-setting/base/NPSConfig.vue'
-import DividerBorderType from '@/components-form-setting/base/DividerBorderType.vue'
-import Required from '@/components-form-setting/form-validation/Required.vue'
-import ValidationSystem from '@/components-form-setting/form-validation/ValidationFormat.vue'
-import NumberConfig from '@/components-form-setting/form-validation/NumberConfig.vue'
-import SignCreateImgType from '@/components-form-setting/data/SignCreateImgType.vue'
-import UseOtherDataList from '@/components-form-setting/data/UseOtherDataList.vue'
-import DataList from '@/components-form-setting/data/DataList.vue'
 import DisplayWaterMark from '@/components-form-setting/common-global-configurations/DisplayWaterMark.vue'
 import DisplaySerialNumber from '@/components-form-setting/common-global-configurations/DisplaySerialNumber.vue'
 import DisplayDescription from '@/components-form-setting/common-global-configurations/DisplayDescription.vue'
 import DisplayBtn from '@/components-form-setting/common-global-configurations/DisplayBtn.vue'
 
-import { hasOwnPropertyFunction, verifyRegularityCompList } from '@/views/FormEditor/comp-config-data'
-import { JustShowCompType, CompType, CompListData } from '@/views/FormEditor/comp-data'
-import Icon from './comp-icon'
-
-const allCompList = CompListData.flatMap(item => item.children)
+import { isJustShowType, getResolvedIcon, getComponentDef, getSettingComponent } from '@/plugins/pluginManager'
+import { getMatchedSettings } from '@/plugins/settingRegistry'
 
 interface Props {
   selectComp: any
@@ -101,19 +72,30 @@ const selectComp = reactive(props.selectComp)
 const selectForm = reactive(props.selectForm)
 
 const currCompIcon = computed(() => {
-  const comp = allCompList.find(item => item.type === selectComp?.type)?.icon
-  return comp || (selectComp?.type === CompType.button && Icon.Button)
+  if (!selectComp?.type) return ''
+  return getResolvedIcon(selectComp.type)
 })
 
 const compName = computed(() => {
   if (selectComp?.name) return selectComp.name
-  if (selectComp?.type === CompType.button) return '提交按钮'
+  const def = getComponentDef(selectComp?.type)
+  if (def) return def.name
   return '表单配置'
 })
 
-const showParams = (params: string) => hasOwnPropertyFunction(selectComp, params)
+const customSettingComp = computed(() => {
+  if (!selectComp?.type) return null
+  return getSettingComponent(selectComp.type) || null
+})
 
-const showRegParams = () => verifyRegularityCompList().includes(selectComp?.type)
+const matchedSettings = computed(() => {
+  if (!selectComp?.type) return { basic: [], validation: [] }
+  const def = getComponentDef(selectComp.type)
+  return getMatchedSettings(selectComp, def)
+})
+
+const matchedBasicSettings = computed(() => matchedSettings.value.basic)
+const matchedValidationSettings = computed(() => matchedSettings.value.validation)
 
 watch([() => props.selectComp, () => props.selectForm], ([newValue, newFormConfig]) => {
   if (!newValue) return

@@ -1,0 +1,11 @@
+{
+  "type": "Video",
+  "name": "视频",
+  "label": "视频",
+  "icon": "Video",
+  "category": "show",
+  "order": 2,
+  "sidebar": { "group": "展示", "sort": 2 },
+  "skipValidation": true,
+  "defaultConfig": {}
+}

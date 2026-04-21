@@ -162,28 +162,39 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue'
-// Types that cannot appear as logic targets
-const SKIP_TYPES = ['Divider', 'Paging', 'FormTitle', 'Button']
-// Types that cannot be used as source (no value to read)
-const NO_SOURCE_TYPES = ['Divider', 'Paging', 'FormTitle', 'Button', 'Upload', 'ElectronicSignature', 'DateRange', 'TimeRange']
+import { getComponentDef } from '@/plugins/pluginManager'
 
-// Source type categories
-const ENUM_TYPES = ['Radio', 'Select']        // single-select from dataList
-const MULTI_TYPES = ['Checkout']              // multi-select from dataList
-const SWITCH_TYPES = ['Switch']               // boolean
-const GENDER_TYPES = ['Gender']               // fixed 男/女
-const NUMBER_TYPES = ['Number', 'Rate', 'SelectRate', 'NPS']
-const DATE_TYPES = ['Date', 'DateRange']
-const TIME_TYPES = ['Time', 'TimeRange']
-// everything else is TEXT: Input, Textarea, Name, WX, Email, Phone, TelePhone, IDCard, Address, Url
+/** 判断组件是否可作为逻辑目标（排除布局/展示/无值组件） */
+const isLogicTarget = (comp: any): boolean => {
+  const def = getComponentDef(comp.type)
+  if (!def) return true
+  return !def.meta?.justShow && !def.meta?.isLayoutComp && !def.meta?.ignoreRequired
+}
+
+/** 判断组件是否可作为逻辑条件来源 */
+const isLogicSource = (comp: any): boolean => {
+  const def = getComponentDef(comp.type)
+  if (!def) return true
+  if (def.meta?.logicSourceEnabled === false) return false
+  if (def.meta?.justShow || def.meta?.isLayoutComp) return false
+  return true
+}
+
+/** 根据 meta.logicCategory 推断组件的逻辑分类 */
+const resolveLogicCategory = (type: string): string => {
+  const def = getComponentDef(type)
+  if (!def) return 'text'
+  // 显式声明优先
+  if (def.meta?.logicCategory) return def.meta.logicCategory
+  // 自动推断
+  if (def.meta?.hasDataList) return 'enum'
+  if (def.meta?.hasNumberRange) return 'number'
+  return 'text'
+}
 
 const BOOL_OPTIONS = [
   { label: '是', value: 'true' },
   { label: '否', value: 'false' },
-]
-const GENDER_OPTIONS = [
-  { label: '男', value: '男' },
-  { label: '女', value: '女' },
 ]
 
 const OPERATOR_MAP: Record<string, { label: string; value: string }[]> = {
@@ -195,12 +206,8 @@ const OPERATOR_MAP: Record<string, { label: string; value: string }[]> = {
     { label: '包含', value: 'contains' },
     { label: '不包含', value: 'not_contains' },
   ],
-  switch: [
+  boolean: [
     { label: '等于', value: 'equals' },
-  ],
-  gender: [
-    { label: '等于', value: 'equals' },
-    { label: '不等于', value: 'not_equals' },
   ],
   number: [
     { label: '等于', value: 'equals' },
@@ -240,24 +247,16 @@ interface Props {
 const props = defineProps<Props>()
 
 const compList = computed(() =>
-  props.pageCompList.filter(c => !SKIP_TYPES.includes(c.type))
+  props.pageCompList.filter(c => isLogicTarget(c))
 )
 
 const getSourceOptions = (selfId: string) =>
-  props.pageCompList.filter(c => c.id !== selfId && !NO_SOURCE_TYPES.includes(c.type))
+  props.pageCompList.filter(c => c.id !== selfId && isLogicSource(c))
 
 const getSourceCategory = (sourceId: string): string => {
   const source = props.pageCompList.find(c => c.id === sourceId)
   if (!source) return 'text'
-  const t = source.type
-  if (ENUM_TYPES.includes(t)) return 'enum'
-  if (MULTI_TYPES.includes(t)) return 'multi'
-  if (SWITCH_TYPES.includes(t)) return 'switch'
-  if (GENDER_TYPES.includes(t)) return 'gender'
-  if (NUMBER_TYPES.includes(t)) return 'number'
-  if (DATE_TYPES.includes(t)) return 'date'
-  if (TIME_TYPES.includes(t)) return 'time'
-  return 'text'
+  return resolveLogicCategory(source.type)
 }
 
 const getOperatorOptions = (sourceId: string) => {
@@ -269,7 +268,7 @@ const getValueInputType = (rule: any): 'enum' | 'number' | 'date' | 'time' | 'te
   if (!rule.sourceId || !rule.operator) return 'none'
   if (['is_empty', 'is_not_empty'].includes(rule.operator)) return 'none'
   const cat = getSourceCategory(rule.sourceId)
-  if (cat === 'enum' || cat === 'multi' || cat === 'switch' || cat === 'gender') return 'enum'
+  if (cat === 'enum' || cat === 'multi' || cat === 'boolean') return 'enum'
   if (cat === 'number') return 'number'
   if (cat === 'date') return 'date'
   if (cat === 'time') return 'time'
@@ -287,8 +286,7 @@ const getValueOptions = (sourceId: string) => {
   if (cat === 'enum' || cat === 'multi') {
     return (source.dataList || []).map((d: any) => ({ label: d.label, value: d.value }))
   }
-  if (cat === 'switch') return BOOL_OPTIONS
-  if (cat === 'gender') return GENDER_OPTIONS
+  if (cat === 'boolean') return BOOL_OPTIONS
   return []
 }
 

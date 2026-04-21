@@ -3,6 +3,7 @@
     <a-drawer
       :title="'表单预览'"
       class="drawer"
+      :style="{ 'background-image': `url(${bgImageUrl})` }"
       :height="'calc(100% - 0px)'"
       placement="bottom"
       :open="props.open"
@@ -31,7 +32,7 @@
               v-show="!hiddenIds.has(item.id)"
             >
               <FormComponent
-                v-if="!['Paging'].includes(item.type)"
+                v-if="!isPagingType(item.type)"
                 renderType="preview"
                 :key="item.id + previewType"
                 :component="item"
@@ -78,6 +79,7 @@ import FormComponent from '@/components-form/index.vue'
 import { validateForm } from '@/composables/useFormValidation'
 import { provideFormValues } from '@/composables/useFormValues'
 import { getHiddenIds } from '@/composables/useLogicEvaluator'
+import { getComponentDef } from '@/plugins/pluginManager'
 
 type PreviewType = 'Phone' | 'PC'
 
@@ -95,6 +97,11 @@ interface Props {
 
 const props = defineProps<Props>()
 const emit = defineEmits(['onClose'])
+
+const isPagingType = (type: string): boolean => {
+  const def = getComponentDef(type)
+  return def?.meta?.isPagingComponent === true
+}
 
 const formValues = provideFormValues()
 const previewType = ref<PreviewType>('Phone')
@@ -121,20 +128,26 @@ const handleSubmit = () => {
 
 const footerPadding = computed(() => {
   const s = props.pageFooter?.size
-  return s === 'large' ? '0 26px' : s === 'small' ? '0 10px' : '0 16px'
+  return s === 'large' ? '0 ji26px' : s === 'small' ? '0 10px' : '0 16px'
 })
 
 const footerLineHeight = computed(() => {
   const s = props.pageFooter?.size
   return s === 'large' ? '40px' : s === 'small' ? '24px' : '32px'
 })
+
+const getImageUrl = (imgUrl?: string) => {
+  try {
+    return new URL(`/src/assets/background/${imgUrl || 'bg0.png'}`, import.meta.url).href
+  } catch {
+    return new URL('/src/assets/background/bg0.png', import.meta.url).href
+  }
+}
+
+const bgImageUrl = computed(() => getImageUrl(props.selectForm?.bgImgUrl))
 </script>
 
 <style scoped lang="scss">
-.drawer {
-  background-image: url(./bg.png);
-}
-
 .alert {
   margin: 0 10px;
 }
@@ -152,7 +165,6 @@ const footerLineHeight = computed(() => {
 
   &.phone {
     width: 390px;
-    background: snow;
 
     .form-item .comp-item { padding: 10px 20px 30px; }
 

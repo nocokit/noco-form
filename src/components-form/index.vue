@@ -60,7 +60,7 @@
 
     <div class="active-comp-setting" v-if="compConfig.id === selectedComp?.id && !isIgnoreEditor()">
       <div class="bottom-setting">
-        <div class="data-list-setting" v-if="HasSettingTypeList.includes(compConfig.type)">
+        <div class="data-list-setting" v-if="hasDataListType(compConfig.type)">
           <span class="add-item">
             <a-typography-text type="warning" @click="addItem('new')">
               <PlusCircleTwoTone class="icon" :style="{ fontSize: '16px', color: '#646a73' }" />
@@ -119,74 +119,12 @@
 import { ref, computed, defineEmits, type Component } from 'vue'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
 
-import ImageComponent from '@/components-form/show/Image.vue'
-import VideoComponent from '@/components-form/show/Video.vue'
-import FormTitleComponent from '@/components-form/show/FormTitle.vue'
-import RadioComponent from '@/components-form/base/Radio.vue'
-import SelectComponent from '@/components-form/base/Select.vue'
-import CheckoutComponent from '@/components-form/base/Checkout.vue'
-import InputComponent from '@/components-form/base/Input.vue'
-import TextareaComponent from '@/components-form/base/Textarea.vue'
-import UrlComponent from '@/components-form/base/Url.vue'
-import DateComponent from '@/components-form/base/Date.vue'
-import DateRangeComponent from '@/components-form/base/DateRange.vue'
-import TimeComponent from '@/components-form/base/Time.vue'
-import DividerComponent from '@/components-form/base/Divider.vue'
-import PagingComponent from '@/components-form/base/Paging.vue'
-import RateComponent from '@/components-form/base/Rate.vue'
-import SelectRateComponent from '@/components-form/base/SelectRate.vue'
-import NPSComponent from '@/components-form/base/NPS.vue'
-import UploadComponent from '@/components-form/base/Upload.vue'
-import SwitchComponent from '@/components-form/base/Switch.vue'
-import NumberComponent from '@/components-form/base/Number.vue'
-import TimeRangeComponent from '@/components-form/base/TimeRange.vue'
-import NameComponent from '@/components-form/contact-information/Name.vue'
-import GenderComponent from '@/components-form/contact-information/Gender.vue'
-import PhoneComponent from '@/components-form/contact-information/Phone.vue'
-import TelePhoneComponent from '@/components-form/contact-information/TelePhone.vue'
-import IdCardComponent from '@/components-form/contact-information/IdCard.vue'
-import EmailComponent from '@/components-form/contact-information/Email.vue'
-import WXComponent from '@/components-form/contact-information/WX.vue'
-import AddressComponent from '@/components-form/contact-information/Address.vue'
-import SignComponent from '@/components-form/advanced/Sign.vue'
 import BatchOperationData from '@/components/form/BatchOperationData.vue'
 import { useSelectCompStore } from '@/stores/selectCompStore'
 import { v4 as uuidv4 } from 'uuid'
-import { HasSettingTypeList } from '@/views/FormEditor/comp-config-data'
-import { JustShowCompType } from '@/views/FormEditor/comp-data'
+import { getComponent, isJustShowType, hasDataListType, isLayoutCompType } from '@/plugins/pluginManager'
 
-const COMP_MAP: Record<string, Component> = {
-  Img: ImageComponent,
-  Video: VideoComponent,
-  FormTitle: FormTitleComponent,
-  Radio: RadioComponent,
-  Input: InputComponent,
-  Textarea: TextareaComponent,
-  Checkout: CheckoutComponent,
-  Date: DateComponent,
-  DateRange: DateRangeComponent,
-  Time: TimeComponent,
-  TimeRange: TimeRangeComponent,
-  Url: UrlComponent,
-  Number: NumberComponent,
-  Switch: SwitchComponent,
-  Upload: UploadComponent,
-  Divider: DividerComponent,
-  Paging: PagingComponent,
-  Select: SelectComponent,
-  Rate: RateComponent,
-  NPS: NPSComponent,
-  ElectronicSignature: SignComponent,
-  Name: NameComponent,
-  Gender: GenderComponent,
-  WX: WXComponent,
-  Email: EmailComponent,
-  IDCard: IdCardComponent,
-  Phone: PhoneComponent,
-  TelePhone: TelePhoneComponent,
-  Address: AddressComponent,
-  SelectRate: SelectRateComponent,
-}
+const resolvedComp = computed(() => getComponent(props.type))
 
 interface Props {
   component: Record<string, any>
@@ -207,9 +145,7 @@ const emit = defineEmits(['compControl', 'addItem'])
 const openBatchOperationDataBool = ref(false)
 const compConfig = props.component
 
-const resolvedComp = computed(() => COMP_MAP[props.type])
-
-const displaySection = computed(() => !['Divider', 'Paging', 'FormTitle'].includes(props.type))
+const displaySection = computed(() => !isJustShowType(props.type) && !isLayoutCompType(props.type))
 
 const changeValue = (event: Event, params: 'title' | 'description') => {
   const value = (event.target as HTMLInputElement).value
@@ -236,7 +172,7 @@ const compControl = (event: Event, type: string) => {
   emit('compControl', type, props.component)
 }
 
-const isIgnoreEditor = () => JustShowCompType.includes(props.type)
+const isIgnoreEditor = () => isJustShowType(props.type)
 
 const addItem = (type: string) => emit('addItem', type)
 

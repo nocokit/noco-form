@@ -31,8 +31,13 @@ import { DatePicker,
 import App from './App.vue'
 import router from './router'
 import * as Icons from '@ant-design/icons-vue';
+import { createLemonForm, builtinPlugin } from './plugins'
+
+const lemonForm = createLemonForm()
+lemonForm.use(builtinPlugin)
 
 const app = createApp(App)
+app.use(lemonForm)
 app.use(Checkbox);
 app.use(Radio);
 app.use(Button);
