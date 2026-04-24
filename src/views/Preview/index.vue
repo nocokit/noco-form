@@ -53,7 +53,7 @@
                 class="submit"
                 type="primary"
                 :size="pageFooter.size"
-                :style="{ padding: footerPadding, lineHeight: footerLineHeight }"
+                :style="{ padding: footerPadding }"
                 @click="handleSubmit"
               >
                 {{ pageFooter.buttonText || '提交' }}
@@ -129,11 +129,6 @@ const handleSubmit = () => {
 const footerPadding = computed(() => {
   const s = props.pageFooter?.size
   return s === 'large' ? '0 ji26px' : s === 'small' ? '0 10px' : '0 16px'
-})
-
-const footerLineHeight = computed(() => {
-  const s = props.pageFooter?.size
-  return s === 'large' ? '40px' : s === 'small' ? '24px' : '32px'
 })
 
 const getImageUrl = (imgUrl?: string) => {
