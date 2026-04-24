@@ -15,6 +15,22 @@ registerSettingItem({
 })
 
 registerSettingItem({
+  name: 'Image',
+  component: () => import('@/components-form-setting/show/Image.vue'),
+  group: 'basic',
+  order: 1,
+  match: (comp) => comp.type === 'Img',
+})
+
+registerSettingItem({
+  name: 'Video',
+  component: () => import('@/components-form-setting/show/Video.vue'),
+  group: 'basic',
+  order: 2,
+  match: (comp) => comp.type === 'Video',
+})
+
+registerSettingItem({
   name: 'Title',
   component: () => import('@/components-form-setting/base/Title.vue'),
   group: 'basic',

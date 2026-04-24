@@ -7,5 +7,9 @@
   "order": 2,
   "sidebar": { "group": "展示", "sort": 2 },
   "skipValidation": true,
-  "defaultConfig": {}
+  "defaultConfig": {
+    "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    "alt": "示例视频",
+    "titleValue": "兔子视频"
+  }
 }

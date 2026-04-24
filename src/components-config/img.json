@@ -7,5 +7,9 @@
   "order": 1,
   "sidebar": { "group": "展示", "sort": 1 },
   "skipValidation": true,
-  "defaultConfig": {}
+  "defaultConfig": {
+    "url": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=A%20beautiful%20landscape%20with%20mountains%20and%20lake&image_size=landscape_16_9",
+    "alt": "示例图片",
+    "titleValue": "风景图片"
+  }
 }
