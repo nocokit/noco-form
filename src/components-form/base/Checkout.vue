@@ -28,7 +28,7 @@ import { useFormValues } from '@/composables/useFormValues'
 interface Props {
   id: string
   dataList: Array<any>
-  dataValue: string
+  dataValue?: any[]
   layoutType: string
   isDev: boolean
   isSelected: boolean

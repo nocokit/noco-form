@@ -23,7 +23,7 @@ interface Props {
   dataList: Array<any>
   useOtherDataList: boolean
   dataOtherList:  Array<any>
-  dataValue: string
+  dataValue?: any[]
   layoutType: string
   isDev: boolean
   isSelected: boolean

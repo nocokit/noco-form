@@ -6,11 +6,6 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/form-editor'
-    },
-    {
-      path: '/form-editor',
-      name: 'form-editor',
       component: () => import('../views/FormEditor/index.vue')
     },
     { path: '/:pathMatch(.*)*', component: PathNotFound },

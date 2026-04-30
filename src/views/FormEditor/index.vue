@@ -17,6 +17,18 @@
             </a-button>
           </div>
           <div class="cont-item">
+            <a-button type="default" @click="handleImport">
+              <img class="btn-icon" src="@/assets/form-editor/storage.svg" alt="">
+              <span class="name">导入</span>
+            </a-button>
+          </div>
+          <div class="cont-item">
+            <a-button type="default" @click="handleExport">
+              <img class="btn-icon" src="@/assets/form-editor/save.svg" alt="">
+              <span class="name">导出</span>
+            </a-button>
+          </div>
+          <div class="cont-item">
             <a-button type="primary" @click="handleSave">
               <img class="btn-icon" src="@/assets/form-editor/publish.svg" alt="">
               <span class="name">保存</span>
@@ -209,6 +221,7 @@ import { useSelectCompStore } from '@/stores/selectCompStore'
 import { useFormPersistence } from '@/composables/useFormPersistence'
 import { useCompList } from '@/composables/useCompList'
 import { toGithub } from '@/utils/toGithub'
+import { indexedDB } from '@/utils/indexedDB'
 
 interface HeaderType {
   id: string
@@ -340,6 +353,57 @@ const handleSave = async () => {
   } catch {
     message.error('保存失败，请重试', 1)
   }
+}
+
+const handleExport = async () => {
+  try {
+    const formData = await indexedDB.getForm()
+    if (!formData) {
+      message.warning('没有可导出的数据', 1)
+      return
+    }
+    
+    const jsonData = JSON.stringify(formData, null, 2)
+    const blob = new Blob([jsonData], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `form-export-${Date.now()}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+    message.success('导出成功', 1)
+  } catch (error) {
+    message.error('导出失败，请重试', 1)
+    console.error('Export error:', error)
+  }
+}
+
+const handleImport = () => {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = 'application/json'
+  input.onchange = async (event: Event) => {
+    const file = (event.target as HTMLInputElement).files?.[0]
+    if (!file) return
+    
+    try {
+      const text = await file.text()
+      const jsonData = JSON.parse(text)
+      
+      if (!jsonData || typeof jsonData !== 'object') {
+        message.error('无效的 JSON 文件', 1)
+        return
+      }
+      
+      await indexedDB.saveForm(jsonData)
+      await loadFormData()
+      message.success('导入成功', 1)
+    } catch (error) {
+      message.error('导入失败，请检查文件格式', 1)
+      console.error('Import error:', error)
+    }
+  }
+  input.click()
 }
 
 const preview = () => { openPreview.value = true }

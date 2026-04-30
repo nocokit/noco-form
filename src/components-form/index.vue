@@ -43,7 +43,7 @@
 
     <div class="component">
       <component
-        :key="currentComp"
+        :key="component.id"
         :isSelected="component?.id === selectedComp?.id"
         :isPreviewRender="renderType === 'preview'"
         :isDev="isDev"
