@@ -204,7 +204,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { VueDraggable } from 'vue-draggable-plus'
 import { CheckOutlined, QuestionCircleOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
-import { useRoute } from 'vue-router'
 
 import { CompType } from './comp-data'
 import { generateCompListData } from './comp-list-generator'
@@ -287,7 +286,7 @@ const themeList = [
 const { loadFormData, saveFormData } = useFormPersistence(pageCompList, pageHeader, pageFooter)
 const { createCompByClick, onClone, addItem, compControl, updateCompLineNumber } = useCompList(pageCompList)
 
-const isFormEditorDev = computed(() => useRoute().path.includes('form-editor'))
+const isFormEditorDev = true
 
 const footerPadding = computed(() => {
   const s = pageFooter.value.size

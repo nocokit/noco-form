@@ -33,7 +33,14 @@
     </script>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#f5f5f5;">
+        <div style="width:200px;height:6px;background:#e0e0e0;border-radius:4px;overflow:hidden;">
+          <div style="width:40%;height:100%;background:#1677ff;border-radius:4px;animation:sk 1.2s ease-in-out infinite;"></div>
+        </div>
+      </div>
+    </div>
+    <style>@keyframes sk{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}</style>
     <script type="module" src="/src/main.ts"></script>
     <script>
       var _hmt = _hmt || [];

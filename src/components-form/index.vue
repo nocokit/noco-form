@@ -28,17 +28,15 @@
     </div>
 
     <div class="comp-item-description" v-if="displaySection && formConfig?.displayDescription">
-      <div v-if="(component?.id !== selectedComp?.id && isDev) || renderType">
-        <div class="description">{{ component.description }}</div>
-      </div>
       <a-textarea
-        v-else
+        v-if="isDev && component?.id === selectedComp?.id"
         :auto-size="{ minRows: 1, maxRows: 5 }"
         v-model:value="component.description"
         placeholder="请输入描述"
         @change="changeValue($event, 'description')"
         allow-clear
       />
+      <div v-else class="description">{{ component.description }}</div>
     </div>
 
     <div class="component">

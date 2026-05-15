@@ -185,6 +185,9 @@ const bgImageUrl = computed(() => getImageUrl(props.selectForm?.bgImgUrl))
   margin-top: 30px;
 }
 
+::v-deep(.ant-drawer-header) {
+  background: red !important;
+}
 ::v-deep(.form-footer) {
   .submit {
     max-width: 100%;
